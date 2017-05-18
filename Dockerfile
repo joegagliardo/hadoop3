@@ -1,7 +1,7 @@
 FROM joegagliardo/ubuntu
 MAINTAINER joegagliardo
 
-# MYSQL Passwords
+# MYSQL Passwords 0
 ARG HIVEUSER_PASSWORD=hivepassword
 ARG MYSQLROOT_PASSWORD=rootpassword
 
