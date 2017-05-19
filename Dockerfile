@@ -387,7 +387,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
 #    sed -i 's/\/var\/lib\/mongodb/\/home\/mongo\/data/' /etc/mongod.conf && 
 #    sed -i 's/\/var\/log\/mongodb\/mongod.log/\/home\/mongo\/log.txt/' /etc/mongod.conf && \
 
-mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &    
+# mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &    
 
 # mongodo --dbpath /home/mongo
 #mongo
