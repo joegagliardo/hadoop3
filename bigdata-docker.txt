@@ -257,13 +257,19 @@ RUN echo "#! /bin/sh" > /home/scripts/exitsafemode.sh && \
     echo "chmod +x /home/scripts/exitsafemode.sh" >> /home/scripts/exitsafemode
 
 # MySQL script to create the Hive metastore and user and then initialize the schema
+
 RUN echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /home/scripts/hiveuser.sql
 
 RUN echo "#! /bin/sh" > /home/scripts/initschema.sh && \
+    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /home/scripts/initschema.sh && \
+    echo "then" >> /home/scripts/initschema.sh && \
+    echo "  mysql -e \"drop database metastore\"" >> /home/scripts/initschema.sh && \
+    echo "fi" >> /home/scripts/initschema.sh && \
     echo "mysql < /home/scripts/hiveuser.sql" >> /home/scripts/initschema.sh && \
     echo "schematool -dbType mysql -initSchema" >> /home/scripts/initschema.sh && \
     chmod +x /home/scripts/initschema.sh
 #RUN /home/scripts/initschema.sh
+
 
 # Spark
 RUN echo ${SPARK_URL}
