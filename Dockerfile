@@ -382,8 +382,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
     apt-get update && \
     apt-get install -y mongodb-org && \
     pip2 install pymongo && \
-    pip3 install pymongo && \
-    echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \
+    pip3 install pymongo
+RUN echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \
     echo "mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
     chmod +x /home/scripts/start-mongo && \
     echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \
