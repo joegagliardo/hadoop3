@@ -388,7 +388,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
     chmod +x /home/scripts/start-mongo && \
     echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \
     echo "mongod --shutdown --dbpath /home/mongo/data" >> /home/scripts/stop-mongo.sh && \
-    chmod +x /home/scripts/stop-mongo
+    chmod +x /home/scripts/stop-mongo.sh
 
 #    sed -i 's/\/var\/lib\/mongodb/\/home\/mongo\/data/' /etc/mongod.conf && 
 #    sed -i 's/\/var\/log\/mongodb\/mongod.log/\/home\/mongo\/log.txt/' /etc/mongod.conf && \
