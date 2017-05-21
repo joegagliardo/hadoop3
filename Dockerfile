@@ -252,9 +252,9 @@ RUN cd /home && \
     chmod +x /home/scripts/format_namenode.sh
 #RUN /home/scripts/format_namenode.sh
 
-RUN echo "#! /bin/sh" > /home/scripts/exitsafemode.sh && \
-    echo "hdfs dfsadmin -safemode leave" >> /home/scripts/exitsafemode.sh && \
-    echo "chmod +x /home/scripts/exitsafemode.sh" >> /home/scripts/exitsafemode
+RUN echo "#! /bin/sh" > /home/scripts/exit-safemode.sh && \
+    echo "hdfs dfsadmin -safemode leave" >> /home/scripts/exit-safemode.sh && \
+    echo "chmod +x /home/scripts/exit-safemode.sh"
 
 # MySQL script to create the Hive metastore and user and then initialize the schema
 
@@ -383,6 +383,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
     apt-get install -y mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
+    mkdir /home/mongo && \
+    mkdir /home/mongo/data && \
     echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \ 
     echo "mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
     chmod +x /home/scripts/start-mongo.sh && \
