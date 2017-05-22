@@ -313,11 +313,19 @@ RUN echo "# Mongo & Cassandra Keys" && \
     echo "rm scripts/cassandra_processid" >> /home/scripts/stop-cassandra.sh && \
     chmod +x /home/scripts/stop-cassandra.sh && \
     echo "# change the data and log folder" && \
+<<<<<<< HEAD
     mkdir /home/host/cassandra && \
     mkdir /home/host/cassandra/data && \
     mkdir /home/host/cassandra/log && \
     sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/host\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
     sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/host\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
+=======
+    mkdir /home/cassandra && \
+    mkdir /home/cassandra/data && \
+    mkdir /home/cassandra/log && \
+    sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
+    sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
+>>>>>>> 14d360d0f00da91ff18015d44c82d91984ad05e4
     echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /home/scripts/create-cassandra-table.cql && \
     echo "use joey;" >> /home/scripts/create-cassandra-table.cql && \
     echo "create table names (id int PRIMARY KEY, name varchar);" >> /home/scripts/create-cassandra-table.cql && \
@@ -338,9 +346,15 @@ RUN echo "# Mongo & Cassandra Keys" && \
 #    apt-get remove -y mongodb-org
 
 
+<<<<<<< HEAD
 
 # end of actual build
 
+=======
+
+# end of actual build
+
+>>>>>>> 14d360d0f00da91ff18015d44c82d91984ad05e4
 # beginning of works in progress
 
 # spark cassandra connector - work in progress, it's tricky
