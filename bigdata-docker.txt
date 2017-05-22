@@ -47,7 +47,7 @@ RUN rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa 
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 # Make folders for HDFS data
-RUN mkdir /home/hdfs
+RUN mkdir /home/host/hdfs
 
 # Hadoop
 RUN echo ${HADOOP_URL}
@@ -80,11 +80,11 @@ RUN echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > $HADOOP_PREFIX//etc/hado
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.namenode.name.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/home/host/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.datanode.data.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/home/host/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml 
 
@@ -239,8 +239,8 @@ RUN echo "<configuration>" > /usr/local/hive/conf/hive-site.xml && \
 RUN cd /home && \
     echo "#! /bin/sh" > /home/scripts/format_namenode.sh && \
     echo "stop-all.sh" >> /home/scripts/format_namenode.sh && \
-    echo "rm -r /home/hdfs/name" >> /home/scripts/format_namenode.sh && \
-    echo "rm -r /home/hdfs/data" >> /home/scripts/format_namenode.sh && \
+    echo "rm -r /home/host/hdfs/name" >> /home/scripts/format_namenode.sh && \
+    echo "rm -r /home/host/hdfs/data" >> /home/scripts/format_namenode.sh && \
     echo "hdfs namenode -format" >> /home/scripts/format_namenode.sh && \
     echo "start-all.sh" >> /home/scripts/format_namenode.sh && \
     echo "hadoop fs -mkdir /user" >> /home/scripts/format_namenode.sh && \
@@ -383,21 +383,21 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
     apt-get install -y mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
-    mkdir /home/mongo && \
-    mkdir /home/mongo/data && \
+    mkdir /home/host/mongo && \
+    mkdir /home/host/mongo/data && \
     echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \ 
-    echo "mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
+    echo "mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
     chmod +x /home/scripts/start-mongo.sh && \
     echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \ 
-    echo "mongod --shutdown --dbpath /home/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
+    echo "mongod --shutdown --dbpath /home/host/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
     chmod +x /home/scripts/stop-mongo.sh
 
 #    sed -i 's/\/var\/lib\/mongodb/\/home\/mongo\/data/' /etc/mongod.conf && 
 #    sed -i 's/\/var\/log\/mongodb\/mongod.log/\/home\/mongo\/log.txt/' /etc/mongod.conf && \
 
-# mongod --dbpath /home/mongo/data --logpath /home/mongo/log.txt &    
+# mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &    
 
-# mongodo --dbpath /home/mongo
+# mongodo --dbpath /home/host/mongo
 #mongo
 #use joey
 #name = {"first":"joey", "last":"gagliardo"}
