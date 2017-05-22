@@ -9,7 +9,6 @@ MAINTAINER joegagliardo
 
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
-ARG MYSQLROOT_PASSWORD=rootpassword
 
 # Versions
 ARG HADOOP_VERSION=2.8.0
@@ -285,12 +284,27 @@ RUN echo "# configurate HBase data directories" && \
 #RUN echo "deb ${CASSANDRA_URL}http://www.apache.org/dist/cassandra/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
 #RUN curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
 #ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
-RUN echo "# Cassandra" && \
-    echo ${CASSANDRA_URL} && \
+RUN echo "# Mongo & Cassandra Keys" && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+    echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
     echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
     curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
     apt-get update && \
-    apt-get install -y cassandra && \
+    echo "# Mongo" && \
+    apt-get -y install mongodb-org && \
+    pip2 install pymongo && \
+    pip3 install pymongo && \
+    mkdir /home/host/mongo && \
+    mkdir /home/host/mongo/data && \
+    echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \ 
+    echo "mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
+    chmod +x /home/scripts/start-mongo.sh && \
+    echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \ 
+    echo "mongod --shutdown --dbpath /home/host/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
+    chmod +x /home/scripts/stop-mongo.sh && \
+    echo "# Cassandra" && \
+    echo ${CASSANDRA_URL} && \
+    apt-get -y install cassandra && \
     echo "#! /bin/sh" > /home/scripts/start-cassandra.sh && \
     echo "cassandra -p /home/scripts/cassandra_processid -R" >> /home/scripts/start-cassandra.sh && \
     chmod +x /home/scripts/start-cassandra.sh && \
@@ -317,23 +331,11 @@ RUN echo "# Cassandra" && \
     echo "chmod +x /home/scripts/test-cassandra-table.py" && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
-    echo "# Mongo" && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
-    echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
-    apt-get update && \
-    apt-get install -y mongodb-org && \
-    pip2 install pymongo && \
-    pip3 install pymongo && \
-    mkdir /home/host/mongo && \
-    mkdir /home/host/mongo/data && \
-    echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \ 
-    echo "mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
-    chmod +x /home/scripts/start-mongo.sh && \
-    echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \ 
-    echo "mongod --shutdown --dbpath /home/host/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
-    chmod +x /home/scripts/stop-mongo.sh && \
-    apt-get remove -y cassandra && \
-    apt-get remove -y mongodb-org
+    apt-get -y clean && \
+    apt-get -y autoremove
+
+#    apt-get remove -y cassandra && \
+#    apt-get remove -y mongodb-org
 
 
 
