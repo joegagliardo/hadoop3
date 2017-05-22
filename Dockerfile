@@ -346,15 +346,9 @@ RUN echo "# Mongo & Cassandra Keys" && \
 #    apt-get remove -y mongodb-org
 
 
-<<<<<<< HEAD
 
 # end of actual build
 
-=======
-
-# end of actual build
-
->>>>>>> 14d360d0f00da91ff18015d44c82d91984ad05e4
 # beginning of works in progress
 
 # spark cassandra connector - work in progress, it's tricky
@@ -471,3 +465,7 @@ RUN echo "# Mongo & Cassandra Keys" && \
 #-v "$HOME/docker/mysql/:/var/lib/mysql" 
 
 # alias startbdc="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -v \"$HOME/docker/hdfs/:/home/hdfs\"  -v \"$HOME/docker/cassandra/:/home/cassandra\" -v \"$HOME/docker/mongo/data/:/home/mongo/data\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14d360d0f00da91ff18015d44c82d91984ad05e4
