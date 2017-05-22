@@ -169,7 +169,7 @@ RUN echo "# passwordless ssh" && \
     echo "UsePAM no" >> /etc/ssh/sshd_config && \
     echo "Port 2122" >> /etc/ssh/sshd_config && \
     service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root && \
-    service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input && \
+    service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
@@ -331,7 +331,10 @@ RUN echo "# Cassandra" && \
     chmod +x /home/scripts/start-mongo.sh && \
     echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \ 
     echo "mongod --shutdown --dbpath /home/host/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
-    chmod +x /home/scripts/stop-mongo.sh
+    chmod +x /home/scripts/stop-mongo.sh && \
+    apt-get remove -y cassandra && \
+    apt-get remove -y mongodb-org
+
 
 
 # end of actual build
