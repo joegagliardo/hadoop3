@@ -69,7 +69,7 @@ RUN echo "# passwordless ssh" && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     echo "# Make folders for HDFS data" && \
-    mkdir /home/host/hdfs && \
+    mkdir /data/host/hdfs && \
     echo "# Hadoop" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
@@ -95,11 +95,11 @@ RUN echo "# passwordless ssh" && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.namenode.name.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/host/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/data/host/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.datanode.data.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/host/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/data/host/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "<configuration>" > $HADOOP_PREFIX/etc/hadoop/mapred-site.xml && \
@@ -216,33 +216,33 @@ RUN echo "# passwordless ssh" && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "# Format Name Node" && \
-    cd /home && \
-    echo "#! /bin/sh" > /home/scripts/format_namenode.sh && \
-    echo "stop-all.sh" >> /home/scripts/format_namenode.sh && \
-    echo "rm -r /home/host/hdfs/name" >> /home/scripts/format_namenode.sh && \
-    echo "rm -r /home/host/hdfs/data" >> /home/scripts/format_namenode.sh && \
-    echo "hdfs namenode -format" >> /home/scripts/format_namenode.sh && \
-    echo "start-all.sh" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive/warehouse" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /tmp" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /home/scripts/format_namenode.sh && \
-    echo "hadoop fs -chmod g+w /tmp" >> /home/scripts/format_namenode.sh && \
-    chmod +x /home/scripts/format_namenode.sh && \
-    echo "#! /bin/sh" > /home/scripts/exit-safemode.sh && \
-    echo "hdfs dfsadmin -safemode leave" >> /home/scripts/exit-safemode.sh && \
-    chmod +x /home/scripts/exit-safemode.sh && \
+    cd /data && \
+    echo "#! /bin/sh" > /data/scripts/format_namenode.sh && \
+    echo "stop-all.sh" >> /data/scripts/format_namenode.sh && \
+    echo "rm -r /data/host/hdfs/name" >> /data/scripts/format_namenode.sh && \
+    echo "rm -r /data/host/hdfs/data" >> /data/scripts/format_namenode.sh && \
+    echo "hdfs namenode -format" >> /data/scripts/format_namenode.sh && \
+    echo "start-all.sh" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -mkdir /user" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive/warehouse" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -mkdir /tmp" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /data/scripts/format_namenode.sh && \
+    echo "hadoop fs -chmod g+w /tmp" >> /data/scripts/format_namenode.sh && \
+    chmod +x /data/scripts/format_namenode.sh && \
+    echo "#! /bin/sh" > /data/scripts/exit-safemode.sh && \
+    echo "hdfs dfsadmin -safemode leave" >> /data/scripts/exit-safemode.sh && \
+    chmod +x /data/scripts/exit-safemode.sh && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
-    echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /home/scripts/hiveuser.sql && \
-    echo "#! /bin/sh" > /home/scripts/initschema.sh && \
-    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /home/scripts/initschema.sh && \
-    echo "then" >> /home/scripts/initschema.sh && \
-    echo "  mysql -e \"drop database metastore\"" >> /home/scripts/initschema.sh && \
-    echo "fi" >> /home/scripts/initschema.sh && \
-    echo "mysql < /home/scripts/hiveuser.sql" >> /home/scripts/initschema.sh && \
-    echo "schematool -dbType mysql -initSchema" >> /home/scripts/initschema.sh && \
-    chmod +x /home/scripts/initschema.sh && \
+    echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /data/scripts/hiveuser.sql && \
+    echo "#! /bin/sh" > /data/scripts/initschema.sh && \
+    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /data/scripts/initschema.sh && \
+    echo "then" >> /data/scripts/initschema.sh && \
+    echo "  mysql -e \"drop database metastore\"" >> /data/scripts/initschema.sh && \
+    echo "fi" >> /data/scripts/initschema.sh && \
+    echo "mysql < /data/scripts/hiveuser.sql" >> /data/scripts/initschema.sh && \
+    echo "schematool -dbType mysql -initSchema" >> /data/scripts/initschema.sh && \
+    chmod +x /data/scripts/initschema.sh && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
@@ -285,47 +285,47 @@ RUN echo "# passwordless ssh" && \
     apt-get -y install mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
-    mkdir /home/host/mongo && \
-    mkdir /home/host/mongo/data && \
-    echo "#! /bin/sh" > /home/scripts/start-mongo.sh && \ 
-    echo "mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &" >> /home/scripts/start-mongo.sh && \
-    chmod +x /home/scripts/start-mongo.sh && \
-    echo "#! /bin/sh" > /home/scripts/stop-mongo.sh && \ 
-    echo "mongod --shutdown --dbpath /home/host/mongo/data" >> /home/scripts/stop-mongo.sh && \ 
-    chmod +x /home/scripts/stop-mongo.sh && \
+    mkdir /data/host/mongo && \
+    mkdir /data/host/mongo/data && \
+    echo "#! /bin/sh" > /data/scripts/start-mongo.sh && \ 
+    echo "mongod --dbpath /data/host/mongo/data --logpath /data/host/mongo/log.txt &" >> /data/scripts/start-mongo.sh && \
+    chmod +x /data/scripts/start-mongo.sh && \
+    echo "#! /bin/sh" > /data/scripts/stop-mongo.sh && \ 
+    echo "mongod --shutdown --dbpath /data/host/mongo/data" >> /data/scripts/stop-mongo.sh && \ 
+    chmod +x /data/scripts/stop-mongo.sh && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
     apt-get -y install cassandra && \
-    echo "#! /bin/sh" > /home/scripts/start-cassandra.sh && \
-    echo "cassandra -p /home/scripts/cassandra_processid -R" >> /home/scripts/start-cassandra.sh && \
-    chmod +x /home/scripts/start-cassandra.sh && \
-    echo "#! /bin/sh" > /home/scripts/stop-cassandra.sh && \
-    echo "kill -9 \$(cat /home/scripts/cassandra_processid)" >> /home/scripts/stop-cassandra.sh && \
-    echo "rm scripts/cassandra_processid" >> /home/scripts/stop-cassandra.sh && \
-    chmod +x /home/scripts/stop-cassandra.sh && \
+    echo "#! /bin/sh" > /data/scripts/start-cassandra.sh && \
+    echo "cassandra -p /data/scripts/cassandra_processid -R" >> /data/scripts/start-cassandra.sh && \
+    chmod +x /data/scripts/start-cassandra.sh && \
+    echo "#! /bin/sh" > /data/scripts/stop-cassandra.sh && \
+    echo "kill -9 \$(cat /data/scripts/cassandra_processid)" >> /data/scripts/stop-cassandra.sh && \
+    echo "rm scripts/cassandra_processid" >> /data/scripts/stop-cassandra.sh && \
+    chmod +x /data/scripts/stop-cassandra.sh && \
     echo "# change the data and log folder" && \
-    mkdir /home/host/cassandra && \
-    mkdir /home/host/cassandra/data && \
-    mkdir /home/host/cassandra/log && \
-    sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/host\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
-    sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/host\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
-    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /home/scripts/create-cassandra-table.cql && \
-    echo "use joey;" >> /home/scripts/create-cassandra-table.cql && \
-    echo "create table names (id int PRIMARY KEY, name varchar);" >> /home/scripts/create-cassandra-table.cql && \
-    echo "insert into names (id, name) values (1, 'joey');" >> /home/scripts/create-cassandra-table.cql && \
-    echo "#! /usr/bin/python" > /home/scripts/test-cassandra-table.py && \
-    echo "from cassandra.cluster import Cluster" >> /home/scripts/test-cassandra-table.py && \
-    echo "cluster = Cluster()" >> /home/scripts/test-cassandra-table.py && \
-    echo "session = cluster.connect('joey')" >> /home/scripts/test-cassandra-table.py && \
-    echo "rows = session.execute('SELECT id, name FROM names')" >> /home/scripts/test-cassandra-table.py && \
-    echo "print list(rows)" >> /home/scripts/test-cassandra-table.py && \
-    chmod +x /home/scripts/test-cassandra-table.py && \
+    mkdir /data/host/cassandra && \
+    mkdir /data/host/cassandra/data && \
+    mkdir /data/host/cassandra/log && \
+    sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/data\/host\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
+    sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/data\/host\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
+    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /data/scripts/create-cassandra-table.cql && \
+    echo "use joey;" >> /data/scripts/create-cassandra-table.cql && \
+    echo "create table names (id int PRIMARY KEY, name varchar);" >> /data/scripts/create-cassandra-table.cql && \
+    echo "insert into names (id, name) values (1, 'joey');" >> /data/scripts/create-cassandra-table.cql && \
+    echo "#! /usr/bin/python" > /data/scripts/test-cassandra-table.py && \
+    echo "from cassandra.cluster import Cluster" >> /data/scripts/test-cassandra-table.py && \
+    echo "cluster = Cluster()" >> /data/scripts/test-cassandra-table.py && \
+    echo "session = cluster.connect('joey')" >> /data/scripts/test-cassandra-table.py && \
+    echo "rows = session.execute('SELECT id, name FROM names')" >> /data/scripts/test-cassandra-table.py && \
+    echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
+    chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    echo "" >> /home/scripts/notes.txt
+    echo "" >> /data/scripts/notes.txt
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
@@ -360,12 +360,12 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #RDDs (Requires Pyspark-Cassandra)
 #sc.cassandraTable("keyspace", "table")    
 
-#    sed -i 's/\/var\/lib\/mongodb/\/home\/mongo\/data/' /etc/mongod.conf && 
-#    sed -i 's/\/var\/log\/mongodb\/mongod.log/\/home\/mongo\/log.txt/' /etc/mongod.conf && \
+#    sed -i 's/\/var\/lib\/mongodb/\/data\/mongo\/data/' /etc/mongod.conf && 
+#    sed -i 's/\/var\/log\/mongodb\/mongod.log/\/data\/mongo\/log.txt/' /etc/mongod.conf && \
 
-# mongod --dbpath /home/host/mongo/data --logpath /home/host/mongo/log.txt &    
+# mongod --dbpath /data/host/mongo/data --logpath /data/host/mongo/log.txt &    
 
-# mongodo --dbpath /home/host/mongo
+# mongodo --dbpath /data/host/mongo
 #mongo
 #use joey
 #name = {"first":"joey", "last":"gagliardo"}
@@ -424,20 +424,20 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #sudo service cassandra stop
 #sudo service cassandra start
 
-# on first startup of a container you need to run /home/scripts/format_namenode.sh and /home/scripts/initschema.sh
+# on first startup of a container you need to run /data/scripts/format_namenode.sh and /data/scripts/initschema.sh
 
 # 1. Build image
 # docker build -t joey/hadoop -f HadoopOnUbuntu.txt .
 # 2. Build container and launch a bash shell
 # docker run --name hadoop-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -it joegagliardo/hadoop /etc/bootstrap.sh -bash
-# 3. Build container and map a local drive to the /home/host & /home/hdfs folder inside the container
-# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/home/host" -v "$HOME/docker/hdfs/:/home/hdfs"  -it joegagliardo/bigdata /etc/bootstrap.sh -bash
+# 3. Build container and map a local drive to the /data/host 
+# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -it joegagliardo/bigdata /etc/bootstrap.sh -bash
 # 4. Restart and attach to container
 # docker start hadoop-client
 # docker attach hadoop-client
 
 # IMAGEID=some image number you get from docker images
-# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "/Users/joey/Dev/:/home/host" -it $IMAGEID /etc/bootstrap.sh -bash
+# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "/Users/joey/Dev/:/data/host" -it $IMAGEID /etc/bootstrap.sh -bash
 # rename a docker image
 # docker tag d583c3ac45fd myname/server:latest
 
@@ -446,15 +446,15 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # docker stop $(docker ps -a -q)
 # docker rm $(docker ps -a -q) -f
   
-# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/home/host" -v "$HOME/docker/hdfs/:/home/hdfs"  -it joegagliardo/bigdata /etc/bootstrap.sh -bash
+# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -v "$HOME/docker/hdfs/:/home/hdfs"  -it joegagliardo/bigdata /etc/bootstrap.sh -bash
 
 
 #-v "$HOME/docker/mysql/:/var/lib/mysql" 
 
 
-# alias newbd="if [ \"$(docker ps -q -f name=bigdata-client)\" ]; then docker rm bigdata-client -f; fi && docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+# alias newbd="if [ \"$(docker ps -q -f name=bigdata-client)\" ]; then docker rm bigdata-client -f; fi && docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/data/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
 
-#docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/home/host" -it joegagliardo/bigdata /etc/bootstrap.sh -bash
+#docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -it joegagliardo/bigdata /etc/bootstrap.sh -bash
 
-# alias newbd="$(docker ps -q -f name=bigdata-client) && docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
-# alias connectbd="docker start bigdata-client && docker attach bigdata-client"
+# alias newbd="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/data/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+# alias attachbd="docker start bigdata-client && docker attach bigdata-client"
