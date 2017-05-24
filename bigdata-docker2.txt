@@ -227,7 +227,7 @@ RUN ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-con
     chmod +x /home/scripts/format_namenode.sh && \
     echo "#! /bin/sh" > /home/scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /home/scripts/exit-safemode.sh && \
-    echo "chmod +x /home/scripts/exit-safemode.sh" && \
+    chmod +x /home/scripts/exit-safemode.sh && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
     echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /home/scripts/hiveuser.sql && \
     echo "#! /bin/sh" > /home/scripts/initschema.sh && \
@@ -328,11 +328,12 @@ RUN echo "# Mongo & Cassandra Keys" && \
     echo "session = cluster.connect('joey')" >> /home/scripts/test-cassandra-table.py && \
     echo "rows = session.execute('SELECT id, name FROM names')" >> /home/scripts/test-cassandra-table.py && \
     echo "print list(rows)" >> /home/scripts/test-cassandra-table.py && \
-    echo "chmod +x /home/scripts/test-cassandra-table.py" && \
+    chmod +x /home/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
     apt-get -y clean && \
-    apt-get -y autoremove
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
 
 #    apt-get remove -y cassandra && \
 #    apt-get remove -y mongodb-org
@@ -457,3 +458,5 @@ RUN echo "# Mongo & Cassandra Keys" && \
 #-v "$HOME/docker/mysql/:/var/lib/mysql" 
 
 # alias startbdc="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -v \"$HOME/docker/hdfs/:/home/hdfs\"  -v \"$HOME/docker/cassandra/:/home/cassandra\" -v \"$HOME/docker/mongo/data/:/home/mongo/data\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+
+#docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/home/host" -it joegagliardo/bigdata /etc/bootstrap.sh -bash
