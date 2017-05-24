@@ -324,7 +324,8 @@ RUN echo "# passwordless ssh" && \
     pip3 install cassandra-driver && \
     apt-get -y clean && \
     apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    echo "" >> /home/scripts/notes.txt
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
@@ -450,6 +451,10 @@ CMD ["/etc/bootstrap.sh", "-d"]
 
 #-v "$HOME/docker/mysql/:/var/lib/mysql" 
 
-# alias startbdc="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -v \"$HOME/docker/hdfs/:/home/hdfs\"  -v \"$HOME/docker/cassandra/:/home/cassandra\" -v \"$HOME/docker/mongo/data/:/home/mongo/data\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+
+# alias newbd="if [ \"$(docker ps -q -f name=bigdata-client)\" ]; then docker rm bigdata-client -f; fi && docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
 
 #docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/home/host" -it joegagliardo/bigdata /etc/bootstrap.sh -bash
+
+# alias newbd="$(docker ps -q -f name=bigdata-client) && docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/home/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
+# alias connectbd="docker start bigdata-client && docker attach bigdata-client"
