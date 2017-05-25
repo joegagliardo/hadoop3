@@ -322,6 +322,12 @@ RUN echo "# passwordless ssh" && \
     chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
+    cd /data && \
+    git clone https://github.com/databricks/spark-xml.git && \
+    cd spark-xml && \
+    sbt/sbt package && \
+    mv spark-xml/target/* /usr/local/spark/lib && \
+    rm -r /data/spark-xml && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
