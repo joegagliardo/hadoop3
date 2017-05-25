@@ -326,7 +326,7 @@ RUN echo "# passwordless ssh" && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
-    cp spark-xml/target/scala-2.11/*.jar /usr/local/spark/lib && \
+    cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/lib && \
     cd /data && \
     rm -r /data/spark-xml && \
     apt-get -y clean && \
