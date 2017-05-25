@@ -324,14 +324,16 @@ RUN echo "# passwordless ssh" && \
     pip3 install cassandra-driver && \
     cd /data && \
     git clone https://github.com/databricks/spark-xml.git && \
-    cd spark-xml && \
+    cd /data/spark-xml && \
     sbt/sbt package && \
     mv spark-xml/target/* /usr/local/spark/lib && \
+    cd /data && \
     rm -r /data/spark-xml && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     echo "" >> /data/scripts/notes.txt
+# wget http://central.maven.org/maven2/org/apache/pig/piggybank/0.15.0/piggybank-0.15.0.jar
 
 CMD ["/etc/bootstrap.sh", "-d"]
 

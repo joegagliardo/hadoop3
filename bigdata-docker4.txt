@@ -1,0 +1,9 @@
+FROM joegagliardo/bigdata
+MAINTAINER joegagliardo
+
+RUN cd /data && \
+    git clone https://github.com/databricks/spark-xml.git && \
+    cd /data/spark-xml && \
+    sbt/sbt package && \
+    mv /data/spark-xml/target/* /usr/local/spark/lib && \
+    rm -r /data/spark-xml
