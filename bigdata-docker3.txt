@@ -217,32 +217,40 @@ RUN echo "# passwordless ssh" && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "# Format Name Node" && \
     cd /data && \
-    echo "#! /bin/sh" > /data/scripts/format_namenode.sh && \
-    echo "stop-all.sh" >> /data/scripts/format_namenode.sh && \
-    echo "rm -r /data/host/hdfs/name" >> /data/scripts/format_namenode.sh && \
-    echo "rm -r /data/host/hdfs/data" >> /data/scripts/format_namenode.sh && \
-    echo "hdfs namenode -format" >> /data/scripts/format_namenode.sh && \
-    echo "start-all.sh" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive/warehouse" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -mkdir /tmp" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /data/scripts/format_namenode.sh && \
-    echo "hadoop fs -chmod g+w /tmp" >> /data/scripts/format_namenode.sh && \
-    chmod +x /data/scripts/format_namenode.sh && \
+    echo "#! /bin/sh" > /data/scripts/format-namenode.sh && \
+    echo "stop-all.sh" >> /data/scripts/format-namenode.sh && \
+    echo "rm -r /data/host/hdfs/name" >> /data/scripts/format-namenode.sh && \
+    echo "rm -r /data/host/hdfs/data" >> /data/scripts/format-namenode.sh && \
+    echo "hdfs namenode -format" >> /data/scripts/format-namenode.sh && \
+    echo "start-all.sh" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive/warehouse" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /tmp" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -chmod g+w /tmp" >> /data/scripts/format-namenode.sh && \
+    chmod +x /data/scripts/format-namenode.sh && \
     echo "#! /bin/sh" > /data/scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /data/scripts/exit-safemode.sh && \
     chmod +x /data/scripts/exit-safemode.sh && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
     echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /data/scripts/hiveuser.sql && \
-    echo "#! /bin/sh" > /data/scripts/initschema.sh && \
-    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /data/scripts/initschema.sh && \
-    echo "then" >> /data/scripts/initschema.sh && \
-    echo "  mysql -e \"drop database metastore\"" >> /data/scripts/initschema.sh && \
-    echo "fi" >> /data/scripts/initschema.sh && \
-    echo "mysql < /data/scripts/hiveuser.sql" >> /data/scripts/initschema.sh && \
-    echo "schematool -dbType mysql -initSchema" >> /data/scripts/initschema.sh && \
-    chmod +x /data/scripts/initschema.sh && \
+    echo "#! /bin/sh" > /data/scripts/init-schema.sh && \
+    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /data/scripts/init-schema.sh && \
+    echo "then" >> /data/scripts/init-schema.sh && \
+    echo "  mysql -e \"drop database metastore\"" >> /data/scripts/init-schema.sh && \
+    echo "fi" >> /data/scripts/init-schema.sh && \
+    echo "mysql < /data/scripts/hiveuser.sql" >> /data/scripts/init-schema.sh && \
+    echo "schematool -dbType mysql -initSchema" >> /data/scripts/init-schema.sh && \
+    chmod +x /data/scripts/init-schema.sh && \
+    echo "#! /bin/sh" > /data/scripts/shutdown-all.sh && \
+    echo "stop-yarn.sh" >> /data/scripts/shutdown-all.sh && \
+    echo "stop-dfs.sh" >> /data/scripts/shutdown-all.sh && \
+    echo "/data/scripts/stop-mongo.sh" >> /data/scripts/shutdown-all.sh && \
+    echo "/data/scripts/stop-cassandra.sh" >> /data/scripts/shutdown-all.sh && \
+    echo "/data/scripts/stop-mysql.sh" >> /data/scripts/shutdown-all.sh && \
+    echo "stop-hbase.sh" >> /data/scripts/shutdown-all.sh && \
+    chmod +x /data/scripts/shutdown-all.sh && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
@@ -466,3 +474,4 @@ CMD ["/etc/bootstrap.sh", "-d"]
 
 # alias newbd="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/data/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
 # alias attachbd="docker start bigdata-client && docker attach bigdata-client"
+# docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -it 435d885aa7dc /etc/bootstrap.sh -bash
