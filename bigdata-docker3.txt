@@ -28,7 +28,7 @@ ARG SPARK_VERSION=2.1.1
 ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
 
-ARG HBASE_VERSION=1.2.5
+ARG HBASE_VERSION=1.3.1
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
 
@@ -257,18 +257,40 @@ RUN echo "# passwordless ssh" && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
-    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar
-
-RUN cd /data && \
+    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
+    echo "#! /bin/sh" > /data/scripts/spark-nolog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-nolog.sh && \
+    chmod +x /data/scripts/spark-nolog.sh && \
+    echo "#! /bin/sh" > /data/scripts/spark-fulllog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-fulllog.sh && \
+    chmod +x /data/scripts/spark-fulllog.sh && \
+    cd /data && \
     git clone https://github.com/hortonworks-spark/shc.git && \
     cd shc && \
     mvn package -DskipTests && \
     mvn clean package test && \
-    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test
-
-
-RUN    echo "RUN pip2 install happybase" && \
+    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
+    echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
+    echo "# HBase" && \
+    echo ${HBASE_URL} && \
+    curl ${HBASE_URL} | tar -zx -C /usr/local && \
+    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+    echo "# configure HBase data directories" && \
+    echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>hdfs://localhost:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <name>dfs.replication</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>1</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -315,9 +337,8 @@ RUN    echo "RUN pip2 install happybase" && \
     echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
     chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
-    pip3 install cassandra-driver
-    
-RUN    cd /data && \
+    pip3 install cassandra-driver && \
+    cd /data && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
@@ -341,35 +362,6 @@ RUN    cd /data && \
     rm -rf /var/lib/apt/lists/* && \
     echo "" > /data/scripts/notes.txt
 
-RUN echo "#! /bin/sh" > /data/scripts/spark-nolog.sh && \
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-nolog.sh && \
-    chmod +x /data/scripts/spark-nolog.sh && \
-    echo "#! /bin/sh" > /data/scripts/spark-fulllog.sh && \
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-fulllog.sh && \
-    chmod +x /data/scripts/spark-fulllog.sh && \
-
-#RUN    echo "# HBase" && \
-#    echo ${HBASE_URL} && \
-#    curl ${HBASE_URL} | tar -zx -C /usr/local && \
-#    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase 
-    
-#RUN    echo "# configure HBase data directories" && \
-#    echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
-#   echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <value>hdfs://localhost:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <name>dfs.replication</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <value>1</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-#    echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml 
-
-    
 # wget http://central.maven.org/maven2/org/apache/pig/piggybank/0.15.0/piggybank-0.15.0.jar
 
 CMD ["/etc/bootstrap.sh", "-d"]
