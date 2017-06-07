@@ -258,7 +258,12 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
-    sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties && \
+    echo "#! /bin/sh" > /data/scripts/spark-nolog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-nolog.sh && \
+    chmod +x /data/scripts/spark-nolog.sh && \
+    echo "#! /bin/sh" > /data/scripts/spark-fulllog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-fulllog.sh && \
+    chmod +x /data/scripts/spark-fulllog.sh && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
@@ -331,9 +336,8 @@ RUN echo "# passwordless ssh" && \
     echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
     chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
-    pip3 install cassandra-driver
-    
-RUN cd /data && \
+    pip3 install cassandra-driver && \
+    cd /data && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
