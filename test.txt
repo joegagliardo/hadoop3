@@ -5,13 +5,33 @@ ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax
 ARG SPARK_CASSANDRA_URL=${SPARK_CASSANDRA_BASE_URL}/${SPARK_CASSANDRA_VERSION}/spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
 ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
 
-RUN echo "*************" && \
-	cd /data && \
-    echo ${SPARK_CASSANDRA_URL} && \
-	wget ${SPARK_CASSANDRA_URL} && \
-    mkdir /usr/local/spark && \
-    mkdir /usr/local/spark/jars && \
-    mv ${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
-	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
-    echo "*************" 
+ARG HBASE_VERSION=1.3.1
+ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
+ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
+
+ARG HADOOP_VERSION=2.8.0
+ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+
+
+RUN echo "#! /bin/sh" > /checkurls.sh && \
+    echo "for x in ${SPARK_CASSANDRA_URL} {$HBASE_URL} {$HADOOP_URL}; do" >> /checkurls.sh && \
+    echo "  if curl -s --head $x | head -n 1 | grep "HTTP/1.[01] [2].." ; then" >> /checkurls.sh && \
+    echo "     echo \"$x exists\"" >> /checkurls.sh && \
+    echo "  else" >> /checkurls.sh && \
+    echo "     exit 1" >> /checkurls.sh && \
+    echo "  fi" >> /checkurls.sh && \
+    echo "done" >> /checkurls.sh && \
+    chmod +x /checkurls.sh && \
+    /checkurls.sh
+
+#RUN for x in $SPARK_CASSANDRA_URL $HBASE_URL $HADOOP_URL; do \
+#  if curl -s --head $x | head -n 1 | grep "HTTP/1.[01] [2].." ; then \
+#     echo "$x exists" \
+#  else \
+#     exit 1 \
+#  fi \
+#done 
+
+
 
