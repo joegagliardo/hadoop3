@@ -270,6 +270,8 @@ RUN echo "# passwordless ssh" && \
     mvn package -DskipTests && \
     mvn clean package test && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
+    echo "*************" 
+RUN echo "*************" && \
     echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
     echo "# HBase" && \
@@ -291,6 +293,8 @@ RUN echo "# passwordless ssh" && \
     echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "*************" 
+RUN echo "*************" && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -344,6 +348,8 @@ RUN echo "# passwordless ssh" && \
     sbt/sbt package && \
     cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
+    echo "*************" 
+RUN echo "*************" && \
     cd /data && \
     rm -r /data/spark-xml && \
 	cd /data && \
