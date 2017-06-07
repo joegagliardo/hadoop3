@@ -356,7 +356,11 @@ RUN echo "*************" && \
 	cd /data && \
     echo ${SPARK_CASSANDRA_URL} && \
 	wget ${SPARK_CASSANDRA_URL} && \
-    mv ${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
+    echo "*************" 
+RUN echo "*************" && \
+    mv /data/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
+    echo "*************" 
+RUN echo "*************" && \
 	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
     echo "*************" 
 RUN echo "*************" && \
@@ -380,8 +384,6 @@ CMD ["/etc/bootstrap.sh", "-d"]
 
 #    apt-get remove -y cassandra && \
 #    apt-get remove -y mongodb-org
-
-
 
 # end of actual build
 
