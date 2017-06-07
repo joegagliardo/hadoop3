@@ -351,11 +351,15 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
     cd /data && \
     rm -r /data/spark-xml && \
+    echo "*************" 
+RUN echo "*************" && \
 	cd /data && \
     echo ${SPARK_CASSANDRA_URL} && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv ${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
 	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
+    echo "*************" 
+RUN echo "*************" && \
 	cd /data && \
 	git clone https://github.com/minrk/findspark.git && \
 	cd findspark && \
