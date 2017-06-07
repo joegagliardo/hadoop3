@@ -553,3 +553,5 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #	wget http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector/2.0.1-s_2.11/spark-cassandra-connector-2.0.1-s_2.11.jar && \
 #    mv spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars && \
 #	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
+
+# RUN apt-get -yq install vim postgresql-9.3 libpostgresql-jdbc-java
