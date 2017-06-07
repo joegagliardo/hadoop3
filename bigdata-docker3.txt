@@ -224,6 +224,7 @@ RUN echo "# passwordless ssh" && \
     echo "hdfs namenode -format" >> /data/scripts/format-namenode.sh && \
     echo "start-all.sh" >> /data/scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user" >> /data/scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/root" >> /data/scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user/hive" >> /data/scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user/hive/warehouse" >> /data/scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /tmp" >> /data/scripts/format-namenode.sh && \
@@ -257,6 +258,7 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
+    sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
@@ -334,13 +336,26 @@ RUN echo "# passwordless ssh" && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
-    cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/lib && \
+    cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
     cd /data && \
     rm -r /data/spark-xml && \
+	cd /data && \
+	wget http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector/2.0.1-s_2.11/spark-cassandra-connector-2.0.1-s_2.11.jar && \
+    mv spark-cassandra-connector-2.0.0-s_2.11.jar /usr/local/spark/jars && \
+	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.0-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
+	cd /data && \
+	git clone https://github.com/minrk/findspark.git && \
+	cd findspark && \
+    python2 setup.py install && \
+	python3 setup.py install && \
+	cd /data && \
+	rm -r /data/findspark && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     echo "" >> /data/scripts/notes.txt
+    
 # wget http://central.maven.org/maven2/org/apache/pig/piggybank/0.15.0/piggybank-0.15.0.jar
 
 CMD ["/etc/bootstrap.sh", "-d"]
@@ -465,6 +480,12 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -v "$HOME/docker/hdfs/:/home/hdfs"  -it joegagliardo/bigdata /etc/bootstrap.sh -bash
 
 
+# CREATE KEYSPACE test WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1 };
+# CREATE TABLE test.kv(key text PRIMARY KEY, value int);
+#INSERT INTO test.kv(key, value) VALUES ('key1', 1);
+#INSERT INTO test.kv(key, value) VALUES ('key2', 2);
+
+
 #-v "$HOME/docker/mysql/:/var/lib/mysql" 
 
 
@@ -475,3 +496,17 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # alias newbd="docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v \"$HOME/docker/:/data/host\" -it joegagliardo/bigdata /etc/bootstrap.sh -bash"
 # alias attachbd="docker start bigdata-client && docker attach bigdata-client"
 # docker run --name bigdata-client -p 50070:50070 -p 8088:8088 -p 10020:10020 -v "$HOME/docker/:/data/host" -it 435d885aa7dc /etc/bootstrap.sh -bash
+
+
+
+
+# https://github.com/dropbox/PyHive.git
+# python setup.py install
+# python3 setup.py install
+
+
+#import findspark
+#findspark.init()
+
+#import pyspark
+#sc = pyspark.SparkContext(appName="myAppName")
