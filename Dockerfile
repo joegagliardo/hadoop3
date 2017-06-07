@@ -287,8 +287,9 @@ RUN echo "# passwordless ssh" && \
 RUN    echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
-    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
-    echo "# configurate HBase data directories" && \
+    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase 
+    
+RUN    echo "# configurate HBase data directories" && \
     echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
@@ -302,7 +303,9 @@ RUN    echo "# HBase" && \
     echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml 
+    
+RUN cd /data && \
     git clone https://github.com/hortonworks-spark/shc.git && \
     cd shc && \
     mvn package -DskipTests && \
