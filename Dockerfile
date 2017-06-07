@@ -331,8 +331,9 @@ RUN echo "# passwordless ssh" && \
     echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
     chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
-    pip3 install cassandra-driver && \
-    cd /data && \
+    pip3 install cassandra-driver
+    
+RUN cd /data && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
