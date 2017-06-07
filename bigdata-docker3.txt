@@ -259,6 +259,31 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar
     
+#RUN    echo "# HBase" && \
+#    echo ${HBASE_URL} && \
+#    curl ${HBASE_URL} | tar -zx -C /usr/local && \
+#    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+#    echo "# configurate HBase data directories" && \
+#    echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <value>hdfs://localhost:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <name>dfs.replication</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <value>1</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#   echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+#    git clone https://github.com/hortonworks-spark/shc.git && \
+#    cd shc && \
+#    mvn package -DskipTests && \
+#   mvn clean package test && \
+#    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test 
+
 RUN    echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
@@ -282,7 +307,8 @@ RUN    echo "# HBase" && \
     cd shc && \
     mvn package -DskipTests && \
     mvn clean package test && \
-    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test 
+    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test
+
 
 RUN    echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
