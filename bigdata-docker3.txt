@@ -282,8 +282,9 @@ RUN    echo "# HBase" && \
     cd shc && \
     mvn package -DskipTests && \
     mvn clean package test && \
-    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
-    echo "RUN pip2 install happybase" && \
+    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test 
+
+RUN    echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
@@ -331,8 +332,9 @@ RUN    echo "# HBase" && \
     echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
     chmod +x /data/scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
-    pip3 install cassandra-driver && \
-    cd /data && \
+    pip3 install cassandra-driver
+    
+RUN    cd /data && \
     git clone https://github.com/databricks/spark-xml.git && \
     cd /data/spark-xml && \
     sbt/sbt package && \
