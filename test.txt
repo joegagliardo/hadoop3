@@ -13,17 +13,19 @@ ARG HADOOP_VERSION=2.8.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
+USER root
 
-RUN echo "#! /bin/sh" > /checkurls.sh && \
-    echo "for x in ${SPARK_CASSANDRA_URL} {$HBASE_URL} {$HADOOP_URL}; do" >> /checkurls.sh && \
-    echo "  if curl -s --head $x | head -n 1 | grep "HTTP/1.[01] [2].." ; then" >> /checkurls.sh && \
-    echo "     echo \"$x exists\"" >> /checkurls.sh && \
-    echo "  else" >> /checkurls.sh && \
-    echo "     exit 1" >> /checkurls.sh && \
-    echo "  fi" >> /checkurls.sh && \
-    echo "done" >> /checkurls.sh && \
-    chmod +x /checkurls.sh && \
-    /checkurls.sh
+
+RUN echo "#! /bin/sh" > /home/checkurls.sh && \
+    echo "for x in \"$SPARK_CASSANDRA_URL\" \"$HBASE_URL\" \"$HADOOP_URL\"; do" >> /home/checkurls.sh && \
+    echo "  if curl -s --head \$x | head -n 1 | grep \"HTTP/1.[01] [2]..\" ; then" >> /home/checkurls.sh && \
+    echo "     echo \"$x exists\"" >> /home/checkurls.sh && \
+    echo "  else" >> /home/checkurls.sh && \
+    echo "     exit 1" >> /home/checkurls.sh && \
+    echo "  fi" >> /home/checkurls.sh && \
+    echo "done" >> /home/checkurls.sh && \
+    chmod +x /home/checkurls.sh
+RUN /home/checkurls.sh
 
 #RUN for x in $SPARK_CASSANDRA_URL $HBASE_URL $HADOOP_URL; do \
 #  if curl -s --head $x | head -n 1 | grep "HTTP/1.[01] [2].." ; then \

@@ -49,7 +49,7 @@ ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.ja
 
 ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
-ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse
+ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4
 
 USER root
 
@@ -302,7 +302,7 @@ RUN echo "# passwordless ssh" && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
-    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL}" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL}  multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
     echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
     curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
     apt-get update && \
