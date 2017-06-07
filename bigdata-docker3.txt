@@ -257,8 +257,9 @@ RUN echo "# passwordless ssh" && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
-    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
-    echo "# HBase" && \
+    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar
+    
+RUN    echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
@@ -353,7 +354,7 @@ RUN echo "# passwordless ssh" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    echo "" >> /data/scripts/notes.txt
+    echo "" > /data/scripts/notes.txt
 
 RUN echo "#! /bin/sh" > /data/scripts/spark-nolog.sh && \
     echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-nolog.sh && \
