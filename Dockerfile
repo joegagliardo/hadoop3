@@ -42,6 +42,11 @@ ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
 ARG SPARK_CASSANDRA_VERSION=2.0.1
 ARG SPARK_CASSANRDRA_URL=https://github.com/datastax/spark-cassandra-connector.git
 
+ARG SPARK_CASSANDRA_VERSION=2.0.1-s_2.11
+ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector
+ARG SPARK_CASSANDRA_URL=${SPARK_CASSANDRA_BASE_URL}/${SPARK_CASSANDRA_VERSION}/spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
+ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
+
 USER root
 
 ENV HADOOP_PREFIX /usr/local/hadoop
@@ -270,8 +275,6 @@ RUN echo "# passwordless ssh" && \
     mvn package -DskipTests && \
     mvn clean package test && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
-    echo "*************" 
-RUN echo "*************" && \
     echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
     echo "# HBase" && \
@@ -293,8 +296,6 @@ RUN echo "*************" && \
     echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    echo "*************" 
-RUN echo "*************" && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -348,14 +349,13 @@ RUN echo "*************" && \
     sbt/sbt package && \
     cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
-    echo "*************" 
-RUN echo "*************" && \
     cd /data && \
     rm -r /data/spark-xml && \
 	cd /data && \
-	wget http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector/2.0.1-s_2.11/spark-cassandra-connector-2.0.1-s_2.11.jar && \
-    mv spark-cassandra-connector-2.0.0-s_2.11.jar /usr/local/spark/jars && \
-	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.0-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
+    echo ${SPARK_CASSANDRA_URL} && \
+	wget ${SPARK_CASSANDRA_URL} && \
+    mv ${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
+	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
 	cd /data && \
 	git clone https://github.com/minrk/findspark.git && \
 	cd findspark && \
@@ -366,6 +366,8 @@ RUN echo "*************" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
+    echo "*************" 
+RUN echo "*************" && \
     echo "" > /data/scripts/notes.txt
 
 # wget http://central.maven.org/maven2/org/apache/pig/piggybank/0.15.0/piggybank-0.15.0.jar
@@ -522,3 +524,29 @@ CMD ["/etc/bootstrap.sh", "-d"]
 
 #import pyspark
 #sc = pyspark.SparkContext(appName="myAppName")
+
+
+#RUN url_exists() { \
+#if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then \
+#  echo "File exists $1" \
+#  urlexists="YES" \
+#else \
+#  echo "File does not exist $1" \
+#  urlexists="NO" \
+#  exit 1 \
+#fi \
+#} && \
+#urlexists ${HADOOP_URL} 
+
+#&& \
+#urlexists ${PIG_URL} && \
+#urlexists ${HIVE_URL} && \
+#urlexists ${SPARK_URL} && \
+#urlexists ${HBASE_URL} && \
+#urlexists ${MONGO_URL} && \
+#urlexists ${CASSANDRA_URL} && \
+#urlexists ${SPARK_CASSANRDRA_URL}
+
+#	wget http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector/2.0.1-s_2.11/spark-cassandra-connector-2.0.1-s_2.11.jar && \
+#    mv spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars && \
+#	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
