@@ -394,7 +394,7 @@ RUN echo "# passwordless ssh" && \
     echo ${SPARK_CASSANDRA_URL} && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv /home/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
-	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar &&
+	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
