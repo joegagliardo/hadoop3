@@ -14,39 +14,55 @@ ARG HIVEUSER_PASSWORD=hivepassword
 ARG HADOOP_VERSION=2.8.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HADOOP_URL
 
 ARG PIG_VERSION=0.16.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $PIG_URL
 
 ARG HIVE_VERSION=2.1.1
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HIVE_URL
+    
 ARG SPARK_VERSION=2.1.1
 #ARG SPARK_BASE_URL=http://apache.claz.org/spark
 ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $SPARK_URL
+    
 ARG HBASE_VERSION=1.3.1
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HBASE_URL
+    
 ARG MONGO_VERSION=3.4.4
 ARG MONGO_BASE_URL=https://fastdl.mongodb.org/linux
 ARG MONGO_URL=${MONGO_BASE_URL}/mongodb-linux-x86_64-${MONGO_VERSION}.tgz
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_URL
+    
 ARG CASSANDRA_VERSION=310
 ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
 
-ARG SPARK_CASSANDRA_VERSION=2.0.1
-ARG SPARK_CASSANRDRA_URL=https://github.com/datastax/spark-cassandra-connector.git
-
+#ARG SPARK_CASSANDRA_VERSION=2.0.1
+#ARG SPARK_CASSANRDRA_URL=https://github.com/datastax/spark-cassandra-connector.git
+#RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+#    url_exists $SPARK_CASSANDRA_URL
+    
 ARG SPARK_CASSANDRA_VERSION=2.0.1-s_2.11
 ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector
 ARG SPARK_CASSANDRA_URL=${SPARK_CASSANDRA_BASE_URL}/${SPARK_CASSANDRA_VERSION}/spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
 ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $SPARK_CASSANDRA_URL
+    
 ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
@@ -78,7 +94,7 @@ RUN echo "# passwordless ssh" && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     echo "# Make folders for HDFS data" && \
-    mkdir /data/host/hdfs && \
+    mkdir /home/dockerdata/hdfs && \
     echo "# Hadoop" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
@@ -104,11 +120,11 @@ RUN echo "# passwordless ssh" && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.namenode.name.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/data/host/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/home/dockerdata/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.datanode.data.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/data/host/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/home/dockerdata/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "<configuration>" > $HADOOP_PREFIX/etc/hadoop/mapred-site.xml && \
@@ -161,7 +177,6 @@ RUN echo "# passwordless ssh" && \
     echo '' >> /etc/bootstrap.sh && \
     echo '$HADOOP_PREFIX/etc/hadoop/hadoop-env.sh' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
-    echo 'rm /tmp/*.pid' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
     echo '# installing libraries if any - (resource urls added comma separated to the ACP system variable)' >> /etc/bootstrap.sh && \
     echo 'cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -' >> /etc/bootstrap.sh && \
@@ -225,55 +240,55 @@ RUN echo "# passwordless ssh" && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "# Format Name Node" && \
-    cd /data && \
-    echo "#! /bin/sh" > /data/scripts/format-namenode.sh && \
-    echo "stop-all.sh" >> /data/scripts/format-namenode.sh && \
-    echo "rm -r /data/host/hdfs/name" >> /data/scripts/format-namenode.sh && \
-    echo "rm -r /data/host/hdfs/data" >> /data/scripts/format-namenode.sh && \
-    echo "hdfs namenode -format" >> /data/scripts/format-namenode.sh && \
-    echo "start-all.sh" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -mkdir /user" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -mkdir /user/root" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -mkdir /user/hive/warehouse" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -mkdir /tmp" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /data/scripts/format-namenode.sh && \
-    echo "hadoop fs -chmod g+w /tmp" >> /data/scripts/format-namenode.sh && \
-    chmod +x /data/scripts/format-namenode.sh && \
-    echo "#! /bin/sh" > /data/scripts/exit-safemode.sh && \
-    echo "hdfs dfsadmin -safemode leave" >> /data/scripts/exit-safemode.sh && \
-    chmod +x /data/scripts/exit-safemode.sh && \
+    cd /home && \
+    echo "#! /bin/sh" > /scripts/format-namenode.sh && \
+    echo "stop-all.sh" >> /scripts/format-namenode.sh && \
+    echo "rm -r/home/dockerdata/hdfs/name" >> /scripts/format-namenode.sh && \
+    echo "rm -r/home/dockerdata/hdfs/data" >> /scripts/format-namenode.sh && \
+    echo "hdfs namenode -format" >> /scripts/format-namenode.sh && \
+    echo "start-all.sh" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/root" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /user/hive/warehouse" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /tmp" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
+    chmod +x /scripts/format-namenode.sh && \
+    echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
+    echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
+    chmod +x /scripts/exit-safemode.sh && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
-    echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /data/scripts/hiveuser.sql && \
-    echo "#! /bin/sh" > /data/scripts/init-schema.sh && \
-    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /data/scripts/init-schema.sh && \
-    echo "then" >> /data/scripts/init-schema.sh && \
-    echo "  mysql -e \"drop database metastore\"" >> /data/scripts/init-schema.sh && \
-    echo "fi" >> /data/scripts/init-schema.sh && \
-    echo "mysql < /data/scripts/hiveuser.sql" >> /data/scripts/init-schema.sh && \
-    echo "schematool -dbType mysql -initSchema" >> /data/scripts/init-schema.sh && \
-    chmod +x /data/scripts/init-schema.sh && \
-    echo "#! /bin/sh" > /data/scripts/shutdown-all.sh && \
-    echo "stop-yarn.sh" >> /data/scripts/shutdown-all.sh && \
-    echo "stop-dfs.sh" >> /data/scripts/shutdown-all.sh && \
-    echo "/data/scripts/stop-mongo.sh" >> /data/scripts/shutdown-all.sh && \
-    echo "/data/scripts/stop-cassandra.sh" >> /data/scripts/shutdown-all.sh && \
-    echo "/data/scripts/stop-mysql.sh" >> /data/scripts/shutdown-all.sh && \
-    echo "stop-hbase.sh" >> /data/scripts/shutdown-all.sh && \
-    chmod +x /data/scripts/shutdown-all.sh && \
+    echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser.sql && \
+    echo "#! /bin/sh" > /scripts/init-schema.sh && \
+    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /scripts/init-schema.sh && \
+    echo "then" >> /scripts/init-schema.sh && \
+    echo "  mysql -e \"drop database metastore\"" >> /scripts/init-schema.sh && \
+    echo "fi" >> /scripts/init-schema.sh && \
+    echo "mysql < /scripts/hiveuser.sql" >> /scripts/init-schema.sh && \
+    echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema.sh && \
+    chmod +x /scripts/init-schema.sh && \
+    echo "#! /bin/sh" > /scripts/shutdown-all.sh && \
+    echo "stop-yarn.sh" >> /scripts/shutdown-all.sh && \
+    echo "stop-dfs.sh" >> /scripts/shutdown-all.sh && \
+    echo "/scripts/stop-mongo.sh" >> /scripts/shutdown-all.sh && \
+    echo "/scripts/stop-cassandra.sh" >> /scripts/shutdown-all.sh && \
+    echo "/scripts/stop-mysql.sh" >> /scripts/shutdown-all.sh && \
+    echo "stop-hbase.sh" >> /scripts/shutdown-all.sh && \
+    chmod +x /scripts/shutdown-all.sh && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
-    echo "#! /bin/sh" > /data/scripts/spark-nolog.sh && \
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-nolog.sh && \
-    chmod +x /data/scripts/spark-nolog.sh && \
-    echo "#! /bin/sh" > /data/scripts/spark-fulllog.sh && \
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /data/scripts/spark-fulllog.sh && \
-    chmod +x /data/scripts/spark-fulllog.sh && \
-    cd /data && \
+    echo "#! /bin/sh" > /scripts/spark-nolog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /scripts/spark-nolog.sh && \
+    chmod +x /scripts/spark-nolog.sh && \
+    echo "#! /bin/sh" > /scripts/spark-fulllog.sh && \
+    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /scripts/spark-fulllog.sh && \
+    chmod +x /scripts/spark-fulllog.sh && \
+    cd /home && \
     git clone ${SPARK_HBASE_GIT} && \
     cd shc && \
     mvn package -DskipTests && \
@@ -310,64 +325,77 @@ RUN echo "# passwordless ssh" && \
     apt-get -y install mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
-    mkdir /data/host/mongo && \
-    mkdir /data/host/mongo/data && \
-    echo "#! /bin/sh" > /data/scripts/start-mongo.sh && \ 
-    echo "mongod --dbpath /data/host/mongo/data --logpath /data/host/mongo/log.txt &" >> /data/scripts/start-mongo.sh && \
-    chmod +x /data/scripts/start-mongo.sh && \
-    echo "#! /bin/sh" > /data/scripts/stop-mongo.sh && \ 
-    echo "mongod --shutdown --dbpath /data/host/mongo/data" >> /data/scripts/stop-mongo.sh && \ 
-    chmod +x /data/scripts/stop-mongo.sh && \
+    mkdir /home/dockerdata/mongo && \
+    mkdir /home/dockerdata/mongo/data && \
+    echo "#! /bin/sh" > /scripts/start-mongo.sh && \ 
+    echo "mongod --dbpath /home/dockerdata/mongo/data --logpath /home/dockerdata/mongo/log.txt &" >> /scripts/start-mongo.sh && \
+    chmod +x /scripts/start-mongo.sh && \
+    echo "#! /bin/sh" > /scripts/stop-mongo.sh && \ 
+    echo "mongod --shutdown --dbpath /home/dockerdata/mongo/data" >> /scripts/stop-mongo.sh && \ 
+    chmod +x /scripts/stop-mongo.sh && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
     apt-get -y install cassandra && \
-    echo "#! /bin/sh" > /data/scripts/start-cassandra.sh && \
-    echo "cassandra -p /data/scripts/cassandra_processid -R" >> /data/scripts/start-cassandra.sh && \
-    chmod +x /data/scripts/start-cassandra.sh && \
-    echo "#! /bin/sh" > /data/scripts/stop-cassandra.sh && \
-    echo "kill -9 \$(cat /data/scripts/cassandra_processid)" >> /data/scripts/stop-cassandra.sh && \
-    echo "rm scripts/cassandra_processid" >> /data/scripts/stop-cassandra.sh && \
-    chmod +x /data/scripts/stop-cassandra.sh && \
+    echo "#! /bin/sh" > /scripts/start-cassandra.sh && \
+    echo "cassandra -p /scripts/cassandra_processid -R" >> /scripts/start-cassandra.sh && \
+    chmod +x /scripts/start-cassandra.sh && \
+    echo "#! /bin/sh" > /scripts/stop-cassandra.sh && \
+    echo "kill -9 \$(cat /scripts/cassandra_processid)" >> /scripts/stop-cassandra.sh && \
+    echo "rm scripts/cassandra_processid" >> /scripts/stop-cassandra.sh && \
+    chmod +x /scripts/stop-cassandra.sh && \
     echo "# change the data and log folder" && \
-    mkdir /data/host/cassandra && \
-    mkdir /data/host/cassandra/data && \
-    mkdir /data/host/cassandra/log && \
-    sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/data\/host\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
-    sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/data\/host\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
-    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /data/scripts/create-cassandra-table.cql && \
-    echo "use joey;" >> /data/scripts/create-cassandra-table.cql && \
-    echo "create table names (id int PRIMARY KEY, name varchar);" >> /data/scripts/create-cassandra-table.cql && \
-    echo "insert into names (id, name) values (1, 'joey');" >> /data/scripts/create-cassandra-table.cql && \
-    echo "#! /usr/bin/python" > /data/scripts/test-cassandra-table.py && \
-    echo "from cassandra.cluster import Cluster" >> /data/scripts/test-cassandra-table.py && \
-    echo "cluster = Cluster()" >> /data/scripts/test-cassandra-table.py && \
-    echo "session = cluster.connect('joey')" >> /data/scripts/test-cassandra-table.py && \
-    echo "rows = session.execute('SELECT id, name FROM names')" >> /data/scripts/test-cassandra-table.py && \
-    echo "print list(rows)" >> /data/scripts/test-cassandra-table.py && \
-    chmod +x /data/scripts/test-cassandra-table.py && \
+    mkdir /home/dockerdata/cassandra && \
+    mkdir /home/dockerdata/cassandra/data && \
+    mkdir /home/dockerdata/cassandra/log && \
+    sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/dockerdata\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
+    sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/dockerdata\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
+    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /scripts/create-cassandra-table.cql && \
+    echo "use joey;" >> /scripts/create-cassandra-table.cql && \
+    echo "create table names (id int PRIMARY KEY, name varchar);" >> /scripts/create-cassandra-table.cql && \
+    echo "insert into names (id, name) values (1, 'joey');" >> /scripts/create-cassandra-table.cql && \
+    echo "#! /usr/bin/python" > /scripts/test-cassandra-table.py && \
+    echo "from cassandra.cluster import Cluster" >> /scripts/test-cassandra-table.py && \
+    echo "cluster = Cluster()" >> /scripts/test-cassandra-table.py && \
+    echo "session = cluster.connect('joey')" >> /scripts/test-cassandra-table.py && \
+    echo "rows = session.execute('SELECT id, name FROM names')" >> /scripts/test-cassandra-table.py && \
+    echo "print list(rows)" >> /scripts/test-cassandra-table.py && \
+    chmod +x /scripts/test-cassandra-table.py && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
-    cd /data && \
+    echo "#! /bin/sh" > /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/mysql" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/mongo " >> /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/mongo/data" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/cassandra" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/cassandra/data" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /home/dockerdata/cassandra/log" >> /scripts/create-datadirs.sh && \
+    chmod +x /scripts/create-datadirs.sh && \
+    echo "#! /bin/sh" > /scripts/delete-datadirs.sh && \
+    echo "rm -r /home/dockerdata/mysql" >> /scripts/delete-datadirs.sh && \
+    echo "rm -r /home/dockerdata/mongo " >> /scripts/delete-datadirs.sh && \
+    echo "rm -r /home/dockerdata/cassandra" >> /scripts/delete-datadirs.sh && \
+    chmod +x /scripts/delete-datadirs.sh && \
+    cd /home && \
     git clone ${SPARK_XML_GIT} && \
-    cd /data/spark-xml && \
+    cd /home/spark-xml && \
     sbt/sbt package && \
-    cp /data/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+    cp /home/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
-    cd /data && \
-    rm -r /data/spark-xml && \
-	cd /data && \
+    cd /home && \
+    rm -r /home/spark-xml && \
+	cd /home && \
 	git clone https://github.com/minrk/findspark.git && \
-	cd findspark && \
+	cd /home/findspark && \
     python2 setup.py install && \
 	python3 setup.py install && \
-	cd /data && \
-	rm -r /data/findspark && \
+	cd /home && \
+	rm -r /home/findspark && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     echo "*************" 
 RUN echo "*************" && \
-    echo "" > /data/scripts/notes.txt
+    echo "" >> /scripts/notes.txt
 
 #	cd /data && \
 #   echo ${SPARK_CASSANDRA_URL} && \
@@ -472,7 +500,7 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #sudo service cassandra stop
 #sudo service cassandra start
 
-# on first startup of a container you need to run /data/scripts/format_namenode.sh and /data/scripts/initschema.sh
+# on first startup of a container you need to run /scripts/format_namenode.sh and /scripts/initschema.sh
 
 # 1. Build image
 # docker build -t joey/hadoop -f HadoopOnUbuntu.txt .
@@ -555,3 +583,4 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
 
 # RUN apt-get -yq install vim postgresql-9.3 libpostgresql-jdbc-java
+

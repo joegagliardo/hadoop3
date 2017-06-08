@@ -14,40 +14,55 @@ ARG HIVEUSER_PASSWORD=hivepassword
 ARG HADOOP_VERSION=2.8.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HADOOP_URL
 
 ARG PIG_VERSION=0.16.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $PIG_URL
 
 ARG HIVE_VERSION=2.1.1
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HIVE_URL
+    
 ARG SPARK_VERSION=2.1.1
 #ARG SPARK_BASE_URL=http://apache.claz.org/spark
 ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $SPARK_URL
+    
 ARG HBASE_VERSION=1.3.1
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $HBASE_URL
+    
 ARG MONGO_VERSION=3.4.4
 ARG MONGO_BASE_URL=https://fastdl.mongodb.org/linux
 ARG MONGO_URL=${MONGO_BASE_URL}/mongodb-linux-x86_64-${MONGO_VERSION}.tgz
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_URL
+    
 ARG CASSANDRA_VERSION=310
 ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
 
-ARG SPARK_CASSANDRA_VERSION=2.0.1
-ARG SPARK_CASSANRDRA_URL=https://github.com/datastax/spark-cassandra-connector.git
-
+#ARG SPARK_CASSANDRA_VERSION=2.0.1
+#ARG SPARK_CASSANRDRA_URL=https://github.com/datastax/spark-cassandra-connector.git
+#RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+#    url_exists $SPARK_CASSANDRA_URL
+    
 ARG SPARK_CASSANDRA_VERSION=2.0.1-s_2.11
 ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector
 ARG SPARK_CASSANDRA_URL=${SPARK_CASSANDRA_BASE_URL}/${SPARK_CASSANDRA_VERSION}/spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
 ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
-
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $SPARK_CASSANDRA_URL
+    
 ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
-ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4
-
+ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
