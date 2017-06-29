@@ -48,6 +48,29 @@ ARG MONGO_URL=${MONGO_BASE_URL}/mongodb-linux-x86_64-${MONGO_VERSION}.tgz
 RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
     url_exists $MONGO_URL
     
+ARG MONGO_HADOOP_VERSION=2.0.2
+ARG MONGO_HADOOP_BASE_URL=http://search.maven.org/remotecontent?filepath=org/mongodb/
+ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-core/${MONGO_HADOOP_VERSION}/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_HADOOP_CORE_URL
+ARG MONGO_HADOOP_PIG_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-pig/${MONGO_HADOOP_VERSION}/mongo-hadoop-pig-${MONGO_HADOOP_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_HADOOP_PIG_URL
+ARG MONGO_HADOOP_HIVE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-hive/${MONGO_HADOOP_VERSION}/mongo-hadoop-hive-${MONGO_HADOOP_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_HADOOP_HIVE_URL
+ARG MONGO_HADOOP_SPARK_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-sparl/${MONGO_HADOOP_VERSION}/mongo-hadoop-spark-${MONGO_HADOOP_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_HADOOP_SPARK_URL
+ARG MONGO_HADOOP_STREAMING_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-streaming/${MONGO_HADOOP_VERSION}/mongo-hadoop-streaming-${MONGO_HADOOP_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_HADOOP_STREAMING_URL
+
+ARG MONGO_JAVA_DRIVER_VERSION=3.4.2
+ARG MONGO_JAVA_DRIVER_URL=${MONGO_HADOOP_BASE_URL}/mongo-java-driver/${MONGO_JAVA_DRIVER_VERSION}/mongo-java-driver-${MONGO_JAVA_DRIVER_VERSION}.jar
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $MONGO_JAVA_DRIVER_URL
+
 ARG CASSANDRA_VERSION=310
 ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
 
@@ -254,6 +277,7 @@ RUN echo "# passwordless ssh" && \
     echo "hadoop fs -mkdir /tmp" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
+    echo "/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
     chmod +x /scripts/format-namenode.sh && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
@@ -395,6 +419,32 @@ RUN echo "# passwordless ssh" && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv /home/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
 	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
+	echo "MONGO-HADOOP" && \
+	cd /home && \
+	wget --content-disposition ${MONGO_HADOOP_CORE_URL} && \
+	wget --content-disposition ${MONGO_HADOOP_PIG_URL} && \
+	wget --content-disposition ${MONGO_HADOOP_HIVE_URL} && \
+	wget --content-disposition ${MONGO_HADOOP_SPARK_URL} && \
+	wget --content-disposition ${MONGO_HADOOP_STREAMING_URL} && \
+	wget --content-disposition ${MONGO_JAVA_DRIVER_URL} && \
+	mkdir /usr/local/mongo-hadoop && \
+	mv mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop && \
+	mv mongo-hadoop-pig-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop && \
+	mv mongo-hadoop-hive-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop && \
+	mv mongo-hadoop-spark-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop && \
+	mv mongo-hadoop-streaming-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop && \
+	mv mongo-java-driver-${MONGO_JAVA_DRIVER_VERSION}.jar /usr/local/mongo-hadoop && \
+	ln -s /usr/local/mongo-hadoop/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-core.jar && \
+	ln -s /usr/local/mongo-hadoop/mongo-hadoop-pig-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-pig.jar && \
+	ln -s /usr/local/mongo-hadoop/mongo-hadoop-hive-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-hive.jar && \
+	ln -s /usr/local/mongo-hadoop/mongo-hadoop-spark-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-spark.jar && \
+	ln -s /usr/local/mongo-hadoop/mongo-hadoop-streaming-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-streaming.jar && \
+	ln -s /usr/local/mongo-hadoop/mongo-java-driver-${MONGO_JAVA_DRIVER_VERSION}.jar /usr/local/mongo-hadoop/mongo-java-driver.jar && \
+	git clone https://github.com/mongodb/mongo-hadoop.git && \
+	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
+	python setup.py install && \
+	python3 setup.py install && \
+	echo "# Final Cleanup" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
@@ -592,4 +642,82 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #	ln -s /usr/local/spark/jars/spark-cassandra-connector-2.0.1-s_2.11.jar /usr/local/spark/jars/spark-cassandra-connector.jar && \
 
 # RUN apt-get -yq install vim postgresql-9.3 libpostgresql-jdbc-java
+
+
+# pyspark --packages datastax:spark-cassandra-connector:1.6.7-s_2.11
+
+
+# curl -LO https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.4.0.tgz
+# curl -LO https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.4.0.tgz.sig
+# curl -LO https://www.mongodb.org/static/pgp/server-3.4.asc
+# gpg --import server-3.4.asc
+# gpg --verify mongodb-osx-x86_64-3.4.0.tgz.sig mongodb-osx-x86_64-3.4.0.tgz
+
+
+
+#	echo "# Mongo-Spark" && \
+#    cd /home && \
+#    git clone https://github.com/mongodb/mongo-spark.git && \
+#    cd mongo-spark && \
+#    ./sbt check && \
+#    ./sbt +publish-signed && \
+#    ./sbt +spPublish && \
+
+
+# curl -LO https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.4.5.tgz
+# curl -LO https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.4.5.tgz.sha256
+# shasum -c mongodb-linux-x86_64-ubuntu1604-3.4.5.tgz.sha256
+
+
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-hadoop/mongo-hadoop-core/2.0.2/mongo-hadoop-core-2.0.2.jar
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-hadoop/mongo-hadoop-pig/2.0.2/mongo-hadoop-pig-2.0.2.jar
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-hadoop/mongo-hadoop-hive/2.0.2/mongo-hadoop-hive-2.0.2.jar
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-hadoop/mongo-hadoop-spark/2.0.2/mongo-hadoop-spark-2.0.2.jar
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-hadoop/mongo-hadoop-streaming/2.0.2/mongo-hadoop-streaming-2.0.2.jar
+# wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongo-java-driver/3.4.2/mongo-java-driver-3.4.2.jar
+
+### wget --content-disposition http://search.maven.org/remotecontent?filepath=org/mongodb/mongodb-driver/3.4.2/mongodb-driver-3.4.2.jar
+## wget --content-disposition https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongo-java-driver/3.4.2/mongo-java-driver-3.4.2.jar
+## wget --content-disposition 
+
+#register mongo-hadoop-core-2.0.2.jar;
+#register mongo-hadoop-pig-2.0.2.jar;
+#register mongo-hadoop-core.jar;
+#register mongo-hadoop-pig.jar;
+#x = load 'mongodb://localhost:27017/prod1.prod1' USING com.mongodb.hadoop.pig.MongoLoader;
+#x = load 'mongodb://localhost:27017/prod1.prod1' USING com.mongodb.hadoop.pig.MongoLoader('id, price, man', 'id');
+#store x into 'mongodb://localhost:27017/prod1.prod2' USING com.mongodb.hadoop.pig.MongoInsertStorage('', '' );
+
+
+add jar mongo-hadoop-core-2.0.2.jar;
+add jar mongo-java-driver-3.4.2.jar;
+add jar mongo-hadoop-hive-2.0.2.jar;
+
+#add jar mongodb-driver-3.4.2.jar;
+
+
+CREATE EXTERNAL TABLE prod1
+( 
+  id INT,
+  man STRING,
+  price FLOAT)
+STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
+TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
+
+CREATE EXTERNAL TABLE prod1
+( 
+  id INT,
+  man STRING,
+  price FLOAT)
+STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
+WITH SERDEPROPERTIES('mongo.columns.mapping'='{"id":"_id", "man":"man", "price":"price"}')
+TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
+
+
+# wget --content-disposition 
+
+# mv *.jar mongo-hadoop-streaming.2.0.2.jar
+
+
+
 
