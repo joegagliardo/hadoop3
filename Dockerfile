@@ -689,29 +689,29 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #store x into 'mongodb://localhost:27017/prod1.prod2' USING com.mongodb.hadoop.pig.MongoInsertStorage('', '' );
 
 
-add jar mongo-hadoop-core-2.0.2.jar;
-add jar mongo-java-driver-3.4.2.jar;
-add jar mongo-hadoop-hive-2.0.2.jar;
+#add jar mongo-hadoop-core-2.0.2.jar;
+#add jar mongo-java-driver-3.4.2.jar;
+#dd jar mongo-hadoop-hive-2.0.2.jar;
 
 #add jar mongodb-driver-3.4.2.jar;
 
 
-CREATE EXTERNAL TABLE prod1
-( 
-  id INT,
-  man STRING,
-  price FLOAT)
-STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
-TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
+#CREATE EXTERNAL TABLE prod1
+#( 
+#  id INT,
+#  man STRING,
+#  price FLOAT)
+#STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
+#TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
 
-CREATE EXTERNAL TABLE prod1
-( 
-  id INT,
-  man STRING,
-  price FLOAT)
-STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
-WITH SERDEPROPERTIES('mongo.columns.mapping'='{"id":"_id", "man":"man", "price":"price"}')
-TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
+#CREATE EXTERNAL TABLE prod1
+#( 
+#  id INT,
+#  man STRING,
+#  price FLOAT)
+#STORED BY 'com.mongodb.hadoop.hive.MongoStorageHandler'
+#WITH SERDEPROPERTIES('mongo.columns.mapping'='{"id":"_id", "man":"man", "price":"price"}')
+#TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/prod1.prod1');
 
 
 # wget --content-disposition 
