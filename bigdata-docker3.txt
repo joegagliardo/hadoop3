@@ -440,6 +440,7 @@ RUN echo "# passwordless ssh" && \
 	ln -s /usr/local/mongo-hadoop/mongo-hadoop-spark-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-spark.jar && \
 	ln -s /usr/local/mongo-hadoop/mongo-hadoop-streaming-${MONGO_HADOOP_VERSION}.jar /usr/local/mongo-hadoop/mongo-hadoop-streaming.jar && \
 	ln -s /usr/local/mongo-hadoop/mongo-java-driver-${MONGO_JAVA_DRIVER_VERSION}.jar /usr/local/mongo-hadoop/mongo-java-driver.jar && \
+	cd /usr/local/mongo-hadoop && \
 	git clone https://github.com/mongodb/mongo-hadoop.git && \
 	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
 	python setup.py install && \
