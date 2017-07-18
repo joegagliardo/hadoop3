@@ -117,7 +117,7 @@ RUN echo "# passwordless ssh" && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     echo "# Make folders for HDFS data" && \
-    mkdir /home/dockerdata/hdfs && \
+    mkdir /data/hdfs && \
     echo "# Hadoop" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
@@ -143,11 +143,11 @@ RUN echo "# passwordless ssh" && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.namenode.name.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/dockerdata/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/data/hdfs/name</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   <property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "       <name>dfs.datanode.data.dir</name>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
-    echo "       <value>file:/home/dockerdata/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
+    echo "       <value>file:/data/hdfs/data</value>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "   </property>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
     echo "<configuration>" > $HADOOP_PREFIX/etc/hadoop/mapred-site.xml && \
@@ -209,8 +209,9 @@ RUN echo "# passwordless ssh" && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'service ssh start' >> /etc/bootstrap.sh && \
     echo '/etc/init.d/mysql start' >> /etc/bootstrap.sh && \
-    echo '$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
-    echo '$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
+    echo '#uncomment if you want Hadoop to start up automatically' >> /etc/bootstrap.sh && \
+    echo '#$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
+    echo '#$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'if [[ $1 == "-d" ]]; then' >> /etc/bootstrap.sh && \
     echo '  while true; do sleep 1000; done' >> /etc/bootstrap.sh && \
@@ -266,8 +267,8 @@ RUN echo "# passwordless ssh" && \
     cd /home && \
     echo "#! /bin/sh" > /scripts/format-namenode.sh && \
     echo "stop-all.sh" >> /scripts/format-namenode.sh && \
-    echo "rm -r/home/dockerdata/hdfs/name" >> /scripts/format-namenode.sh && \
-    echo "rm -r/home/dockerdata/hdfs/data" >> /scripts/format-namenode.sh && \
+    echo "rm -r/data/hdfs/name" >> /scripts/format-namenode.sh && \
+    echo "rm -r/data/hdfs/data" >> /scripts/format-namenode.sh && \
     echo "hdfs namenode -format" >> /scripts/format-namenode.sh && \
     echo "start-all.sh" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user" >> /scripts/format-namenode.sh && \
@@ -349,13 +350,13 @@ RUN echo "# passwordless ssh" && \
     apt-get -y install mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
-    mkdir /home/dockerdata/mongo && \
-    mkdir /home/dockerdata/mongo/data && \
+    mkdir /data/mongo && \
+    mkdir /data/mongo/data && \
     echo "#! /bin/sh" > /scripts/start-mongo.sh && \ 
-    echo "mongod --dbpath /home/dockerdata/mongo/data --logpath /home/dockerdata/mongo/log.txt &" >> /scripts/start-mongo.sh && \
+    echo "mongod --dbpath /data/mongo/data --logpath /data/mongo/log.txt &" >> /scripts/start-mongo.sh && \
     chmod +x /scripts/start-mongo.sh && \
     echo "#! /bin/sh" > /scripts/stop-mongo.sh && \ 
-    echo "mongod --shutdown --dbpath /home/dockerdata/mongo/data" >> /scripts/stop-mongo.sh && \ 
+    echo "mongod --shutdown --dbpath /data/mongo/data" >> /scripts/stop-mongo.sh && \ 
     chmod +x /scripts/stop-mongo.sh && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
@@ -368,9 +369,9 @@ RUN echo "# passwordless ssh" && \
     echo "rm scripts/cassandra_processid" >> /scripts/stop-cassandra.sh && \
     chmod +x /scripts/stop-cassandra.sh && \
     echo "# change the data and log folder" && \
-    mkdir /home/dockerdata/cassandra && \
-    mkdir /home/dockerdata/cassandra/data && \
-    mkdir /home/dockerdata/cassandra/log && \
+    mkdir /data/cassandra && \
+    mkdir /data/cassandra/data && \
+    mkdir /data/cassandra/log && \
     sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/dockerdata\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
     sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/dockerdata\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
     echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /scripts/create-cassandra-table.cql && \
@@ -387,17 +388,17 @@ RUN echo "# passwordless ssh" && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
     echo "#! /bin/sh" > /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/mysql" >> /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/mongo " >> /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/mongo/data" >> /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/cassandra" >> /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/cassandra/data" >> /scripts/create-datadirs.sh && \
-    echo "mkdir /home/dockerdata/cassandra/log" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/mysql" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/mongo " >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/mongo/data" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/cassandra" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/cassandra/data" >> /scripts/create-datadirs.sh && \
+    echo "mkdir /data/cassandra/log" >> /scripts/create-datadirs.sh && \
     chmod +x /scripts/create-datadirs.sh && \
     echo "#! /bin/sh" > /scripts/delete-datadirs.sh && \
-    echo "rm -r /home/dockerdata/mysql" >> /scripts/delete-datadirs.sh && \
-    echo "rm -r /home/dockerdata/mongo " >> /scripts/delete-datadirs.sh && \
-    echo "rm -r /home/dockerdata/cassandra" >> /scripts/delete-datadirs.sh && \
+    echo "rm -r /data/mysql" >> /scripts/delete-datadirs.sh && \
+    echo "rm -r /data/mongo " >> /scripts/delete-datadirs.sh && \
+    echo "rm -r /data/cassandra" >> /scripts/delete-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
     cd /home && \
     git clone ${SPARK_XML_GIT} && \
@@ -449,6 +450,7 @@ RUN echo "# passwordless ssh" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
+    mkdir /examples && \
     echo "*************" 
 
 
@@ -456,6 +458,11 @@ RUN echo "# passwordless ssh" && \
 
 RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
+
+ADD /Users/joey/dockerdata/examples/* /examples 
+ADD /Users/joey/datasets /examples
+
+# CMD ["/etc/bootstrap.sh", "-d"]
 
 #	cd /data && \
 #   echo ${SPARK_CASSANDRA_URL} && \
@@ -465,7 +472,6 @@ RUN echo "*************" && \
 
 # wget http://central.maven.org/maven2/org/apache/pig/piggybank/0.15.0/piggybank-0.15.0.jar
 
-CMD ["/etc/bootstrap.sh", "-d"]
 
 #    apt-get remove -y cassandra && \
 #    apt-get remove -y mongodb-org
@@ -720,5 +726,16 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # mv *.jar mongo-hadoop-streaming.2.0.2.jar
 
 
+# 54310
+#<configuration>
+#     <property>
+#         <name>hbase.rootdir</name>
+#         <value>hdfs://localhost:54310/hbase</value>
+#     </property>
+#     <property>
+#         <name>hbase.zookeeper.property.dataDir</name>
+#         <value>/usr/local/zookeeper</value>
+#     </property>
+#</configuration>
 
 

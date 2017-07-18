@@ -209,8 +209,9 @@ RUN echo "# passwordless ssh" && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'service ssh start' >> /etc/bootstrap.sh && \
     echo '/etc/init.d/mysql start' >> /etc/bootstrap.sh && \
-    echo '$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
-    echo '$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
+    echo '#uncomment if you want Hadoop to start up automatically' >> /etc/bootstrap.sh && \
+    echo '#$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
+    echo '#$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'if [[ $1 == "-d" ]]; then' >> /etc/bootstrap.sh && \
     echo '  while true; do sleep 1000; done' >> /etc/bootstrap.sh && \
@@ -720,5 +721,16 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # mv *.jar mongo-hadoop-streaming.2.0.2.jar
 
 
+# 54310
+#<configuration>
+#     <property>
+#         <name>hbase.rootdir</name>
+#         <value>hdfs://localhost:54310/hbase</value>
+#     </property>
+#     <property>
+#         <name>hbase.zookeeper.property.dataDir</name>
+#         <value>/usr/local/zookeeper</value>
+#     </property>
+#</configuration>
 
 
