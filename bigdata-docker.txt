@@ -225,6 +225,9 @@ RUN echo "# passwordless ssh" && \
     echo 'fi' >> /etc/bootstrap.sh && \
     chown root:root /etc/bootstrap.sh && \
     chmod 700 /etc/bootstrap.sh && \
+    echo '#! /bin/sh' > /scripts/start-hadoop.sh && \
+    echo '/etc/bootstrap.sh' >> /scripts/start-hadoop.sh && \
+    chmod 700 /scripts/start-hadoop.sh && \
     echo "# working around docker.io build error" && \
     ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
     chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh && \
