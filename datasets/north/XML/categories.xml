@@ -1,0 +1,50 @@
+<ROWS>
+    <ROW>
+        <CategoryID>1</CategoryID>
+        <CategoryName>Beverages</CategoryName>
+        <Description>Soft drinks</Description>
+        <Picture> coffees</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>2</CategoryID>
+        <CategoryName>Condiments</CategoryName>
+        <Description>Sweet and savory sauces</Description>
+        <Picture> relishes</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>3</CategoryID>
+        <CategoryName>Confections</CategoryName>
+        <Description>Desserts</Description>
+        <Picture> candies</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>4</CategoryID>
+        <CategoryName>Dairy Products</CategoryName>
+        <Description>Cheeses</Description>
+        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>5</CategoryID>
+        <CategoryName>Grains/Cereals</CategoryName>
+        <Description>Breads</Description>
+        <Picture> crackers</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>6</CategoryID>
+        <CategoryName>Meat/Poultry</CategoryName>
+        <Description>Prepared meats</Description>
+        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>7</CategoryID>
+        <CategoryName>Produce</CategoryName>
+        <Description>Dried fruit and bean curd</Description>
+        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
+    </ROW>
+    <ROW>
+        <CategoryID>8</CategoryID>
+        <CategoryName>Seafood</CategoryName>
+        <Description>Seaweed and fish</Description>
+        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
+    </ROW>
+</ROWS>

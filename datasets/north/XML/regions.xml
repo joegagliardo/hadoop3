@@ -1,0 +1,18 @@
+<ROWS>
+    <ROW>
+        <RegionID>1</RegionID>
+        <RegionDescription>Eastern</RegionDescription>
+    </ROW>
+    <ROW>
+        <RegionID>2</RegionID>
+        <RegionDescription>Western</RegionDescription>
+    </ROW>
+    <ROW>
+        <RegionID>3</RegionID>
+        <RegionDescription>Northern</RegionDescription>
+    </ROW>
+    <ROW>
+        <RegionID>4</RegionID>
+        <RegionDescription>Southern</RegionDescription>
+    </ROW>
+</ROWS>
