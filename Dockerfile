@@ -10,6 +10,9 @@ MAINTAINER joegagliardo
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
 
+ADD examples /examples 
+ADD datasets /examples
+
 # Versions
 ARG HADOOP_VERSION=2.8.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
@@ -450,7 +453,6 @@ RUN echo "# passwordless ssh" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    mkdir /examples && \
     echo "*************" 
 
 
@@ -459,8 +461,7 @@ RUN echo "# passwordless ssh" && \
 RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
 
-ADD /Users/joey/dockerdata/examples/* /examples 
-ADD /Users/joey/datasets /examples
+#    mkdir /examples && \
 
 # CMD ["/etc/bootstrap.sh", "-d"]
 
