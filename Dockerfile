@@ -114,6 +114,7 @@ ENV HBASE_CONF_DIR=$HBASE_HOME/conf
 ENV PATH /usr/local/hbase/bin:$PATH
 
 RUN echo "# passwordless ssh" && \
+    apt-get update && \
     rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
@@ -457,9 +458,6 @@ RUN echo "# passwordless ssh" && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     echo "*************" 
-
-
-
 
 RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
