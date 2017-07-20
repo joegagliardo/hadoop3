@@ -287,6 +287,7 @@ RUN echo "# passwordless ssh" && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
     echo "/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
     chmod +x /scripts/format-namenode.sh && \
+    format-namenode.sh && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
