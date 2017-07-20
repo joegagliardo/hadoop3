@@ -227,7 +227,7 @@ RUN echo "# passwordless ssh" && \
     chown root:root /etc/bootstrap.sh && \
     chmod 700 /etc/bootstrap.sh && \
     echo '#! /bin/sh' > /scripts/start-hadoop.sh && \
-    echo '/etc/bootstrap.sh' >> /scripts/start-hadoop.sh && \
+    echo 'start-all.sh' >> /scripts/start-hadoop.sh && \
     chmod 700 /scripts/start-hadoop.sh && \
     echo "# working around docker.io build error" && \
     ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
@@ -464,7 +464,7 @@ RUN echo "*************" && \
 
 #    mkdir /examples && \
 
-CMD ["/etc/bootstrap.sh", "-d"]
+CMD ["/etc/bootstrap.sh && /scripts/format-namenode.sh", "-d"]
 
 #	cd /data && \
 #   echo ${SPARK_CASSANDRA_URL} && \
