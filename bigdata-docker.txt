@@ -275,9 +275,6 @@ RUN echo "# passwordless ssh" && \
     echo ${PIG_URL} && \
     curl ${PIG_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
-    sed s/log4j.logger.org.apache.pig=info,\ A/log4j.logger.org.apache.pig=error,\ A\\nlog4j.logger.org.apache.hadoop=error,\ A/ /usr/local/pig/conf/log4j.properties.template > /usr/local/pig/conf/log4j.properties && \
-    mv /usr/local/pig/conf/pig.properties /usr/local/pig/conf/pig.properties.template && \
-    sed s/# log4jconf=./conf/log4j.properties/log4jconf=./conf/log4j.properties/ /usr/local/pig/conf/pig.properties.template > /usr/local/pig/conf/pig.properties && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
     curl ${HIVE_URL} | tar -zx -C /usr/local && \
@@ -350,9 +347,6 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
     cp /usr/local/spark/conf/log4j.properties.template /usr/local/spark/conf/log4j.properties && \
-
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /scripts/spark-nolog.sh && \
-
     cd /home && \
     git clone ${SPARK_HBASE_GIT} && \
     cd shc && \
