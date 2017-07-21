@@ -465,7 +465,7 @@ RUN echo "*************" && \
 
 #    mkdir /examples && \
 
-CMD ["/etc/bootstrap.sh && /scripts/format-namenode.sh", "-d"]
+CMD ["/etc/bootstrap.sh", "-d"]
 
 #	cd /data && \
 #   echo ${SPARK_CASSANDRA_URL} && \
