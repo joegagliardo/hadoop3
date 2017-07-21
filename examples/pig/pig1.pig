@@ -1,13 +1,13 @@
-cd /data/datasets/northwind
+cd /examples/northwind
 pig -x local
 
-region1 = load 'CSV_NoHeaders/regions.csv' using PigStorage(',');
+region1 = load '/examples/northwind/CSV_NoHeaders/regions.csv' using PigStorage(',');
 dump region1
 
 region2 = foreach region1 generate $0, UPPER($1);
 dump region2;
 
-region1 = load 'CSV_Headers/regions.csv' using PigStorage(',') AS (RegionID:int, RegionName:chararray);
+region1 = load '/examples/northwind/CSV_Headers/regions.csv' using PigStorage(',') AS (RegionID:int, RegionName:chararray);
 region2 = foreach region1 generate RegionID, LTRIM(RTRIM(RegionName));
 dump region2;
 
@@ -20,7 +20,7 @@ sh cat pig_region1/*
 store region3 into 'pig_region2' using PigStorage('|');
 sh cat pig_region2/*
 
-terr1 = load 'CSV_NoHeaders/territories.csv' using PigStorage(',') as (TerritoryID:int, TerritoryName:chararray, RegionID:int);
+terr1 = load '/examples/northwind/CSV_NoHeaders/territories.csv' using PigStorage(',') as (TerritoryID:int, TerritoryName:chararray, RegionID:int);
 dump terr1;
 
 store terr1 into 'terr_json' using JsonStorage();

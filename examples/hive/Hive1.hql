@@ -1,5 +1,8 @@
 dfs -mkdir /regions;
-dfs -put /data/datasets/northwind/CSV_NoHeaders/regions.csv /regions;
+dfs -put /examples/northwind/CSV_NoHeaders/regions.csv /regions;
+
+set hive.execution.engine=spark;
+set hive.execution.engine=mr;
 
 CREATE EXTERNAL TABLE Regions(
 RegionID int,
@@ -16,7 +19,7 @@ RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 
-LOAD DATA LOCAL INPATH '/data/datasets/northwind/CSV_Headers/regions.csv' overwrite into table regions2;
+LOAD DATA LOCAL INPATH '/examples/northwind/CSV_Headers/regions.csv' overwrite into table regions2;
 SELECT * FROM Regions2;
 
 SELECT * FROM Regions2;
@@ -55,7 +58,7 @@ RegionID int)
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH '/data/datasets/northwind/JSON/territories.json' overwrite into table Territories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories.json' overwrite into table Territories;
 
 SELECT * FROM Territories;
 
@@ -79,7 +82,7 @@ Description string
 )
 STORED AS ORC;
 
-LOAD DATA LOCAL INPATH '/data/datasets/northwind/ORC/categories.orc' overwrite into table Categories;
+LOAD DATA LOCAL INPATH '/examples/northwind/ORC/categories.orc' overwrite into table Categories;
 
 select * from Categories;
 
@@ -99,7 +102,7 @@ Discontinued boolean
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH '/data/datasets/northwind/JSON/products.json' overwrite into table Products;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products.json' overwrite into table Products;
 
 select regionid, collect_set(territoryname) as territorylist
 from territories

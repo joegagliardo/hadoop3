@@ -122,10 +122,14 @@ RUN echo "# passwordless ssh" && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     echo "# Make folders for HDFS data" && \
     mkdir /data/hdfs && \
+    mkdir /data/hdfs/name && \
+    mkdir /data/hdfs/data && \
     echo "# Hadoop" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
-    cd /usr/local && ln -s ./hadoop-${HADOOP_VERSION} hadoop && \
+    cd /usr/local && \
+    ln -s ./hadoop-${HADOOP_VERSION} /usr/local/hadoop && \
+    ln -s ./hadoop-${HADOOP_VERSION} /hadoop && \
     sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
     sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
     mkdir $HADOOP_PREFIX/input && \
@@ -239,10 +243,41 @@ RUN echo "# passwordless ssh" && \
     echo "Port 2122" >> /etc/ssh/sshd_config && \
     service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root && \
     service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input && \
+    echo "#! /bin/sh" > /scripts/loglevel-debug.sh && \
+    echo "hadoop daemonlog -setlevel localhost:50075 org.apache.hadoop.hdfs.server.datanode.DataNode DEBUG" >> /scripts/loglevel-debug.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.pig=/ s/=.*/=debug,\ A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-debug.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.hadoop=/ s/=.*/=debug,\ A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-debug.sh && \
+    echo "sed -i -e '/log4j.rootCategory=/ s/=.*/=debug/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-debug.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.spark.repl.Main=/ s/=.*/=debug/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-debug.sh && \
+    chmod +x /scripts/loglevel-debug.sh && \
+    echo "#! /bin/sh" > /scripts/loglevel-info.sh && \
+    echo "hadoop daemonlog -setlevel localhost:50075 org.apache.hadoop.hdfs.server.datanode.DataNode INFO" >> /scripts/loglevel-info.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.pig=/ s/=.*/=info,\ A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-info.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.hadoop=/ s/=.*/=info,\ A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-info.sh && \
+    echo "sed -i -e '/log4j.rootCategory=/ s/=.*/=info/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-info.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.spark.repl.Main=/ s/=.*/=info/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-info.sh && \
+    chmod +x /scripts/loglevel-info.sh && \
+    echo "#! /bin/sh" > /scripts/loglevel-warn.sh && \
+    echo "hadoop daemonlog -setlevel localhost:50075 org.apache.hadoop.hdfs.server.datanode.DataNode WARN" >> /scripts/loglevel-warn.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.pig=/ s/=.*/=warn,\A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-warn.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.hadoop=/ s/=.*/=warn,\A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-warn.sh && \
+    echo "sed -i -e '/log4j.rootCategory=/ s/=.*/=warn/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-warn.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.spark.repl.Main=/ s/=.*/=warn/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-warn.sh && \
+    chmod +x /scripts/loglevel-warn.sh && \
+    echo "#! /bin/sh" > /scripts/loglevel-error.sh && \
+    echo "hadoop daemonlog -setlevel localhost:50075 org.apache.hadoop.hdfs.server.datanode.DataNode ERROR" >> /scripts/loglevel-error.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.pig=/ s/=.*/=error,\A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.hadoop=/ s/=.*/=error,\A/' /usr/local/pig/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
+    echo "sed -i -e '/log4j.rootCategory=/ s/=.*/=error/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
+    echo "sed -i -e '/log4j.logger.org.apache.spark.repl.Main=/ s/=.*/=error/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
+    chmod +x /scripts/loglevel-error.sh && \
     echo "# Pig" && \
     echo ${PIG_URL} && \
     curl ${PIG_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
+    sed s/log4j.logger.org.apache.pig=info,\ A/log4j.logger.org.apache.pig=error,\ A\\nlog4j.logger.org.apache.hadoop=error,\ A/ /usr/local/pig/conf/log4j.properties.template > /usr/local/pig/conf/log4j.properties && \
+    mv /usr/local/pig/conf/pig.properties /usr/local/pig/conf/pig.properties.template && \
+    sed s/# log4jconf=./conf/log4j.properties/log4jconf=./conf/log4j.properties/ /usr/local/pig/conf/pig.properties.template > /usr/local/pig/conf/pig.properties && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
     curl ${HIVE_URL} | tar -zx -C /usr/local && \
@@ -274,8 +309,8 @@ RUN echo "# passwordless ssh" && \
     cd /home && \
     echo "#! /bin/sh" > /scripts/format-namenode.sh && \
     echo "stop-all.sh" >> /scripts/format-namenode.sh && \
-    echo "rm -r/data/hdfs/name" >> /scripts/format-namenode.sh && \
-    echo "rm -r/data/hdfs/data" >> /scripts/format-namenode.sh && \
+    echo "rm -r /data/hdfs/name" >> /scripts/format-namenode.sh && \
+    echo "rm -r /data/hdfs/data" >> /scripts/format-namenode.sh && \
     echo "hdfs namenode -format" >> /scripts/format-namenode.sh && \
     echo "start-all.sh" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user" >> /scripts/format-namenode.sh && \
@@ -285,7 +320,7 @@ RUN echo "# passwordless ssh" && \
     echo "hadoop fs -mkdir /tmp" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
-    echo "/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
+    echo "#/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
     chmod +x /scripts/format-namenode.sh && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
@@ -314,12 +349,10 @@ RUN echo "# passwordless ssh" && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
-    echo "#! /bin/sh" > /scripts/spark-nolog.sh && \
+    cp /usr/local/spark/conf/log4j.properties.template /usr/local/spark/conf/log4j.properties && \
+
     echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /scripts/spark-nolog.sh && \
-    chmod +x /scripts/spark-nolog.sh && \
-    echo "#! /bin/sh" > /scripts/spark-fulllog.sh && \
-    echo "sed s/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/ /usr/local/spark/conf/log4j.properties.template > /usr/local/spark/conf/log4j.properties" >> /scripts/spark-fulllog.sh && \
-    chmod +x /scripts/spark-fulllog.sh && \
+
     cd /home && \
     git clone ${SPARK_HBASE_GIT} && \
     cd shc && \
@@ -462,10 +495,12 @@ RUN echo "# passwordless ssh" && \
 RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
 
-#    mkdir /examples && \
-
 CMD ["/etc/bootstrap.sh", "-d"]
 
+
+
+# miscellaneous notes and scraps to be ignored
+#    mkdir /examples && \
 #	cd /data && \
 #   echo ${SPARK_CASSANDRA_URL} && \
 #	wget ${SPARK_CASSANDRA_URL} && \
@@ -739,5 +774,6 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #         <value>/usr/local/zookeeper</value>
 #     </property>
 #</configuration>
+# log4jconf=./conf/log4j.properties
 
 
