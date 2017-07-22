@@ -3,6 +3,7 @@
 #	git clone https://github.com/minrk/findspark.git
 #	cd findspark
 #   python setup.py install
+# spark-submit spark1.py
 
 import platform
 import findspark
@@ -21,7 +22,7 @@ sc.setLogLevel("ERROR")
 
 hostname = platform.node()
 port = 9000
-folder = 'territories'
+folder = 'user/hive/warehouse/territories'
 df = spark.read.json('hdfs://{0}:{1}/{2}'.format(hostname, port, folder))
 
 df.printSchema()
@@ -46,7 +47,7 @@ properties = {
 # use northwind;
 # create table regions (RegionID int, RegionName varchar(30));
 
-regions = spark.read.csv('file:///data/datasets/northwind/CSV_Headers/regions.csv', header=True) 
+regions = spark.read.csv('file:///examples/northwind/CSV_Headers/regions.csv', header=True) 
 regions.show()
 regions.write.jdbc("jdbc:mysql://localhost/northwind", table='regions', mode = 'append', properties=properties)
 # select * from regions;

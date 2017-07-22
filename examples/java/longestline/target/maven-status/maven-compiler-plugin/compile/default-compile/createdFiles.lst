@@ -1,0 +1,4 @@
+com/roi/hadoop/longestline/TextLine.class
+com/roi/hadoop/longestline/Main.class
+com/roi/hadoop/longestline/MaxCountReducer.class
+com/roi/hadoop/longestline/SearchTermsMapper.class

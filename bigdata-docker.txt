@@ -376,8 +376,6 @@ RUN echo "# passwordless ssh" && \
     echo "    <value>/usr/local/zookeeper/data</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    ln -s /usr/local/zookeeper-3.4.9 /usr/local/zookeeper && \
-    mkdir /usr/local/zookeeper/data && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -484,7 +482,9 @@ RUN echo "# passwordless ssh" && \
 	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
 	python setup.py install && \
 	python3 setup.py install && \
-   echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
+    ln -s /usr/local/zookeeper-3.4.9 /usr/local/zookeeper && \
+    mkdir /usr/local/zookeeper/data && \
+    echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
 	echo "# Final Cleanup" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
