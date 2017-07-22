@@ -22,8 +22,6 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 LOAD DATA LOCAL INPATH '/examples/northwind/CSV_Headers/regions.csv' overwrite into table regions2;
 SELECT * FROM Regions2;
 
-SELECT * FROM Regions2;
-
 CREATE VIEW Regions3 AS SELECT RegionID, LTRIM(RTRIM(RegionName)) AS RegionName FROM Regions2 WHERE RegionID IS NOT NULL;
 
 SELECT * FROM Regions3;
@@ -56,7 +54,8 @@ TerritoryID string,
 TerritoryName string,
 RegionID int)
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
-STORED AS TEXTFILE;
+STORED AS TEXTFILE
+LOCATION '/territories';
 
 LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories.json' overwrite into table Territories;
 

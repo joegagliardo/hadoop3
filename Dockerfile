@@ -275,6 +275,7 @@ RUN echo "# passwordless ssh" && \
     echo ${PIG_URL} && \
     curl ${PIG_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
+    cp /usr/local/pig/log4j.properties.template /usr/local/pig/log4j.properties && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
     curl ${HIVE_URL} | tar -zx -C /usr/local && \
