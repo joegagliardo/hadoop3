@@ -314,6 +314,7 @@ RUN echo "# passwordless ssh" && \
     echo "hadoop fs -mkdir /user/root" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user/hive" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /user/hive/warehouse" >> /scripts/format-namenode.sh && \
+    echo "hadoop fs -mkdir /hbase" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -mkdir /tmp" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /user/hive/warehouse" >> /scripts/format-namenode.sh && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
@@ -371,9 +372,11 @@ RUN echo "# passwordless ssh" && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    echo "    <value>/usr/local/zookeeper</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>/usr/local/zookeeper/data</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    ln -s /usr/local/zookeeper-3.4.9 /usr/local/zookeeper && \
+    mkdir /usr/local/zookeeper/data && \
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -770,4 +773,13 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #</configuration>
 # log4jconf=./conf/log4j.properties
 
+
+
+
+ rm -r /usr/local/zookeeper
+   87  ln -s /usr/local/zookeeper-3.4.9/ /usr/local/zookeeper
+   88  cd /usr/local/zookeeper
+   89  mkdir data
+
+echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc
 
