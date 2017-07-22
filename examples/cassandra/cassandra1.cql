@@ -1,38 +1,52 @@
-create keyspace northwind with replication={'class':'SimpleStrategy', 'replication_factor':'1'};
+create keyspace classroom with replication={'class':'SimpleStrategy', 'replication_factor':'1'};
+describe keyspaces
+describe keyspace classroom
+use classroom ;
+create table People(PersonID int PRIMARY KEY, FirstName text);
+describe tables;
+describe table people;
+insert into people (PersonID, Firstname) values (1, 'joey');
+select * from people;
+update people set firstname = 'Joey' where personid = 1;
+select * from people;
+insert people values (2, 'mike');
+insert people (personid, firstname) values (2, 'mike');
+insert into people (personid, firstname) values (2, 'mike');
+insert into people (personid, firstname) values (2, 'mary');
+insert into people (personid, firstname) values (2, 'susan') if not exists;
+select * from people;
+update people set firstname = 'jack' where personid = 2;
+select * from people;
 
-use northwind;
+create table student (id int PRIMARY KEY, first_name text, last_name text, email_addresses set<text>);
+describe student;
+insert into student (id, first_name, last_name, email_addresses) values (1, 'joey', 'gagliardo', {'joey@me.com', 'joegagliardo@yahoo.com'});
+select * from student;
 
-create table Regions (RegionID int primary key, RegionName text);
+update student set first_name = 'Joseph', email_addresses = {'joey@me.com'} where id = 1;
+select * from student;
+update student set email_addresses = email_addresses + {'joeg@me.com'} where id = 1;
+select * from student;
+update student set email_addresses = email_addresses + {'joeg@me.com'} where id = 1;
+select * from student;
+update student set email_addresses = email_addresses - {'joeg@me.com'} where id = 1;
+select * from student;
 
-insert into Regions (RegionID, RegionName) values (1, 'Eastern');
-insert into Regions JSON '{"RegionID":2, "RegionName":"Western"}';
-insert into Regions (RegionID, RegionName) values (3, 'Northern') if not exists;
-insert into Regions JSON '{"RegionID":4, "RegionName":"Southern"}' if not exists;
+insert into student (id, first_name, last_name, email_addresses) values (2, 'aaa', 'bbb', {'a@a.com', 'b@b.com', 'c@c.com'});
+select * from student;
+select json * from student ;
+insert into student json '{"last_name":"ddd", "first_name":"ccc", "id":4 }';
+select * from student;
+insert into student json '{"last_name":"ddd", "first_name":"ccc", "id":5, "whatever":1 }';
 
+select * from people;
+copy people to 'people1.txt';
+copy people to 'people2.txt' with  header='TRUE';
 
-
-
-create table Products(
-ProductID int primary key,
-ProductName text,
-SupplierID int,
-CategoryID int,
-QuantityPerUnit text,
-UnitPrice float,
-UnitsInStock int,
-UnitsOnOrder int,
-ReorderLevel int,
-Discontinued boolean);
-
-create type OrderLineItem(ProductID int, Quantity int, UnitPrice float);
-
-CREATE TABLE orders (
-    orderid int PRIMARY KEY,
-    customerid int,
-    lineitems set<frozen<orderlineitem>>,
-    orderdate date
+create table people1 (
+personid int PRIMARY KEY,
+firstname text
 );
 
-
-insert into orders (orderid, orderdate, customerid, lineitems) values (2, '2017-07-11', 100,{ {productid:9, unitprice:9.99, quantity:11}, {productid:11, unitprice:12.99, quantity:9} } );
-
+copy people1 from 'people2.txt' with header='TRUE';
+select * from people1;
