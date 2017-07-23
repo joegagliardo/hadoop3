@@ -389,9 +389,9 @@ RUN echo "# passwordless ssh" && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
     cp /usr/local/hbase/conf/hbase-env.sh /usr/local/hbase/conf/hbase-env.sh.bak && \
-    sed 's/#\ export\ JAVA_HOME=\/usr\/java\/jdk1.6.0\//export\ JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle\//' /usr/local/hbase/conf/hbase-env.sh.bak > /usr/local/hbase/conf/hbase-env.sh &&\
+    sed 's/#\ export\ JAVA_HOME=\/usr\/java\/jdk1.6.0\//export\ JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle\//' /usr/local/hbase/conf/hbase-env.sh.bak > /usr/local/hbase/conf/hbase-env.sh1 &&\
     sed 's/#\ export\ HBASE_MANAGES_ZK=true/export\ HBASE_MANAGES_ZK=true/' /usr/local/hbase/conf/hbase-env.sh1 > /usr/local/hbase/conf/hbase-env.sh &&\
-    rm /usr/local/hbase/conf/hbase-env.sh &&\
+    rm /usr/local/hbase/conf/hbase-env.sh1 &&\
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
