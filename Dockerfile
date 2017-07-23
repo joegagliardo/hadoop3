@@ -39,6 +39,12 @@ ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
 RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
     url_exists $SPARK_URL
     
+ARG ZOOKEEPER_VERSION=3.4.10
+ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
+ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $ZOOKEEPER_URL
+
 ARG HBASE_VERSION=1.2.6
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
@@ -54,6 +60,7 @@ RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ;
 ARG MONGO_HADOOP_VERSION=2.0.2
 ARG MONGO_HADOOP_BASE_URL=http://search.maven.org/remotecontent?filepath=org/mongodb
 ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-core/${MONGO_HADOOP_VERSION}/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar
+
 #RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
 #    url_exists $MONGO_HADOOP_CORE_URL
 ARG MONGO_HADOOP_PIG_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-pig/${MONGO_HADOOP_VERSION}/mongo-hadoop-pig-${MONGO_HADOOP_VERSION}.jar
@@ -95,23 +102,18 @@ ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu
 
 USER root
 
-ENV HADOOP_PREFIX /usr/local/hadoop
 ENV BOOTSTRAP /etc/bootstrap.sh
-
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle/
+ENV HADOOP_PREFIX /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
-ENV PATH /usr/local/hadoop/bin:/usr/local/hadoop/sbin:$PATH
-ENV PATH /usr/local/pig/bin:$PATH
 ENV HIVE_HOME /usr/local/hive
-ENV PATH /usr/local/hive/bin:$PATH
-
+ENV ZOOKEEPER_HOME /usr/local/zookeeper/
 ENV SPARK_HOME /usr/local/spark
-ENV PATH /usr/local/spark/bin:$PATH
 ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar'
 ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.zip):${PYTHONPATH}
-
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
-ENV PATH /usr/local/hbase/bin:$PATH
+ENV PATH $HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin:$PATH
 
 RUN echo "# passwordless ssh" && \
     apt-get update && \
@@ -357,12 +359,21 @@ RUN echo "# passwordless ssh" && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
     echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
+    echo "# Zookeeper" && \
+    curl ${ZOOKEEPER_URL} | tar -zx -C /usr/local && \
+    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
+    mkdir /usr/local/zookeeper/data && \
+    sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     echo "# configure HBase data directories" && \
     echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <name>hbase.cluster.distributed</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>true</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <value>hdfs://localhost:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
@@ -376,8 +387,11 @@ RUN echo "# passwordless ssh" && \
     echo "    <value>/usr/local/zookeeper/data</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "</configuration>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    ln -s /usr/local/zookeeper-3.4.9 /usr/local/zookeeper && \
-    mkdir /usr/local/zookeeper/data && \
+    sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
+    cp /usr/local/hbase/conf/hbase-env.sh /usr/local/hbase/conf/hbase-env.sh.bak && \
+    sed 's/#\ export\ JAVA_HOME=\/usr\/java\/jdk1.6.0\//export\ JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle\//' /usr/local/hbase/conf/hbase-env.sh.bak > /usr/local/hbase/conf/hbase-env.sh &&\
+    sed 's/#\ export\ HBASE_MANAGES_ZK=true/export\ HBASE_MANAGES_ZK=true/' /usr/local/hbase/conf/hbase-env.sh1 > /usr/local/hbase/conf/hbase-env.sh &&\
+    rm /usr/local/hbase/conf/hbase-env.sh &&\
     echo "# Mongo & Cassandra Keys" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
@@ -484,7 +498,7 @@ RUN echo "# passwordless ssh" && \
 	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
 	python setup.py install && \
 	python3 setup.py install && \
-   echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
+    echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
 	echo "# Final Cleanup" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
@@ -497,5 +511,7 @@ RUN echo "*************" && \
 CMD ["/etc/bootstrap.sh", "-d"]
 
 # end of actual build
+
+
 
 
