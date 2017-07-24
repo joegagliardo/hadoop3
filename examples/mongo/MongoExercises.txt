@@ -1,0 +1,57 @@
+use telecoms
+node = {"address":"node1", "status_count":0}
+db.nodes.insert(node)
+
+db.nodes.update({"address":"node1"}, {"location":"london"})
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address":"node1"}, {"$inc" : {"status_count" :1}})
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address":"node1"}, {"$unset": {"location":""}})
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address" : "node1"}, {"$push" : {"alarms" : {"reason" : "Outbound capacity threshold passed 1"}}})
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address" : "node1"}, {"$push" : {"alarms" : {"reason" : "Outbound capacity threshold passed 2"}}})
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address" : "node1"}, {"$pop" : {"alarms" : -1} } )
+db.nodes.find({"address":"node1"})
+
+db.nodes.update({"address":"node2"}, {"$inc":{"status_count":1}}, true)
+db.nodes.find({"address":"node2"})
+
+db.nodes.remove({"address":"node2"})
+db.nodes.find({"address":"node2"})
+
+------
+
+use telecoms_main
+db.network.count()
+db.network.findOne()
+db.network.find({"status_changes": {$gte:99, $lte:100}})
+db.network.find({"status_changes": {$gte:99, $lte:100}}).count()
+
+db.network.find({"location": "Toronto"}).count()
+db.network.find({"location": {"$in": ["Montreal", "Toronto"]}}).count()
+
+db.network.find().limit(10)
+db.network.find().sort({"address":1}).limit(10)
+
+db.network.find().sort({"status_changes":1}).limit(5)
+db.network.find().sort({"status_changes":-1}).limit(5)
+
+db.network.find().skip(5).limit(5)
+
+
+db.network.find().sort({"address":1}).limit(1)
+db.network.find().sort({"address":-1}).limit(1)
+
+db.network.find().sort({"address":-1}).limit(5)
+db.network.distinct("address")
+db.network.distinct("alarms.reason")
+
+
+
