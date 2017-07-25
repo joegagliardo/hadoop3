@@ -219,7 +219,7 @@ RUN echo "# passwordless ssh" && \
     echo 'sed s/HOSTNAME/$HOSTNAME/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'service ssh start' >> /etc/bootstrap.sh && \
-    echo '/etc/init.d/mysql start' >> /etc/bootstrap.sh && \
+    echo '/scripts/start-mysql.sh' >> /etc/bootstrap.sh && \
     echo '#uncomment if you want Hadoop to start up automatically' >> /etc/bootstrap.sh && \
     echo '#$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
     echo '#$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
