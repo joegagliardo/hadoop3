@@ -470,7 +470,7 @@ RUN echo "# passwordless ssh" && \
     echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
     echo "cd /data" >> /scripts/start-cockroach.sh && \
     echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
-    chmod + x /scripts/start-cockroach.sh && \
+    chmod +x /scripts/start-cockroach.sh && \
     echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
     echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
