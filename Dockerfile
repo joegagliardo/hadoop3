@@ -350,14 +350,16 @@ RUN echo "# passwordless ssh" && \
     chmod +x /scripts/init-schema.sh && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
-    echo "start-yarn.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-postgresql.sh" >> /scripts/start-everything.sh && \
     echo "start-dfs.sh" >> /scripts/start-everything.sh && \
+    echo "start-yarn.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-mongo.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-cassandra.sh" >> /scripts/start-everything.sh && \
     echo "start-hbase.sh" >> /scripts/start-everything.sh && \
     chmod +x /scripts/start-everything.sh && \
     echo "#! /bin/sh" > /scripts/stop-everything.sh && \
     echo "/scripts/stop-mysql.sh" >> /scripts/stop-everything.sh && \
+    echo "/scripts/stop-postgresql.sh" >> /scripts/stop-everything.sh && \
     echo "stop-yarn.sh" >> /scripts/stop-everything.sh && \
     echo "stop-dfs.sh" >> /scripts/stop-everything.sh && \
     echo "/scripts/stop-mongo.sh" >> /scripts/stop-everything.sh && \
