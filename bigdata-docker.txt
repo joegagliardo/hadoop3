@@ -45,7 +45,7 @@ ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
 RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
     url_exists $ZOOKEEPER_URL
 
-ARG HBASE_VERSION=1.2.6
+ARG HBASE_VERSION=1.3.1
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
 RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
@@ -61,6 +61,13 @@ ARG MONGO_HADOOP_VERSION=2.0.2
 ARG MONGO_HADOOP_BASE_URL=http://search.maven.org/remotecontent?filepath=org/mongodb
 ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-core/${MONGO_HADOOP_VERSION}/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar
 
+ARG COCKROACH_VERSION=1.0.3
+ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com/
+ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $COCKROACH_URL
+ 
+ 
 #RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
 #    url_exists $MONGO_HADOOP_CORE_URL
 ARG MONGO_HADOOP_PIG_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-pig/${MONGO_HADOOP_VERSION}/mongo-hadoop-pig-${MONGO_HADOOP_VERSION}.jar
@@ -340,14 +347,22 @@ RUN echo "# passwordless ssh" && \
     echo "mysql < /scripts/hiveuser.sql" >> /scripts/init-schema.sh && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema.sh && \
     chmod +x /scripts/init-schema.sh && \
-    echo "#! /bin/sh" > /scripts/shutdown-all.sh && \
-    echo "stop-yarn.sh" >> /scripts/shutdown-all.sh && \
-    echo "stop-dfs.sh" >> /scripts/shutdown-all.sh && \
-    echo "/scripts/stop-mongo.sh" >> /scripts/shutdown-all.sh && \
-    echo "/scripts/stop-cassandra.sh" >> /scripts/shutdown-all.sh && \
-    echo "/scripts/stop-mysql.sh" >> /scripts/shutdown-all.sh && \
-    echo "stop-hbase.sh" >> /scripts/shutdown-all.sh && \
-    chmod +x /scripts/shutdown-all.sh && \
+    echo "#! /bin/sh" > /scripts/start-everything.sh && \
+    echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
+    echo "start-yarn.sh" >> /scripts/start-everything.sh && \
+    echo "start-dfs.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-mongo.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-cassandra.sh" >> /scripts/start-everything.sh && \
+    echo "start-hbase.sh" >> /scripts/start-everything.sh && \
+    chmod +x /scripts/start-everything.sh && \
+    echo "#! /bin/sh" > /scripts/stop-everything.sh && \
+    echo "/scripts/stop-mysql.sh" >> /scripts/stop-everything.sh && \
+    echo "stop-yarn.sh" >> /scripts/stop-everything.sh && \
+    echo "stop-dfs.sh" >> /scripts/stop-everything.sh && \
+    echo "/scripts/stop-mongo.sh" >> /scripts/stop-everything.sh && \
+    echo "/scripts/stop-cassandra.sh" >> /scripts/stop-everything.sh && \
+    echo "stop-hbase.sh" >> /scripts/stop-everything.sh && \
+    chmod +x /scripts/stop-everything.sh && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
@@ -446,7 +461,19 @@ RUN echo "# passwordless ssh" && \
     echo "rm -r /data/mongo " >> /scripts/delete-datadirs.sh && \
     echo "rm -r /data/cassandra" >> /scripts/delete-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
-    cd /home && \
+    cd /scripts && \
+    wget ${COCKROACH_URL} && \
+    tar xfz cockroach-* && \
+    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
+    rm -r /scripts/cockroach* && \
+    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
+    echo "cd /data" >> /scripts/start-cockroach.sh && \
+    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
+    chmod + x /scripts/start-cockroach.sh && \
+    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
+    echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
+    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
+    chmod + x /scripts/cockroach-shell.sh && \
     git clone ${SPARK_XML_GIT} && \
     cd /home/spark-xml && \
     sbt/sbt package && \
