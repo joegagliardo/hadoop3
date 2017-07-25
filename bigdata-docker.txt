@@ -236,6 +236,9 @@ RUN echo "# passwordless ssh" && \
     echo '#! /bin/sh' > /scripts/start-hadoop.sh && \
     echo 'start-all.sh' >> /scripts/start-hadoop.sh && \
     chmod 700 /scripts/start-hadoop.sh && \
+    echo '#! /bin/sh' > /scripts/stop-hadoop.sh && \
+    echo 'stop-all.sh' >> /scripts/stop-hadoop.sh && \
+    chmod 700 /scripts/stop-hadoop.sh && \
     echo "# working around docker.io build error" && \
     ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
     chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh && \
