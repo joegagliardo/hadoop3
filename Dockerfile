@@ -62,10 +62,11 @@ ARG MONGO_HADOOP_BASE_URL=http://search.maven.org/remotecontent?filepath=org/mon
 ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-core/${MONGO_HADOOP_VERSION}/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar
 
 ARG COCKROACH_VERSION=1.0.3
-ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com/
+ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
-#RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
-#    url_exists $COCKROACH_URL
+
+RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+    url_exists $COCKROACH_URL
  
  
 #RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
@@ -532,7 +533,4 @@ RUN echo "*************" && \
 CMD ["/etc/bootstrap.sh", "-d"]
 
 # end of actual build
-
-
-
 
