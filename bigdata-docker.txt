@@ -110,7 +110,7 @@ ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu
 USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle/
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 #ENV JAVA_HOME /usr
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
@@ -121,20 +121,26 @@ ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar'
 ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.zip):${PYTHONPATH}
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
-ENV PATH $HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin:$PATH
+ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 
-RUN echo "# passwordless ssh" && \
+RUN echo "# ---------------------------------------------" && \
+    echo "# passwordless ssh" && \
+    echo "# ---------------------------------------------" && \
     apt-get update && \
     rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
+    echo "# ---------------------------------------------" && \
     echo "# Make folders for HDFS data" && \
+    echo "# ---------------------------------------------" && \
     mkdir /data/hdfs && \
     mkdir /data/hdfs/name && \
     mkdir /data/hdfs/data && \
+    echo "# ---------------------------------------------" && \
     echo "# Hadoop" && \
+    echo "# ---------------------------------------------" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
     cd /usr/local && \
@@ -284,13 +290,17 @@ RUN echo "# passwordless ssh" && \
     echo "sed -i -e '/log4j.rootCategory=/ s/=.*/=error/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
     echo "sed -i -e '/log4j.logger.org.apache.spark.repl.Main=/ s/=.*/=error/' /usr/local/spark/conf/log4j.properties" >> /scripts/loglevel-error.sh && \
     chmod +x /scripts/loglevel-error.sh && \
-    echo "# Pig" && \
+    echo "# ---------------------------------------------" && \
+    echo "# Pig " && \
     echo ${PIG_URL} && \
+    echo "# ---------------------------------------------" && \
     curl ${PIG_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
     cp /usr/local/pig/conf/log4j.properties.template /usr/local/pig/conf/log4j.properties && \
+    echo "# ---------------------------------------------" && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
+    echo "# ---------------------------------------------" && \
     curl ${HIVE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/apache-hive-${HIVE_VERSION}-bin /usr/local/hive && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-connector-java.jar && \
@@ -316,7 +326,9 @@ RUN echo "# passwordless ssh" && \
     echo "      <description>password for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site.xml && \
+    echo "# ---------------------------------------------" && \
     echo "# Format Name Node" && \
+    echo "# ---------------------------------------------" && \
     cd /home && \
     echo "#! /bin/sh" > /scripts/format-namenode.sh && \
     echo "stop-all.sh" >> /scripts/format-namenode.sh && \
@@ -338,12 +350,8 @@ RUN echo "# passwordless ssh" && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
-    echo "create database metastore; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser.sql && \
+    echo "drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser.sql && \
     echo "#! /bin/sh" > /scripts/init-schema.sh && \
-    echo "if mysql \"metastore\" >/dev/null 2>&1 </dev/null" >> /scripts/init-schema.sh && \
-    echo "then" >> /scripts/init-schema.sh && \
-    echo "  mysql -e \"drop database metastore\"" >> /scripts/init-schema.sh && \
-    echo "fi" >> /scripts/init-schema.sh && \
     echo "mysql < /scripts/hiveuser.sql" >> /scripts/init-schema.sh && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema.sh && \
     chmod +x /scripts/init-schema.sh && \
@@ -365,8 +373,10 @@ RUN echo "# passwordless ssh" && \
     echo "/scripts/stop-cassandra.sh" >> /scripts/stop-everything.sh && \
     echo "stop-hbase.sh" >> /scripts/stop-everything.sh && \
     chmod +x /scripts/stop-everything.sh && \
+    echo "# ---------------------------------------------" && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
+    echo "# ---------------------------------------------" && \
     curl ${SPARK_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
@@ -380,13 +390,17 @@ RUN echo "# passwordless ssh" && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
     echo "RUN pip2 install happybase" && \
     echo "RUN pip3 install happybase" && \
+    echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
+    echo "# ---------------------------------------------" && \
     curl ${ZOOKEEPER_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
     mkdir /usr/local/zookeeper/data && \
     sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
+    echo "# ---------------------------------------------" && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
+    echo "# ---------------------------------------------" && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     echo "# configure HBase data directories" && \
@@ -403,13 +417,17 @@ RUN echo "# passwordless ssh" && \
     sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
     cp /usr/local/hbase/conf/hbase-env.sh /usr/local/hbase/conf/hbase-env.sh.bak && \
     sed 's/#\ export\ JAVA_HOME=\/usr\/java\/jdk1.6.0\//export\ JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle\//' /usr/local/hbase/conf/hbase-env.sh.bak > /usr/local/hbase/conf/hbase-env.sh &&\
+    echo "# ---------------------------------------------" && \
     echo "# Mongo & Cassandra Keys" && \
+    echo "# ---------------------------------------------" && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
     echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
     echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
     curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
     apt-get update && \
+    echo "# ---------------------------------------------" && \
     echo "# Mongo" && \
+    echo "# ---------------------------------------------" && \
     apt-get -y install mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
@@ -421,8 +439,10 @@ RUN echo "# passwordless ssh" && \
     echo "#! /bin/sh" > /scripts/stop-mongo.sh && \ 
     echo "mongod --shutdown --dbpath /data/mongo/data" >> /scripts/stop-mongo.sh && \ 
     chmod +x /scripts/stop-mongo.sh && \
+    echo "# ---------------------------------------------" && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
     apt-get -y install cassandra && \
     echo "#! /bin/sh" > /scripts/start-cassandra.sh && \
     echo "cassandra -p /scripts/cassandra_processid -R" >> /scripts/start-cassandra.sh && \
@@ -448,8 +468,14 @@ RUN echo "# passwordless ssh" && \
     echo "rows = session.execute('SELECT id, name FROM names')" >> /scripts/test-cassandra-table.py && \
     echo "print list(rows)" >> /scripts/test-cassandra-table.py && \
     chmod +x /scripts/test-cassandra-table.py && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cassandra libraries" && \
+    echo "# ---------------------------------------------" && \
     pip2 install cassandra-driver && \
     pip3 install cassandra-driver && \
+    echo "# ---------------------------------------------" && \
+    echo "# Helper scripts" && \
+    echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/create-datadirs.sh && \
     echo "mkdir /data/mysql" >> /scripts/create-datadirs.sh && \
     echo "mkdir /data/mongo " >> /scripts/create-datadirs.sh && \
@@ -464,7 +490,9 @@ RUN echo "# passwordless ssh" && \
     echo "rm -r /data/cassandra" >> /scripts/delete-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
     cd /scripts && \
+    echo "# ---------------------------------------------" && \
     echo "# Postgresql" && \
+    echo "# ---------------------------------------------" && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
     echo "#! /bin/sh" > /scripts/start-postgresql.sh && \
     echo "/etc/init.d/postgresql start" >> /scripts/start-postgresql.sh && \
@@ -475,7 +503,9 @@ RUN echo "# passwordless ssh" && \
     echo "#! /bin/sh" > /scripts/postgres-client.sh && \
     echo "sudo -u postgres psql" >> /scripts/postgres-client.sh && \
     chmod +x /scripts/postgres-client.sh && \
+    echo "# ---------------------------------------------" && \
     echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
     wget ${COCKROACH_URL} && \
     tar xfz cockroach-* && \
     mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
@@ -488,6 +518,9 @@ RUN echo "# passwordless ssh" && \
     echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
     chmod +x /scripts/cockroach-shell.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# Spark XML library" && \
+    echo "# ---------------------------------------------" && \
     cd /home && \
     git clone ${SPARK_XML_GIT} && \
     cd /home/spark-xml && \
@@ -504,11 +537,16 @@ RUN echo "# passwordless ssh" && \
 	cd /home && \
 	rm -r /home/findspark && \
     cd /home && \
+    echo "# ---------------------------------------------" && \
+    echo "# Spark Cassandra Connector" && \
     echo ${SPARK_CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv /home/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
 	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
+    echo "# ---------------------------------------------" && \
 	echo "MONGO-HADOOP" && \
+    echo "# ---------------------------------------------" && \
 	cd /home && \
 	wget --content-disposition ${MONGO_HADOOP_CORE_URL} && \
 	wget --content-disposition ${MONGO_HADOOP_PIG_URL} && \
@@ -534,6 +572,9 @@ RUN echo "# passwordless ssh" && \
 	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
 	python setup.py install && \
 	python3 setup.py install && \
+    echo "# ---------------------------------------------" && \
+    echo "# Miscellaneous" && \
+    echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
 	echo "# Final Cleanup" && \
     apt-get -y clean && \
@@ -547,4 +588,6 @@ RUN echo "*************" && \
 CMD ["/etc/bootstrap.sh", "-d"]
 
 # end of actual build
+
+
 
