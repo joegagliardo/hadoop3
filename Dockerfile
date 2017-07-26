@@ -64,7 +64,6 @@ ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop/mongo-hadoop-cor
 ARG COCKROACH_VERSION=1.0.3
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
-
 RUN url_exists() { if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
     url_exists $COCKROACH_URL
  
@@ -465,6 +464,18 @@ RUN echo "# passwordless ssh" && \
     echo "rm -r /data/cassandra" >> /scripts/delete-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
     cd /scripts && \
+    echo "# Postgresql" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
+    echo "#! /bin/sh" > /scripts/start-postgresql.sh && \
+    echo "/etc/init.d/postgresql start" >> /scripts/start-postgresql.sh && \
+    chmod +x /scripts/start-postgresql.sh && \
+    echo "#! /bin/sh" > /scripts/stop-postgresql.sh && \
+    echo "/etc/init.d/postgresql stop" >> /scripts/stop-postgresql.sh && \
+    chmod +x /scripts/stop-postgresql.sh && \
+    echo "#! /bin/sh" > /scripts/postgres-client.sh && \
+    echo "sudo -u postgres psql" >> /scripts/postgres-client.sh && \
+    chmod +x /scripts/postgres-client.sh && \
+    echo "# Cockroach DB" && \
     wget ${COCKROACH_URL} && \
     tar xfz cockroach-* && \
     mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
@@ -476,7 +487,7 @@ RUN echo "# passwordless ssh" && \
     echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
     echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
-    chmod + x /scripts/cockroach-shell.sh && \
+    chmod +x /scripts/cockroach-shell.sh && \
     git clone ${SPARK_XML_GIT} && \
     cd /home/spark-xml && \
     sbt/sbt package && \
