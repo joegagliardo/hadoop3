@@ -488,6 +488,7 @@ RUN echo "# passwordless ssh" && \
     echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
     chmod +x /scripts/cockroach-shell.sh && \
+    cd /home && \
     git clone ${SPARK_XML_GIT} && \
     cd /home/spark-xml && \
     sbt/sbt package && \
