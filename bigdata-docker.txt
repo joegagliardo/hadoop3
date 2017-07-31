@@ -307,6 +307,7 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-connector-java.jar && \
     wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
     mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
+    cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
     echo "<configuration>" > /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "      <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
@@ -387,7 +388,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema-mysql.sh && \
     chmod +x /scripts/init-schema-mysql.sh && \
     echo "#Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
-    echo "DROP DATBASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
+    echo "DROP DATABASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
 	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
