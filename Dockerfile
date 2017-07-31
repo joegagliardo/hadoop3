@@ -377,7 +377,6 @@ RUN echo "# ---------------------------------------------" && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
     echo "#/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
     chmod +x /scripts/format-namenode.sh && \
-    /scripts/format-namenode.sh && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
@@ -393,8 +392,6 @@ RUN echo "# ---------------------------------------------" && \
 	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/init-schema-postgres.sh && \
-    cd /scripts && \
-    init-schema-progres.sh && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-postgres.sh" >> /scripts/start-everything.sh && \
