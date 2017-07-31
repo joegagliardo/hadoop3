@@ -389,10 +389,11 @@ RUN echo "# ---------------------------------------------" && \
     echo "#Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
     echo "DROP DATBASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
-	echo "sudo -u postgres psql -f hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
+	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/init-schema-postgres.sh && \
-    /scripts/init-schema-progres.sh && \
+    cd /scripts && \
+    init-schema-progres.sh && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-postgres.sh" >> /scripts/start-everything.sh && \
