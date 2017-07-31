@@ -232,7 +232,8 @@ RUN echo "# ---------------------------------------------" && \
     echo 'sed s/HOSTNAME/$HOSTNAME/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml' >> /etc/bootstrap.sh && \
     echo '' >> /etc/bootstrap.sh && \
     echo 'service ssh start' >> /etc/bootstrap.sh && \
-    echo '/scripts/start-mysql.sh' >> /etc/bootstrap.sh && \
+    echo '#/scripts/start-mysql.sh' >> /etc/bootstrap.sh && \
+    echo '/scripts/start-postgres.sh' >> /etc/bootstrap.sh && \
     echo '#uncomment if you want Hadoop to start up automatically' >> /etc/bootstrap.sh && \
     echo '#$HADOOP_PREFIX/sbin/start-dfs.sh' >> /etc/bootstrap.sh && \
     echo '#$HADOOP_PREFIX/sbin/start-yarn.sh' >> /etc/bootstrap.sh && \
@@ -384,15 +385,15 @@ RUN echo "# ---------------------------------------------" && \
     echo "mysql < /scripts/hiveuser-mysql.sql" >> /scripts/init-schema-mysql.sh && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema-mysql.sh && \
     chmod +x /scripts/init-schema-mysql.sh && \
-    echo "#MySQL script to create the Hive metastore and user and then initialize the schema for Postgres" && \
-    echo "drop database if exists hiemetastore; create database hivemetastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser-postgres.sql && \
+    echo "#Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
+    echo "DROP DATBASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
-	echo "sudo -u postgres psql -f hiveuser.sql" >> /scripts/init-schema-postgres.sh && \
+	echo "sudo -u postgres psql -f hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/init-schema-postgres.sh && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
-    echo "/scripts/start-postgresql.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-postgres.sh" >> /scripts/start-everything.sh && \
     echo "start-dfs.sh" >> /scripts/start-everything.sh && \
     echo "start-yarn.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-mongo.sh" >> /scripts/start-everything.sh && \
@@ -529,12 +530,12 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Postgresql" && \
     echo "# ---------------------------------------------" && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
-    echo "#! /bin/sh" > /scripts/start-postgresql.sh && \
-    echo "/etc/init.d/postgresql start" >> /scripts/start-postgresql.sh && \
-    chmod +x /scripts/start-postgresql.sh && \
-    echo "#! /bin/sh" > /scripts/stop-postgresql.sh && \
-    echo "/etc/init.d/postgresql stop" >> /scripts/stop-postgresql.sh && \
-    chmod +x /scripts/stop-postgresql.sh && \
+    echo "#! /bin/sh" > /scripts/start-postgres.sh && \
+    echo "/etc/init.d/postgresql start" >> /scripts/start-postgres.sh && \
+    chmod +x /scripts/start-postgres.sh && \
+    echo "#! /bin/sh" > /scripts/stop-postgres.sh && \
+    echo "/etc/init.d/postgresql stop" >> /scripts/stop-postgres.sh && \
+    chmod +x /scripts/stop-postgres.sh && \
     echo "#! /bin/sh" > /scripts/postgres-client.sh && \
     echo "sudo -u postgres psql" >> /scripts/postgres-client.sh && \
     chmod +x /scripts/postgres-client.sh && \
