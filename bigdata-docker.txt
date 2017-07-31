@@ -304,28 +304,57 @@ RUN echo "# ---------------------------------------------" && \
     curl ${HIVE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/apache-hive-${HIVE_VERSION}-bin /usr/local/hive && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-connector-java.jar && \
-    echo "<configuration>" > /usr/local/hive/conf/hive-site.xml && \
-    echo "   <property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <value>jdbc:mysql://localhost/metastore?useSSL=false</value>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <description>metadata is stored in a MySQL server</description>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   <property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <name>javax.jdo.option.ConnectionDriverName</name>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <value>com.mysql.jdbc.Driver</value>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <description>MySQL JDBC driver class</description>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   <property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <name>javax.jdo.option.ConnectionUserName</name>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <value>hiveuser</value>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <description>user name for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   <property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <name>javax.jdo.option.ConnectionPassword</name>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <value>${HIVEUSER_PASSWORD}</value>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "      <description>password for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "   </property>" >> /usr/local/hive/conf/hive-site.xml && \
-    echo "</configuration>" >> /usr/local/hive/conf/hive-site.xml && \
+    wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
+    mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
+    echo "<configuration>" > /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <value>jdbc:mysql://localhost/metastore?useSSL=false</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <description>metadata is stored in a MySQL server</description>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <name>javax.jdo.option.ConnectionDriverName</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <value>com.mysql.jdbc.Driver</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <description>MySQL JDBC driver class</description>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <name>javax.jdo.option.ConnectionUserName</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <value>hiveuser</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <description>user name for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <name>javax.jdo.option.ConnectionPassword</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <value>${HIVEUSER_PASSWORD}</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "      <description>password for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "</configuration>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "<configuration>" > /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>jdbc:postgresql://localhost:5432/hivemetastore</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>javax.jdo.option.ConnectionDriverName</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>org.postgresql.Driver</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>javax.jdo.option.ConnectionUserName</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>hiveuser</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>javax.jdo.option.ConnectionPassword</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>hivepassword</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>org.jpox.autoCreateSchema</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>true</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <name>datanucleus.autoCreateSchema</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>false</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "</configuration>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml && \
     echo "# ---------------------------------------------" && \
     echo "# Format Name Node" && \
     echo "# ---------------------------------------------" && \
@@ -349,12 +378,18 @@ RUN echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
-    echo "#MySQL script to create the Hive metastore and user and then initialize the schema" && \
-    echo "drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser.sql && \
-    echo "#! /bin/sh" > /scripts/init-schema.sh && \
-    echo "mysql < /scripts/hiveuser.sql" >> /scripts/init-schema.sh && \
-    echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema.sh && \
-    chmod +x /scripts/init-schema.sh && \
+    echo "#MySQL script to create the Hive metastore and user and then initialize the schema for MySQL" && \
+    echo "drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser-mysql.sql && \
+    echo "#! /bin/sh" > /scripts/init-schema-mysql.sh && \
+    echo "mysql < /scripts/hiveuser-mysql.sql" >> /scripts/init-schema-mysql.sh && \
+    echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema-mysql.sh && \
+    chmod +x /scripts/init-schema-mysql.sh && \
+    echo "#MySQL script to create the Hive metastore and user and then initialize the schema for Postgres" && \
+    echo "drop database if exists hiemetastore; create database hivemetastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser-postgres.sql && \
+    echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
+	echo "sudo -u postgres psql -f hiveuser.sql" >> /scripts/init-schema-postgres.sh && \
+    echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
+    chmod +x /scripts/init-schema-postgres.sh && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-postgresql.sh" >> /scripts/start-everything.sh && \
@@ -388,8 +423,8 @@ RUN echo "# ---------------------------------------------" && \
     mvn package -DskipTests && \
     mvn clean package test && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
-    echo "RUN pip2 install happybase" && \
-    echo "RUN pip3 install happybase" && \
+    echo "RUN pip2 install happybase psycopg2" && \
+    echo "RUN pip3 install happybase psycopg2" && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo "# ---------------------------------------------" && \
