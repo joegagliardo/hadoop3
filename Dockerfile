@@ -144,8 +144,8 @@ RUN echo "# ---------------------------------------------" && \
     echo ${HADOOP_URL} && \
     curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
     cd /usr/local && \
-    ln -s ./hadoop-${HADOOP_VERSION} /usr/local/hadoop && \
-    ln -s ./hadoop-${HADOOP_VERSION} /hadoop && \
+    ln -s /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop && \
+    ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
     sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
     sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
     mkdir $HADOOP_PREFIX/input && \
@@ -383,12 +383,14 @@ RUN echo "# ---------------------------------------------" && \
     echo "#MySQL script to create the Hive metastore and user and then initialize the schema for MySQL" && \
     echo "drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser-mysql.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-mysql.sh && \
+    echo "cp /usr/local/hive/conf/hive-site-mysql.xml /usr/local/hive/conf/hive-site.xml"  >> /scripts/init-schema-mysql.sh && \
     echo "mysql < /scripts/hiveuser-mysql.sql" >> /scripts/init-schema-mysql.sh && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema-mysql.sh && \
     chmod +x /scripts/init-schema-mysql.sh && \
     echo "#Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
     echo "DROP DATABASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
+    echo "cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml"  >> /scripts/init-schema-postgres.sh && \
 	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/init-schema-postgres.sh && \
@@ -444,7 +446,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    echo "    <value>hdfs://${HOST_NAME}:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>hdfs://${HOSTNAME}:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
@@ -494,17 +496,17 @@ RUN echo "# ---------------------------------------------" && \
     mkdir /data/cassandra/log && \
     sed -i 's/    - \/var\/lib\/cassandra\/data/    - \/home\/dockerdata\/cassandra\/data/g' /etc/cassandra/cassandra.yaml && \
     sed -i 's/commitlog_directory: \/var\/lib\/cassandra\/commitlog/commitlog_directory: \/home\/dockerdata\/cassandra\/log/g' /etc/cassandra/cassandra.yaml && \
-    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /scripts/create-cassandra-table.cql && \
-    echo "use joey;" >> /scripts/create-cassandra-table.cql && \
-    echo "create table names (id int PRIMARY KEY, name varchar);" >> /scripts/create-cassandra-table.cql && \
-    echo "insert into names (id, name) values (1, 'joey');" >> /scripts/create-cassandra-table.cql && \
-    echo "#! /usr/bin/python" > /scripts/test-cassandra-table.py && \
-    echo "from cassandra.cluster import Cluster" >> /scripts/test-cassandra-table.py && \
-    echo "cluster = Cluster()" >> /scripts/test-cassandra-table.py && \
-    echo "session = cluster.connect('joey')" >> /scripts/test-cassandra-table.py && \
-    echo "rows = session.execute('SELECT id, name FROM names')" >> /scripts/test-cassandra-table.py && \
-    echo "print list(rows)" >> /scripts/test-cassandra-table.py && \
-    chmod +x /scripts/test-cassandra-table.py && \
+    echo "create keyspace joey with replication = {'class':'SimpleStrategy', 'replication_factor': 3};" > /examples/cassandra/create-cassandra-table.cql && \
+    echo "use joey;" >> /examples/cassandra/create-cassandra-table.cql && \
+    echo "create table names (id int PRIMARY KEY, name varchar);" >> /examples/cassandra/create-cassandra-table.cql && \
+    echo "insert into names (id, name) values (1, 'joey');" >> /examples/cassandra/create-cassandra-table.cql && \
+    echo "#! /usr/bin/python" > /examples/cassandra/test-cassandra-table.py && \
+    echo "from cassandra.cluster import Cluster" >> /examples/cassandra/test-cassandra-table.py && \
+    echo "cluster = Cluster()" >> /examples/cassandra/test-cassandra-table.py && \
+    echo "session = cluster.connect('joey')" >> /examples/cassandra/test-cassandra-table.py && \
+    echo "rows = session.execute('SELECT id, name FROM names')" >> /examples/cassandra/test-cassandra-table.py && \
+    echo "print list(rows)" >> /examples/cassandra/test-cassandra-table.py && \
+    chmod +x /examples/cassandra/test-cassandra-table.py && \
     echo "# ---------------------------------------------" && \
     echo "# Cassandra libraries" && \
     echo "# ---------------------------------------------" && \
@@ -552,7 +554,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
     chmod +x /scripts/start-cockroach.sh && \
     echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
-    echo "cd /data" >> /scripts/start-cockroach-shell.sh && \
+    echo "cd /data" >> /scripts/cockroach-shell.sh && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
     chmod +x /scripts/cockroach-shell.sh && \
     echo "# ---------------------------------------------" && \
