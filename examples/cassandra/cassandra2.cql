@@ -21,6 +21,9 @@ UnitsOnOrder int,
 ReorderLevel int,
 Discontinued boolean);
 
+
+copy products(ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) from '/examples/northwind/CSV_NoHeaders/products.csv' with delimiter = ',' AND header = false;
+
 create type OrderLineItem(ProductID int, Quantity int, UnitPrice float);
 
 CREATE TABLE orders (

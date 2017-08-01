@@ -1,1 +1,0 @@
-mongoimport -d Northwind -c "products" --type "csv" --file "/examples/northwind/CSV_Headers/products.csv" --headerline

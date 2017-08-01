@@ -22,7 +22,7 @@ sc.setLogLevel("ERROR")
 
 hostname = platform.node()
 port = 9000
-folder = 'user/hive/warehouse/territories'
+folder = '/territories'
 df = spark.read.json('hdfs://{0}:{1}/{2}'.format(hostname, port, folder))
 
 df.printSchema()

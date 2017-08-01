@@ -49,6 +49,7 @@ products4.write \
     
 products4.createOrReplaceTempView("products4")
 products5 = spark.sql('select ProductID, ProductName, SupplierID, CategoryID, UnitPrice, Units.InStock AS UnitsInStock, Units.OnOrder as UnitsOnOrder FROM products4')
+products5.show()
 
 
 
