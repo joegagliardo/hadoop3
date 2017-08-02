@@ -167,6 +167,10 @@ RUN echo "# ---------------------------------------------" && \
     echo "        <name>hadoop.proxyuser.hive.hosts</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
     echo "        <value>*</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
     echo "    </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    <property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <name>hive.server2.enable.doAs</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <value>false</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \    
     echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
     sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml && \
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > $HADOOP_PREFIX//etc/hadoop/hdfs-site.xml && \
@@ -700,4 +704,13 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # sudo service hive-server2 start
 # !connect jdbc:hive2://localhost:10000
 
+
+
+#<name>hadoop.proxyuser.hive.groups</name>
+#<value>*</value>
+#</property>
+#<property>
+#<name>hadoop.proxyuser.hive.hosts</name>
+#<value>*</value>
+#</property>
 
