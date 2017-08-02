@@ -1,11 +1,14 @@
 FROM joegagliardo/ubuntu
 MAINTAINER joegagliardo
 
+
 # As much as possible I am trying to put as many steps in a single RUN command to minimize
 # the ultimate build size. I also prefer to echo a file and build it in a RUN so there is
 # no reliance on outside files needed if you use an ADD
 
 # This section is an easy place to change the desired password and versions to install
+
+EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002
 
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
@@ -151,12 +154,20 @@ RUN echo "# ---------------------------------------------" && \
     mkdir $HADOOP_PREFIX/input && \
     cp $HADOOP_PREFIX/etc/hadoop/*.xml $HADOOP_PREFIX/input && \
     echo "# pseudo distributed" && \
-    echo "  <configuration>" > $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
-    echo "      <property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
-    echo "          <name>fs.defaultFS</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
-    echo "          <value>hdfs://HOSTNAME:9000</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
-    echo "      </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
-    echo "  </configuration>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "<configuration>" > $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    <property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <name>fs.defaultFS</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <value>hdfs://HOSTNAME:9000</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    <property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <name>hadoop.proxyuser.hive.groups</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <value>*</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    <property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <name>hadoop.proxyuser.hive.hosts</name>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "        <value>*</value>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "    </property>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
+    echo "</configuration>" >> $HADOOP_PREFIX/etc/hadoop/core-site.xml.template && \
     sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml && \
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > $HADOOP_PREFIX//etc/hadoop/hdfs-site.xml && \
     echo "<?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>" >> $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml && \
@@ -308,6 +319,7 @@ RUN echo "# ---------------------------------------------" && \
     wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
     mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
     cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+	echo "# hive-site-mysql" && \
     echo "<configuration>" > /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "      <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
@@ -329,7 +341,24 @@ RUN echo "# ---------------------------------------------" && \
     echo "      <value>${HIVEUSER_PASSWORD}</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "      <description>password for connecting to mysql server</description>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.thrift.min.worker.threads</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>5</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.thrift.max.worker.threads</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>500</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.thrift.port</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>10000</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.thrift.bind.host</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>bigdata</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "# hive-site-postgres" && \
     echo "<configuration>" > /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "        <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
@@ -355,6 +384,22 @@ RUN echo "# ---------------------------------------------" && \
     echo "        <name>datanucleus.autoCreateSchema</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "        <value>false</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.thrift.min.worker.threads</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>5</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.thrift.max.worker.threads</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>500</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.thrift.port</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>10000</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.thrift.bind.host</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>bigdata</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml && \
     echo "# ---------------------------------------------" && \
@@ -377,23 +422,33 @@ RUN echo "# ---------------------------------------------" && \
     echo "hadoop fs -chmod g+w /tmp" >> /scripts/format-namenode.sh && \
     echo "#/scripts/init-schema.sh" >> /scripts/format-namenode.sh && \
     chmod +x /scripts/format-namenode.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# exit-safemode" && \
+    echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
-    echo "#MySQL script to create the Hive metastore and user and then initialize the schema for MySQL" && \
+    echo "# ---------------------------------------------" && \
+    echo "# MySQL script to create the Hive metastore and user and then initialize the schema for MySQL" && \
+    echo "# ---------------------------------------------" && \
     echo "drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY '${HIVEUSER_PASSWORD}'; GRANT all on *.* to 'hiveuser'@localhost identified by '${HIVEUSER_PASSWORD}'; flush privileges;" > /scripts/hiveuser-mysql.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-mysql.sh && \
     echo "cp /usr/local/hive/conf/hive-site-mysql.xml /usr/local/hive/conf/hive-site.xml"  >> /scripts/init-schema-mysql.sh && \
     echo "mysql < /scripts/hiveuser-mysql.sql" >> /scripts/init-schema-mysql.sh && \
     echo "schematool -dbType mysql -initSchema" >> /scripts/init-schema-mysql.sh && \
     chmod +x /scripts/init-schema-mysql.sh && \
-    echo "#Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
+    echo "# ---------------------------------------------" && \
+    echo "# Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
+    echo "# ---------------------------------------------" && \
     echo "DROP DATABASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
     echo "cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml"  >> /scripts/init-schema-postgres.sh && \
 	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
     echo "schematool -dbType postgres -initSchema" >> /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/init-schema-postgres.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# script to start all services" && \
+    echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/start-everything.sh && \
     echo "/scripts/start-mysql.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-postgres.sh" >> /scripts/start-everything.sh && \
@@ -402,7 +457,11 @@ RUN echo "# ---------------------------------------------" && \
     echo "/scripts/start-mongo.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-cassandra.sh" >> /scripts/start-everything.sh && \
     echo "start-hbase.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-hiveserver.sh" >> /scripts/start-everything.sh && \
     chmod +x /scripts/start-everything.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# script to stop all services" && \
+    echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/stop-everything.sh && \
     echo "/scripts/stop-mysql.sh" >> /scripts/stop-everything.sh && \
     echo "/scripts/stop-postgresql.sh" >> /scripts/stop-everything.sh && \
@@ -412,6 +471,12 @@ RUN echo "# ---------------------------------------------" && \
     echo "/scripts/stop-cassandra.sh" >> /scripts/stop-everything.sh && \
     echo "stop-hbase.sh" >> /scripts/stop-everything.sh && \
     chmod +x /scripts/stop-everything.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# script to start hive service" && \
+    echo "# ---------------------------------------------" && \
+    echo "#! /bin/sh" > /scripts/start-hiveserver.sh && \
+    echo "hive --service hiveserver2 &" >> /scripts/start-hiveserver.sh && \
+    chmod +x /scripts/start-hiveserver.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
@@ -628,5 +693,11 @@ CMD ["/etc/bootstrap.sh", "-d"]
 
 # end of actual build
 
+
+
+# hive --service hiveserver2 start 
+# hive --service hiveserver2 stop
+# sudo service hive-server2 start
+# !connect jdbc:hive2://localhost:10000
 
 
