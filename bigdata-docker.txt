@@ -1,7 +1,6 @@
 FROM joegagliardo/ubuntu
 MAINTAINER joegagliardo
 
-
 # As much as possible I am trying to put as many steps in a single RUN command to minimize
 # the ultimate build size. I also prefer to echo a file and build it in a RUN so there is
 # no reliance on outside files needed if you use an ADD
@@ -463,6 +462,9 @@ RUN echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/exit-safemode.sh && \
     echo "hdfs dfsadmin -safemode leave" >> /scripts/exit-safemode.sh && \
     chmod +x /scripts/exit-safemode.sh && \
+    echo "#! /bin/sh" > /scripts/start-thrift.sh && \
+    echo "hbase thrift start -threadpool" >> /scripts/start-thrift.sh && \
+    chmod +x /scripts/start-thrift.sh && \
     echo "# ---------------------------------------------" && \
     echo "# MySQL script to create the Hive metastore and user and then initialize the schema for MySQL" && \
     echo "# ---------------------------------------------" && \
@@ -493,13 +495,14 @@ RUN echo "# ---------------------------------------------" && \
     echo "/scripts/start-cassandra.sh" >> /scripts/start-everything.sh && \
     echo "start-hbase.sh" >> /scripts/start-everything.sh && \
     echo "/scripts/start-hiveserver.sh" >> /scripts/start-everything.sh && \
+    echo "/scripts/start-thrift.sh" >> /scripts/start-everything.sh && \
     chmod +x /scripts/start-everything.sh && \
     echo "# ---------------------------------------------" && \
     echo "# script to stop all services" && \
     echo "# ---------------------------------------------" && \
     echo "#! /bin/sh" > /scripts/stop-everything.sh && \
     echo "/scripts/stop-mysql.sh" >> /scripts/stop-everything.sh && \
-    echo "/scripts/stop-postgresql.sh" >> /scripts/stop-everything.sh && \
+    echo "/scripts/stop-postgres.sh" >> /scripts/stop-everything.sh && \
     echo "stop-yarn.sh" >> /scripts/stop-everything.sh && \
     echo "stop-dfs.sh" >> /scripts/stop-everything.sh && \
     echo "/scripts/stop-mongo.sh" >> /scripts/stop-everything.sh && \
