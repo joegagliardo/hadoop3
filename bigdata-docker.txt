@@ -694,7 +694,8 @@ RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
 
 CMD ["/etc/bootstrap.sh", "-d"]
-
+CMD ["/scripts/format-namenode.sh"]
+CMD ["/scripts/init-schema-postgres.sh"]
 # end of actual build
 
 
@@ -713,4 +714,7 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #<name>hadoop.proxyuser.hive.hosts</name>
 #<value>*</value>
 #</property>
-
+#    <property>
+#        <name>hive.server2.enable.doAs</name>
+#        <value>false</value>
+#    </property>
