@@ -12,6 +12,7 @@ EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030
 
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
+ARG HIVE_METASTORE=hivemetastore
 
 ADD examples /examples 
 ADD datasets /examples
@@ -361,12 +362,24 @@ RUN echo "# ---------------------------------------------" && \
     echo "       <name>hive.server2.thrift.bind.host</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "       <value>bigdata</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.metastore.sasl.enabled</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>false</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.enable.doAs</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>false</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <name>hive.server2.authentication</name>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "       <value>NONE</value>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site-mysql.xml && \
     echo "# hive-site-postgres" && \
     echo "<configuration>" > /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "        <name>javax.jdo.option.ConnectionURL</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
-    echo "        <value>jdbc:postgresql://localhost:5432/hivemetastore</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "        <value>jdbc:postgresql://localhost:5432/${HIVE_METASTORE}</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "    </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "    <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "        <name>javax.jdo.option.ConnectionDriverName</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
@@ -404,8 +417,26 @@ RUN echo "# ---------------------------------------------" && \
     echo "       <name>hive.server2.thrift.bind.host</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "       <value>bigdata</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.metastore.sasl.enabled</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>false</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.enable.doAs</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>false</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   <property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <name>hive.server2.authentication</name>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "       <value>NONE</value>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
+    echo "   </property>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     echo "</configuration>" >> /usr/local/hive/conf/hive-site-postgres.xml && \
     cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml && \
+    echo "# ---------------------------------------------" && \
+    echo "# Hiveserver2 Python Package" && \
+    echo "# ---------------------------------------------" && \
+    apt-get -y install libsasl2-dev && \
+    pip2 install pyhs2 && \
+    pip3 install pyhs2 && \
     echo "# ---------------------------------------------" && \
     echo "# Format Name Node" && \
     echo "# ---------------------------------------------" && \
@@ -444,7 +475,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     echo "# Postgresql script to create the Hive metastore and user and then initialize the schema for Postgres" && \
     echo "# ---------------------------------------------" && \
-    echo "DROP DATABASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
+    echo "DROP DATABASE IF EXISTS ${HIVE_METASTORE}; CREATE DATABASE ${HIVE_METASTORE}; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD '${HIVEUSER_PASSWORD}'; GRANT ALL PRIVILEGES ON DATABASE ${HIVE_METASTORE} TO hiveuser;" > /scripts/hiveuser-postgres.sql && \
     echo "#! /bin/sh" > /scripts/init-schema-postgres.sh && \
     echo "cp /usr/local/hive/conf/hive-site-postgres.xml /usr/local/hive/conf/hive-site.xml"  >> /scripts/init-schema-postgres.sh && \
 	echo "sudo -u postgres psql -f /scripts/hiveuser-postgres.sql" >> /scripts/init-schema-postgres.sh && \
@@ -496,8 +527,6 @@ RUN echo "# ---------------------------------------------" && \
     mvn package -DskipTests && \
     mvn clean package test && \
     mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
-    echo "RUN pip2 install happybase psycopg2" && \
-    echo "RUN pip3 install happybase psycopg2" && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo "# ---------------------------------------------" && \
@@ -515,7 +544,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "<configuration>" > ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.rootdir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
-    echo "    <value>hdfs://${HOSTNAME}:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
+    echo "    <value>hdfs://bigdata:9000/hbase</value>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  </property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "  <property>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
     echo "    <name>hbase.zookeeper.property.dataDir</name>" >> ${HBASE_CONF_DIR}/hbase-site.xml && \
@@ -525,6 +554,8 @@ RUN echo "# ---------------------------------------------" && \
     sed 's/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/zookeeper\/data/' /usr/local/zookeeper/conf/zoo_sample.cfg > /usr/local/zookeeper/conf/zoo.cfg && \
     cp /usr/local/hbase/conf/hbase-env.sh /usr/local/hbase/conf/hbase-env.sh.bak && \
     sed 's/#\ export\ JAVA_HOME=\/usr\/java\/jdk1.6.0\//export\ JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle\//' /usr/local/hbase/conf/hbase-env.sh.bak > /usr/local/hbase/conf/hbase-env.sh &&\
+    pip2 install happybase psycopg2 && \
+    pip3 install happybase psycopg2 && \
     echo "# ---------------------------------------------" && \
     echo "# Mongo & Cassandra Keys" && \
     echo "# ---------------------------------------------" && \
@@ -694,8 +725,6 @@ RUN echo "*************" && \
     echo "" >> /scripts/notes.txt
 
 CMD ["/etc/bootstrap.sh", "-d"]
-CMD ["/scripts/format-namenode.sh"]
-CMD ["/scripts/init-schema-postgres.sh"]
 # end of actual build
 
 
@@ -718,3 +747,6 @@ CMD ["/scripts/init-schema-postgres.sh"]
 #        <name>hive.server2.enable.doAs</name>
 #        <value>false</value>
 #    </property>
+
+
+
