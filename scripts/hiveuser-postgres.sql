@@ -1,0 +1,1 @@
+DROP DATABASE IF EXISTS hivemetastore; CREATE DATABASE hivemetastore; DROP USER IF EXISTS hiveuser; CREATE USER hiveuser WITH PASSWORD 'hivepassword'; GRANT ALL PRIVILEGES ON DATABASE hivemetastore TO hiveuser;

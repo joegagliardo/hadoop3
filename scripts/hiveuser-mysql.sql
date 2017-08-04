@@ -1,0 +1,1 @@
+drop database if exists metastore; create database metastore; DROP USER IF EXISTS 'hiveuser'@'%'; CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'hivepassword'; GRANT all on *.* to 'hiveuser'@localhost identified by 'hivepassword'; flush privileges;
