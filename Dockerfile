@@ -296,21 +296,6 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/stop-postgres.sh && \
     chmod +x /scripts/postgres-client.sh && \
     echo "# ---------------------------------------------" && \
-    echo "# Cockroach DB" && \
-    echo "# ---------------------------------------------" && \
-    wget ${COCKROACH_URL} && \
-    tar xfz cockroach-* && \
-    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
-    rm -r /scripts/cockroach* && \
-    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
-    echo "cd /data" >> /scripts/start-cockroach.sh && \
-    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
-    chmod +x /scripts/start-cockroach.sh && \
-    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
-    echo "cd /data" >> /scripts/cockroach-shell.sh && \
-    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
-    chmod +x /scripts/cockroach-shell.sh && \
-    echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
     cd /home && \
@@ -380,6 +365,21 @@ RUN echo "*************" && \
 CMD ["/etc/bootstrap.sh", "-d"]
 # end of actual build
 
+#    echo "# ---------------------------------------------" && \
+#    echo "# Cockroach DB" && \
+#    echo "# ---------------------------------------------" && \
+#    wget ${COCKROACH_URL} && \
+#    tar xfz cockroach-* && \
+#    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
+#    rm -r /scripts/cockroach* && \
+#    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
+#    echo "cd /data" >> /scripts/start-cockroach.sh && \
+#    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
+#    chmod +x /scripts/start-cockroach.sh && \
+#    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
+#    echo "cd /data" >> /scripts/cockroach-shell.sh && \
+#    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
+#    chmod +x /scripts/cockroach-shell.sh && \
 
 
 # hive --service hiveserver2 start 
