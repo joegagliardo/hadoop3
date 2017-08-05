@@ -15,8 +15,8 @@ ARG HIVE_METASTORE=hivemetastore
 
 ADD examples /examples 
 ADD datasets /examples
-ADD conf /
-ADD scripts /
+ADD conf /conf
+ADD scripts /scripts
 
 # Versions
 ARG HADOOP_VERSION=2.8.0
@@ -400,6 +400,4 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #        <name>hive.server2.enable.doAs</name>
 #        <value>false</value>
 #    </property>
-
-
 
