@@ -133,21 +133,6 @@ RUN echo "# ---------------------------------------------" && \
     sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
     sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
-    echo "# Cockroach DB" && \
-    echo "# ---------------------------------------------" && \
-    wget ${COCKROACH_URL} && \
-    tar xfz cockroach-* && \
-    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
-    rm -r /scripts/cockroach* && \
-    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
-    echo "cd /data" >> /scripts/start-cockroach.sh && \
-    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
-    chmod +x /scripts/start-cockroach.sh && \
-    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
-    echo "cd /data" >> /scripts/cockroach-shell.sh && \
-    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
-    chmod +x /scripts/cockroach-shell.sh && \
-    echo "# ---------------------------------------------" && \
     echo "# Make folders for HDFS data" && \
     echo "# ---------------------------------------------" && \
     mkdir /data/hdfs && \
@@ -410,3 +395,5 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #        <value>false</value>
 #    </property>
 
+
+#https://repo1.maven.org/maven2/com/twitter/elephantbird/elephant-bird-pig/4.9/elephant-bird-pig-4.9.jar
