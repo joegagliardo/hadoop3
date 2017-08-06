@@ -114,12 +114,39 @@ ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/b
 RUN echo "# ---------------------------------------------" && \
     echo "# passwordless ssh" && \
     echo "# ---------------------------------------------" && \
+    chmod 0777 /examples && \
     apt-get update && \
     rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
+    cd /scripts && \
+    echo "# ---------------------------------------------" && \
+    echo "# Postgresql" && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
+    chmod +x /scripts/start-postgres.sh && \
+    chmod +x /scripts/stop-postgres.sh && \
+    chmod +x /scripts/postgres-client.sh && \
+    /etc/init.d/postgresql start && \
+    sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
+    sudo -u postgres psql -c "create database root;" && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    wget ${COCKROACH_URL} && \
+    tar xfz cockroach-* && \
+    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
+    rm -r /scripts/cockroach* && \
+    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
+    echo "cd /data" >> /scripts/start-cockroach.sh && \
+    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
+    chmod +x /scripts/start-cockroach.sh && \
+    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
+    echo "cd /data" >> /scripts/cockroach-shell.sh && \
+    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
+    chmod +x /scripts/cockroach-shell.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Make folders for HDFS data" && \
     echo "# ---------------------------------------------" && \
@@ -277,16 +304,6 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/create-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
-    cd /scripts && \
-    echo "# ---------------------------------------------" && \
-    echo "# Postgresql" && \
-    echo "# ---------------------------------------------" && \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
-    chmod +x /scripts/start-postgres.sh && \
-    chmod +x /scripts/stop-postgres.sh && \
-    chmod +x /scripts/postgres-client.sh && \
-    sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
-    sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
