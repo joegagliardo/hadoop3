@@ -34,7 +34,7 @@ ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-b
 ARG SPARK_VERSION=2.2.0
 ARG SPARK_BASE_URL=http://apache.claz.org/spark
 #ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
-ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
+ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
     
 ARG ZOOKEEPER_VERSION=3.4.10
 ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
@@ -84,7 +84,6 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
     url_exists $ZOOKEEPER_URL && \
     url_exists $HBASE_URL && \
     url_exists $MONGO_URL && \
-    url_exists $COCKROACH_URL && \
     url_exists $SPARK_CASSANDRA_URL && \
     url_exists $MONGO_JAVA_DRIVER_URL && \
     url_exists $MONGO_HADOOP_CORE_URL && \
@@ -93,7 +92,8 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
     url_exists $MONGO_HADOOP_SPARK_URL && \
     url_exists $MONGO_HADOOP_STREAMING_URL && \
     url_exists $MONGO_JAVA_DRIVER_URL && \
-    url_exists $SPARK_CASSANDRA_URL 
+    url_exists $SPARK_CASSANDRA_URL && \
+    url_exists $COCKROACH_URL 
 
 USER root
 
@@ -285,6 +285,8 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/start-postgres.sh && \
     chmod +x /scripts/stop-postgres.sh && \
     chmod +x /scripts/postgres-client.sh && \
+    sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
+    sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \

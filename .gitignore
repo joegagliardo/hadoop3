@@ -8,3 +8,4 @@ examples/.DS_Store
 bigdata.works.tar
 *.tar
 bd.txt
+datasets/northwind_accents.zip
