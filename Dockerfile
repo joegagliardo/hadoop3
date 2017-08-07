@@ -72,7 +72,7 @@ ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
-ARG COCKROACH_VERSION=1.0.3
+ARG COCKROACH_VERSION=1.0.4
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 
@@ -122,6 +122,24 @@ RUN echo "# ---------------------------------------------" && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     cd /scripts && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    mkdir /cr && \
+    cd /cr && \
+    wget ${COCKROACH_URL} && \
+    tar xfz cockroach-* && \
+    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
+    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
+    echo "cd /data" >> /scripts/start-cockroach.sh && \
+    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
+    chmod +x /scripts/start-cockroach.sh && \
+    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
+    echo "cd /data" >> /scripts/cockroach-shell.sh && \
+    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
+    chmod +x /scripts/cockroach-shell.sh && \
+    cd / && \
+    rm -r /cr && \
     echo "# ---------------------------------------------" && \
     echo "# Postgresql" && \
     echo "# ---------------------------------------------" && \
@@ -358,6 +376,7 @@ RUN echo "*************" && \
 
 CMD ["/etc/bootstrap.sh", "-d"]
 # end of actual build
+
 
 #    echo "# ---------------------------------------------" && \
 #    echo "# Cockroach DB" && \
