@@ -21,8 +21,7 @@ UnitsOnOrder int,
 ReorderLevel int,
 Discontinued boolean);
 
-
-copy products(ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) from '/examples/northwind/CSV_NoHeaders/products.csv' with delimiter = ',' AND header = false;
+copy products(ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) from '/examples/northwind/TSV/products/products.tsv' with delimiter = '\t' AND header = false;
 
 create type OrderLineItem(ProductID int, Quantity int, UnitPrice float);
 
@@ -53,5 +52,6 @@ SELECT * from customers;
 
 create index ixOrders_customerID on Orders(customerid);
 select * from orders where customerid = 100;
-drop index drop index ixorders_customerid
-describe tables
+drop index ixOrders_customerID;
+describe tables;
+

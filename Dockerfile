@@ -209,6 +209,7 @@ RUN echo "# ---------------------------------------------" && \
     wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
     mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
     cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+    ln -s /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.jar /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar && \
     echo "# ---------------------------------------------" && \
     echo "# Hiveserver2 Python Package" && \
     echo "# ---------------------------------------------" && \
@@ -415,4 +416,35 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    </property>
 
 
+#https://repo1.maven.org/maven2/org/apache/parquet/parquet-pig/1.9.0/parquet-pig-1.9.0.jar
+
 #https://repo1.maven.org/maven2/com/twitter/elephantbird/elephant-bird-pig/4.9/elephant-bird-pig-4.9.jar
+
+
+# hive on spark
+#ln -s /usr/local/spark/jars/scala-library-*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/spark-core_*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/spark-network-common_*.jar /usr/local/hive/lib
+
+#ln -s /usr/local/spark/jars/chill-java*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/chill*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/jackson-module-paranamer*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/jackson-module-scala*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/jersey-container-servlet-core*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/jersey-server*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/json4s-ast*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/kryo-shaded*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/minlog*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/scala-xml*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/spark-launcher*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/spark-network-shuffle*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/spark-unsafe*.jar /usr/local/hive/lib
+#ln -s /usr/local/spark/jars/xbean-asm5-shaded*.jar /usr/local/hive/lib
+
+
+#mkdir /tmp/spark
+
+#set hive.execution.engine=spark;
+#use northwind;
+#select c.categoryid, c.categoryname, p.productid, p.productname from categories as c join products as p on c.categoryid = p.categoryid;
+

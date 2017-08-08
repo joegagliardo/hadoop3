@@ -23,7 +23,11 @@
     $ bin/spark-submit examples/src/main/python/streaming/hdfs_wordcount.py localdir
  Then create a text file in `localdir` and the words in the file will get counted.
  
+ hadoop fs -mkdir /stream
  spark-submit hdfs-stream-count.py hdfs://$HOSTNAME:9000/stream
+ in another terminal window put text files into /stream 
+ hadoop fs -put /examples/text/holmes.txt /stream
+ hadoop fs -put /examples/text/odyssey.txt /stream
 """
 from __future__ import print_function
 

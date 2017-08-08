@@ -1,3 +1,7 @@
+#! /usr/bin/python
+# spark-submit --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar /examples/spark/spark-mongo.py
+# pyspark --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar
+
 import platform
 import findspark
 findspark.init()
@@ -13,13 +17,10 @@ sys.path.append('/usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python')
 import pymongo_spark
 pymongo_spark.activate()
 
-
-rdd = sc.mongoRDD('mongodb://localhost:27017/Northwind.products')
+rdd = sc.mongoRDD('mongodb://localhost:27017/northwind.products')
 print (rdd.collect())
 
 products = spark.createDataFrame(rdd, "ProductID:int, ProductName:string, UnitPrice:float, CategoryID:int, SupplierID:int")
 products.createOrReplaceTempView("products")
 products1 = spark.sql('select CategoryID, AVG(UnitPrice) as AvgPrice FROM Products GROUP BY CategoryID')
 products1.show()
-# spark-submit --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar /data/examples/spark/spark-mongo.py
-# pyspark --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar 

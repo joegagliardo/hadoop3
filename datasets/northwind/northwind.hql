@@ -1,9 +1,13 @@
+CREATE DATABASE northwind;
+use northwind;
+
 CREATE TABLE categories (
     categoryid smallint,
     categoryname varchar(15),
-    description varchar,
+    description string,
     picture binary
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE customers (
     customerid varchar(5),
@@ -17,7 +21,8 @@ CREATE TABLE customers (
     country varchar(15),
     phone varchar(24),
     fax varchar(24)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE employees (
     employeeid smallint,
@@ -35,23 +40,26 @@ CREATE TABLE employees (
     homephone varchar(24),
     extension varchar(4),
     photo binary,
-    notes varchar,
+    notes string,
     reportsto smallint,
     photopath varchar(255)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE employeeterritories (
     employeeid smallint,
     territoryid varchar(20)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
-CREATE TABLE order_details (
+CREATE TABLE orderdetails (
     orderid smallint,
     productid smallint,
     unitprice decimal,
     quantity smallint,
     discount decimal
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE orders (
     orderid smallint,
@@ -68,7 +76,8 @@ CREATE TABLE orders (
     shipregion varchar(15),
     shippostalcode varchar(10),
     shipcountry varchar(15)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE products (
     productid smallint,
@@ -81,18 +90,21 @@ CREATE TABLE products (
     unitsonorder smallint,
     reorderlevel smallint,
     discontinued int
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE regions (
     regionid smallint,
     regiondescription string
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE shippers (
     shipperid smallint,
     companyname varchar(40),
     phone varchar(24)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE suppliers (
     supplierid smallint,
@@ -107,19 +119,46 @@ CREATE TABLE suppliers (
     phone varchar(24),
     fax varchar(24),
     homepage string
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE territories (
     territoryid varchar(20),
     territorydescription string,
     regionid smallint
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
 CREATE TABLE usstates (
     stateid smallint,
     statename varchar(100),
     stateabbr varchar(2),
     stateregion varchar(50)
-);
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/categories' overwrite into table categories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/customers' overwrite into table customers;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/employees' overwrite into table employees;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/employeeterritories' overwrite into table employeeterritories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/orderdetails' overwrite into table orderdetails;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/orders' overwrite into table orders;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products' overwrite into table products;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/regions' overwrite into table regions;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/shippers' overwrite into table shippers;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/suppliers' overwrite into table suppliers;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories' overwrite into table territories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/usstates' overwrite into table usstates;
 
+select * from categories;
+select * from customers;
+select * from employees;
+select * from employeeterritories;
+select * from orderdetails;
+select * from orders;
+select * from products;
+select * from regions;
+select * from shippers;
+select * from suppliers;
+select * from territories;
+select * from usstates;

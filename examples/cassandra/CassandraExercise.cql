@@ -1,4 +1,4 @@
-CREATE KEYSPACE equipment2 with replication = {'class': 'SimpleStrategy', 'replication_factor’:’2’ };
+CREATE KEYSPACE equipment with replication = {'class': 'SimpleStrategy', 'replication_factor':'2' };
 use equipment;
 create table computer
 (
@@ -28,14 +28,12 @@ update computer set Timestamp = now() where EquipmentID = 2;
 
 alter table computer add Misc map<text, text>;
 
-
 update computer set Misc = {'color':'Silver'} where EquipmentID = 1;
 update computer set Misc = {'weight':'4.5 lbs'} where EquipmentID = 1;
 update computer set Misc = Misc + {'color':'Silver'} where EquipmentID = 1;
 update computer set Misc['color'] = 'white' where EquipmentID = 1;
 
-select * from computer where Misc['color’] = 'white' allow filtering;
+select * from computer where Misc['color'] = 'white' allow filtering;
 
 delete Misc['color'] from computer where EquipmentID = 1;
 
-docker run -it --link cassandrademo2_cass2_2:cass2 --rm --name cqlsh 
