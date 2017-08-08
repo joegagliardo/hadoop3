@@ -1,18 +1,1 @@
-<ROWS>
-    <ROW>
-        <RegionID>1</RegionID>
-        <RegionDescription>Eastern</RegionDescription>
-    </ROW>
-    <ROW>
-        <RegionID>2</RegionID>
-        <RegionDescription>Western</RegionDescription>
-    </ROW>
-    <ROW>
-        <RegionID>3</RegionID>
-        <RegionDescription>Northern</RegionDescription>
-    </ROW>
-    <ROW>
-        <RegionID>4</RegionID>
-        <RegionDescription>Southern</RegionDescription>
-    </ROW>
-</ROWS>
+<?xml version="1.0" encoding="UTF-8" ?><root><item type="dict"><regionid type="int">1</regionid><regiondescription type="str">Eastern</regiondescription></item><item type="dict"><regionid type="int">2</regionid><regiondescription type="str">Western</regiondescription></item><item type="dict"><regionid type="int">3</regionid><regiondescription type="str">Northern</regiondescription></item><item type="dict"><regionid type="int">4</regionid><regiondescription type="str">Southern</regiondescription></item></root>

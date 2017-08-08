@@ -1,50 +1,43 @@
-<ROWS>
-    <ROW>
-        <CategoryID>1</CategoryID>
-        <CategoryName>Beverages</CategoryName>
-        <Description>Soft drinks</Description>
-        <Picture> coffees</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>2</CategoryID>
-        <CategoryName>Condiments</CategoryName>
-        <Description>Sweet and savory sauces</Description>
-        <Picture> relishes</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>3</CategoryID>
-        <CategoryName>Confections</CategoryName>
-        <Description>Desserts</Description>
-        <Picture> candies</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>4</CategoryID>
-        <CategoryName>Dairy Products</CategoryName>
-        <Description>Cheeses</Description>
-        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>5</CategoryID>
-        <CategoryName>Grains/Cereals</CategoryName>
-        <Description>Breads</Description>
-        <Picture> crackers</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>6</CategoryID>
-        <CategoryName>Meat/Poultry</CategoryName>
-        <Description>Prepared meats</Description>
-        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>7</CategoryID>
-        <CategoryName>Produce</CategoryName>
-        <Description>Dried fruit and bean curd</Description>
-        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
-    </ROW>
-    <ROW>
-        <CategoryID>8</CategoryID>
-        <CategoryName>Seafood</CategoryName>
-        <Description>Seaweed and fish</Description>
-        <Picture>0x151C2F00020000000D000E0014002100FFFFFFFF4269746D617020496D616765005061696E742E5069637475726500010500000200000007000000504272757368000000000000000000A0290000424D98290000000000005600000028000000AC00000078000000010004000000000000000000880B0000880B0000080000</Picture>
-    </ROW>
-</ROWS>
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+  <row>
+    <categoryid>1</categoryid>
+    <categoryname>Beverages</categoryname>
+    <description>Soft drinks, coffees, teas, beers, and ales</description>
+  </row>
+  <row>
+    <categoryid>2</categoryid>
+    <categoryname>Condiments</categoryname>
+    <description>Sweet and savory sauces, relishes, spreads, and seasonings</description>
+  </row>
+  <row>
+    <categoryid>3</categoryid>
+    <categoryname>Confections</categoryname>
+    <description>Desserts, candies, and sweet breads</description>
+  </row>
+  <row>
+    <categoryid>4</categoryid>
+    <categoryname>Dairy Products</categoryname>
+    <description>Cheeses</description>
+  </row>
+  <row>
+    <categoryid>5</categoryid>
+    <categoryname>Grains/Cereals</categoryname>
+    <description>Breads, crackers, pasta, and cereal</description>
+  </row>
+  <row>
+    <categoryid>6</categoryid>
+    <categoryname>Meat/Poultry</categoryname>
+    <description>Prepared meats</description>
+  </row>
+  <row>
+    <categoryid>7</categoryid>
+    <categoryname>Produce</categoryname>
+    <description>Dried fruit and bean curd</description>
+  </row>
+  <row>
+    <categoryid>8</categoryid>
+    <categoryname>Seafood</categoryname>
+    <description>Seaweed and fish</description>
+  </row>
+</root>

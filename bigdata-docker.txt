@@ -415,4 +415,6 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    </property>
 
 
+#https://repo1.maven.org/maven2/org/apache/parquet/parquet-pig/1.9.0/parquet-pig-1.9.0.jar
+
 #https://repo1.maven.org/maven2/com/twitter/elephantbird/elephant-bird-pig/4.9/elephant-bird-pig-4.9.jar

@@ -9,3 +9,6 @@ bigdata.works.tar
 *.tar
 bd.txt
 datasets/northwind_accents.zip
+ignore
+
+test.txt
