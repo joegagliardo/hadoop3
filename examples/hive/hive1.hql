@@ -1,7 +1,7 @@
 dfs -mkdir /regions;
-dfs -put /examples/northwind/CSV_NoHeaders/regions.csv /regions;
+dfs -put /examples/northwind/CSVHeaders/regions/regions.csv /regions;
 
-set hive.execution.engine=spark;
+#set hive.execution.engine=spark;
 set hive.execution.engine=mr;
 
 CREATE EXTERNAL TABLE Regions(
@@ -14,26 +14,29 @@ SELECT * FROM Regions;
 
 SELECT *, INPUT__FILE__NAME FROM Regions;
 
-CREATE TABLE Regions2(
+ALTER TABLE Regions RENAME TO regions_table;
+
+CREATE VIEW regions_view AS SELECT RegionID, LTRIM(RTRIM(RegionName)) AS RegionName FROM regions_table WHERE RegionID IS NOT NULL;
+
+SELECT * FROM regions_view;
+
+CREATE TABLE Regions(
 RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 
-LOAD DATA LOCAL INPATH '/examples/northwind/CSV_Headers/regions.csv' overwrite into table regions2;
-SELECT * FROM Regions2;
+LOAD DATA LOCAL INPATH '/examples/northwind/CSV/regions' overwrite into table regions;
+SELECT * FROM regions;
 
-CREATE VIEW Regions3 AS SELECT RegionID, LTRIM(RTRIM(RegionName)) AS RegionName FROM Regions2 WHERE RegionID IS NOT NULL;
 
-SELECT * FROM Regions3;
-
-CREATE EXTERNAL TABLE Regions4(
+CREATE EXTERNAL TABLE regions2(
 RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-LOCATION '/user/hive/warehouse/regions2'
+LOCATION '/regions'
 TBLPROPERTIES("skip.header.line.count"="1");
 
-SELECT * FROM Regions4;
+SELECT * FROM Regions2;
 
 CREATE EXTERNAL TABLE RegionsTab(
 RegionID int,
@@ -47,9 +50,9 @@ SELECT * FROM RegionsTab;
 
 dfs -cat /regionstab/*;
 
-ADD JAR /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-2.1.1.jar;
+hive> ADD JAR /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar;
 
-CREATE TABLE Territories(
+CREATE TABLE territories(
 TerritoryID string,
 TerritoryName string,
 RegionID int)
@@ -57,9 +60,9 @@ ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE
 LOCATION '/territories';
 
-LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories.json' overwrite into table Territories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories/territories.json' overwrite into table Territories;
 
-SELECT * FROM Territories;
+SELECT * FROM territories;
 
 SELECT r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName
 FROM Regions AS r

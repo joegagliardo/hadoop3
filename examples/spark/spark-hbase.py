@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark3.py
+# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark-hbase.py
 # not been able to make this one work just yet
 
 import platform
@@ -13,7 +13,8 @@ sc = SparkContext(conf=conf)
 spark = SQLContext(sc)
 sc.setLogLevel("ERROR")
 
-data_source_format = 'org.apache.spark.sql.execution.datasources.hbase'
+#data_source_format = 'org.apache.spark.sql.execution.datasources.hbase'
+data_source_format = 'org.apache.hadoop.hbase.spark'
 
 df = sc.parallelize([('a', '1.0'), ('b', '2.0')]).toDF(schema=['col0', 'col1'])
 

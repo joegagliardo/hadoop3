@@ -12,4 +12,7 @@ hadoop fs -mkdir /hbase
 hadoop fs -mkdir /tmp
 hadoop fs -chmod g+w /user/hive/warehouse
 hadoop fs -chmod g+w /tmp
+hadoop fs -mkdir /stream
+hadoop fs -chmod g+w /stream
+
 #/scripts/init-schema.sh

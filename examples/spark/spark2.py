@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark3.py
+# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark2.py
 
 import platform
 import findspark

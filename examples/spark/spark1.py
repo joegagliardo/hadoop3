@@ -5,7 +5,7 @@
 # submit the premade jar to Spark
 # spark-submit --class com.roi.hadoop.grepnumwords.Main grepnumwords/target/grepnumwords-1.0.0.jar hdfs://$HOSTNAME:9000/shakespeare.txt hdfs://$HOSTNAME:9000/grep_spark king queen sword
 # submit to Spark as a native Spark program
-#spark-submit spark2.py
+#spark-submit spark1.py
 
 import platform
 import findspark

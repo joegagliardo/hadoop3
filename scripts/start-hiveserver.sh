@@ -1,2 +1,2 @@
 #! /bin/sh
-hive --service hiveserver2 &
+hive --service hiveserver2 &> /dev/null 2>&1

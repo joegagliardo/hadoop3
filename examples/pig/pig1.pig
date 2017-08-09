@@ -1,10 +1,10 @@
-region1 = load '/examples/northwind/CSV_NoHeaders/regions.csv' using PigStorage(',');
+region1 = load '/examples/northwind/CSV/regions' using PigStorage(',');
 dump region1
 
 region2 = foreach region1 generate $0, UPPER($1);
 dump region2;
 
-region1 = load '/examples/northwind/CSV_Headers/regions.csv' using PigStorage(',') AS (RegionID:int, RegionName:chararray);
+region1 = load '/examples/northwind/CSV/regions' using PigStorage(',') AS (RegionID:int, RegionName:chararray);
 region2 = foreach region1 generate RegionID, LTRIM(RTRIM(RegionName));
 dump region2;
 
@@ -17,7 +17,7 @@ sh cat pig_region1/*
 store region3 into 'pig_region2' using PigStorage('|');
 sh cat pig_region2/*
 
-terr1 = load '/examples/northwind/CSV_NoHeaders/territories.csv' using PigStorage(',') as (TerritoryID:int, TerritoryName:chararray, RegionID:int);
+terr1 = load '/examples/northwind/CSV/territories' using PigStorage(',') as (TerritoryID:int, TerritoryName:chararray, RegionID:int);
 dump terr1;
 
 store terr1 into 'terr_json' using JsonStorage();
@@ -43,8 +43,7 @@ dump terr7;
 store terr7 into 'terr_json2' using JsonStorage();
 sh cat terr_json2/*
 
-REGISTER /usr/local/pig/lib/avro-1.7.5.jar
-t = load '/examples/northwind/CSV_NoHeaders/territories.csv' using PigStorage(',') as (ID:int, Name:chararray, Region:int);
+REGISTER /usr/local/pig/lib/avro-*.jar
+t = load '/examples/northwind/CSV/territories' using PigStorage(',') as (ID:int, Name:chararray, Region:int);
 store t into 'terr_avro' using AvroStorage();
-
 sh cat terr_avro/*
