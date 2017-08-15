@@ -4,7 +4,7 @@ sleep .5
 sleep .5
 /scripts/start-cassandra.sh
 sleep 4
-start-hbase.sh
+/scripts/start-hbase.sh
 sleep 1
 /scripts/start-thrift.sh
 sleep 1

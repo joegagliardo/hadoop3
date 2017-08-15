@@ -171,9 +171,13 @@ RUN echo "# ---------------------------------------------" && \
 	mv /conf/ssh_config /root/.ssh/config && \
     chmod 600 /root/.ssh/config && \
     chown root:root /root/.ssh/config && \
-	mv /conf/bootstrap.sh /etc/bootstrap.sh && \
+    ln -s /conf/bootstrap-mysql.sh /etc/bootstrap.sh && \
     chown root:root /etc/bootstrap.sh && \
     chmod 700 /etc/bootstrap.sh && \
+    chown root:root /conf/bootstrap-mysql.sh && \
+    chmod 700 /conf/bootstrap-mysql.sh && \
+    chown root:root /conf/bootstrap-postgres.sh && \
+    chmod 700 /conf/bootstrap-postgres.sh && \
     chmod 700 /scripts/start-hadoop.sh && \
     chmod 700 /scripts/stop-hadoop.sh && \
     ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
@@ -255,6 +259,8 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
     ln -s /conf/hbase /usr/local/hbase/conf && \
+    ln -s /usr/local/hbase/start-hbase.sh /scripts/start-hbase.sh &&\
+    ln -s /usr/local/hbase/stop-hbase.sh /scripts/stop-hbase.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo ${ZOOKEEPER_URL} && \
