@@ -1,7 +1,6 @@
 dfs -mkdir /regions;
 dfs -put /examples/northwind/CSVHeaders/regions/regions.csv /regions;
 
-#set hive.execution.engine=spark;
 set hive.execution.engine=mr;
 
 CREATE EXTERNAL TABLE Regions(
@@ -50,7 +49,7 @@ SELECT * FROM RegionsTab;
 
 dfs -cat /regionstab/*;
 
-hive> ADD JAR /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar;
+ADD JAR /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar;
 
 CREATE TABLE territories(
 TerritoryID string,
@@ -64,17 +63,6 @@ LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories/territories.json' o
 
 SELECT * FROM territories;
 
-SELECT r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName
-FROM Regions AS r
-JOIN Territories AS t ON r.RegionID = t.RegionID;
-
-CREATE TABLE RegionTerritories
-ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
-STORED AS TEXTFILE
-AS
-SELECT r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName
-FROM Regions AS r
-JOIN Territories AS t ON r.RegionID = t.RegionID;
 
 CREATE TABLE Categories
 (
@@ -82,9 +70,9 @@ CategoryID int,
 CategoryName string,
 Description string
 )
-STORED AS ORC;
+STORED AS AVRO;
 
-LOAD DATA LOCAL INPATH '/examples/northwind/ORC/categories.orc' overwrite into table Categories;
+LOAD DATA LOCAL INPATH '/examples/northwind/AVRO/categories' overwrite into table Categories;
 
 select * from Categories;
 
@@ -104,7 +92,7 @@ Discontinued boolean
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products.json' overwrite into table Products;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products/products.json' overwrite into table Products;
 
 select regionid, collect_set(territoryname) as territorylist
 from territories
@@ -175,3 +163,12 @@ dfs -ls /user/hive/warehouse/transactions;
 insert into transactions partition (year=2016) select 3,30 union all select 4,40 union all select 5,50;
 dfs -ls /user/hive/warehouse/transactions;
  
+ 
+CREATE TABLE RegionTerritories
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE
+AS
+SELECT r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName
+FROM Regions AS r
+JOIN Territories AS t ON r.RegionID = t.RegionID;
+
