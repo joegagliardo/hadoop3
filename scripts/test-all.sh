@@ -1,6 +1,6 @@
 /scripts/format-namenode.sh
 sleep .5
-/scripts/init-schema-postgres.sh
+/scripts/init-schema-mysql.sh
 sleep .5
 /scripts/start-cassandra.sh
 sleep 4
