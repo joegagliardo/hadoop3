@@ -1,2 +1,2 @@
 #! /bin/sh
-/etc/init.d/mysql start
+find /var/lib/mysql/mysql -exec touch -c -a {} + && service mysql start

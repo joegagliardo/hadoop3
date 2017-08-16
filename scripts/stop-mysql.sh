@@ -1,2 +1,2 @@
 #! /bin/sh
-/etc/init.d/mysql stop
+service mysql stop

@@ -167,6 +167,8 @@ RUN echo "# ---------------------------------------------" && \
     sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
     sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
 	mv /usr/local/hadoop/etc/hadoop /usr/local/hadoop/etc/hadoop_backup && \
+	mv /etc/my.cnf /etc/my.cnf.bak && \
+	ln -s /conf/my.cnf /etc/my.cnf && \
 	ln -s /conf/hadoop /usr/local/hadoop/etc/hadoop && \
 	mv /conf/ssh_config /root/.ssh/config && \
     chmod 600 /root/.ssh/config && \
