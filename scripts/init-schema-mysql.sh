@@ -1,4 +1,5 @@
 #! /bin/sh
+rm /etc/bootstrap.sh
 ln -s /conf/bootstrap-mysql.sh /etc/bootstrap.sh 
 chown root:root /etc/bootstrap.sh && \
 chmod 700 /etc/bootstrap.sh && \
