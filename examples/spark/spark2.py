@@ -7,7 +7,7 @@ findspark.init()
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark3").setMaster("local")
+conf = SparkConf().setAppName("spark2").setMaster("local")
 sc = SparkContext(conf=conf)
 spark = SQLContext(sc)
 sc.setLogLevel("ERROR")

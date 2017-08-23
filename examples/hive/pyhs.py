@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import pyhs2
 
 with pyhs2.connect(host='localhost',
