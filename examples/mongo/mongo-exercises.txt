@@ -2,7 +2,7 @@ use telecoms
 node = {"address":"node1", "status_count":0}
 db.nodes.insert(node)
 
-db.nodes.update({"address":"node1"}, {"location":"london"})
+db.nodes.update({"address":"node1"}, {"$set": {"location":"london"}})
 db.nodes.find({"address":"node1"})
 
 db.nodes.update({"address":"node1"}, {"$inc" : {"status_count" :1}})
