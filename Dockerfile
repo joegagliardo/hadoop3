@@ -19,7 +19,7 @@ ADD conf /conf
 ADD scripts /scripts
 
 # Versions
-ARG HADOOP_VERSION=2.8.0
+ARG HADOOP_VERSION=2.8.1
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
