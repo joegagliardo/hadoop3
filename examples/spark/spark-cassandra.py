@@ -7,7 +7,7 @@ findspark.init()
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark4").setMaster("local")
+conf = SparkConf().setAppName("spark-cassandra").setMaster("local")
 sc = SparkContext(conf=conf)
 spark = SQLContext(sc)
 log4j = sc._jvm.org.apache.log4j

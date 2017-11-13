@@ -7,7 +7,7 @@ findspark.init()
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark2").setMaster("local")
+conf = SparkConf().setAppName("spark-xml").setMaster("local")
 sc = SparkContext(conf=conf)
 spark = SQLContext(sc)
 sc.setLogLevel("ERROR")
@@ -17,12 +17,12 @@ products.write \
     .format("com.databricks.spark.xml") \
     .option("rootTag", "products") \
     .option("rowTag", "product") \
-    .save("/examples/northwind/products_xml")
+    .save("/examples/spark/results/products_xml")
 
 products2 = spark.read \
     .format("com.databricks.spark.xml") \
     .options(rootTag="products", rowTag="product") \
-    .load("/examples/northwind/products_xml")
+    .load("/examples/spark/results//products_xml")
 
 productSchema = StructType([ \
     StructField("ProductID", IntegerType(), True), \
@@ -36,7 +36,7 @@ productSchema = StructType([ \
 products3 = spark.read \
     .format('com.databricks.spark.xml') \
     .options(rootTag="products", rowTag="product") \
-    .load("/examples/northwind/products_xml", schema = productSchema)
+    .load("/examples/spark/results/products_xml", schema = productSchema)
     
 products.createOrReplaceTempView("products")
 products4 = spark.sql("select ProductID, ProductName, SupplierID, CategoryID, UnitPrice, named_struct('InStock', UnitsInStock, 'OnOrder', UnitsOnOrder) as Units FROM products")
@@ -44,7 +44,7 @@ products4.write \
     .format("com.databricks.spark.xml") \
     .option("rootTag", "products") \
     .option("rowTag", "product") \
-    .save("/examples/northwind/products4_xml")
+    .save("/examples/spark/results/products4_xml")
     
     
 products4.createOrReplaceTempView("products4")

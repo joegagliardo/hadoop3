@@ -40,12 +40,13 @@ pig -x local -f /examples/pig/pig1.pig
 
 # hive
 cd /examples/hive
-/examples/hive/hive1.sh
+/examples/hive/test-hive.sh
 
 # spark
 cd /examples/spark
-spark-submit spark-cassandra.py
-spark-submit --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar /examples/spark/spark-mongo.py
-spark-submit spark1.py
-spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark2.py
+./submit-spark-text.sh
+./submit-spark-cassandra.sh
+./submit-spark-mongo.sh
+./submit-spark-mysql.sh
+./submit-spark-xml.sh
 

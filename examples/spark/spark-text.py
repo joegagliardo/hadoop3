@@ -13,7 +13,7 @@ findspark.init()
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark1").setMaster("local")
+conf = SparkConf().setAppName("spark-text").setMaster("local")
 sc = SparkContext(conf=conf)
 spark = SQLContext(sc)
 sc.setLogLevel("ERROR")
@@ -28,9 +28,9 @@ lines3 = lines2.flatMapValues(lambda x : x)
 searchwords = sc.parallelize([('king', 1), ('queen', 1), ('sword', 1)])
 lines4 = lines3.map(lambda x : (x[1], x[0]))
 join1 = searchwords.join(lines4)
-path = 'hdfs://{0}:{1}/{2}'.format(hostname, port, 'grep_spark1')
+path = 'hdfs://{0}:{1}/{2}'.format(hostname, port, 'spark-text')
 counts = join1.reduceByKey(lambda x, y : x if x[1] > y[1] else y).map(lambda x : (x[0], x[1][1]))
 counts.collect()
 counts.saveAsTextFile(path)
-print "run the following command:\nhadoop fs -cat /grep_spark1/*"
+print "run the following command:\nhadoop fs -cat /spark-text/*"
 
