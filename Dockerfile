@@ -27,7 +27,7 @@ ARG PIG_VERSION=0.17.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
 
-ARG HIVE_VERSION=2.3.0
+ARG HIVE_VERSION=2.3.2
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
     
@@ -72,7 +72,7 @@ ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
-ARG COCKROACH_VERSION=1.0.4
+ARG COCKROACH_VERSION=1.1.2
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 
@@ -93,7 +93,8 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
     url_exists $MONGO_HADOOP_STREAMING_URL && \
     url_exists $MONGO_JAVA_DRIVER_URL && \
     url_exists $SPARK_CASSANDRA_URL && \
-    url_exists $COCKROACH_URL 
+#    url_exists $COCKROACH_URL 
+	echo "All Good"
 
 USER root
 
