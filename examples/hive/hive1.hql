@@ -13,22 +13,21 @@ SELECT * FROM Regions;
 
 SELECT *, INPUT__FILE__NAME FROM Regions;
 
-ALTER TABLE Regions RENAME TO regions_table;
+ALTER TABLE Regions RENAME TO Regions_Table;
 
-CREATE VIEW regions_view AS SELECT RegionID, LTRIM(RTRIM(RegionName)) AS RegionName FROM regions_table WHERE RegionID IS NOT NULL;
+CREATE VIEW Regions_View AS SELECT RegionID, LTRIM(RTRIM(RegionName)) AS RegionName FROM Regions_Table WHERE RegionID IS NOT NULL;
 
-SELECT * FROM regions_view;
+SELECT * FROM Regions_View;
 
 CREATE TABLE Regions(
 RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 
-LOAD DATA LOCAL INPATH '/examples/northwind/CSV/regions' overwrite into table regions;
-SELECT * FROM regions;
+LOAD DATA LOCAL INPATH '/examples/northwind/CSV/regions' OVERWRITE INTO TABLE Regions;
+SELECT * FROM Regions;
 
-
-CREATE EXTERNAL TABLE regions2(
+CREATE EXTERNAL TABLE Regions2(
 RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
@@ -37,21 +36,21 @@ TBLPROPERTIES("skip.header.line.count"="1");
 
 SELECT * FROM Regions2;
 
-CREATE EXTERNAL TABLE RegionsTab(
+CREATE EXTERNAL TABLE Regions_Tab(
 RegionID int,
 RegionName string)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-LOCATION '/regionstab';
+LOCATION '/regions_tab';
 
-INSERT INTO RegionsTab SELECT * FROM Regions;
+INSERT INTO Regions_Tab SELECT * FROM Regions;
 
-SELECT * FROM RegionsTab;
+SELECT * FROM Regions_Tab;
 
-dfs -cat /regionstab/*;
+dfs -cat /regions_tab/*;
 
 ADD JAR /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar;
 
-CREATE TABLE territories(
+CREATE TABLE Territories(
 TerritoryID string,
 TerritoryName string,
 RegionID int)
@@ -59,10 +58,9 @@ ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE
 LOCATION '/territories';
 
-LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories/territories.json' overwrite into table Territories;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/territories/territories.json' OVERWRITE INTO TABLE Territories;
 
-SELECT * FROM territories;
-
+SELECT * FROM Territories;
 
 CREATE TABLE Categories
 (
@@ -72,11 +70,11 @@ Description string
 )
 STORED AS AVRO;
 
-LOAD DATA LOCAL INPATH '/examples/northwind/AVRO/categories' overwrite into table Categories;
+LOAD DATA LOCAL INPATH '/examples/northwind/AVRO/categories' OVERWRITE INTO TABLE Categories;
 
-select * from Categories;
+SELECT * FROM Categories;
 
-create table Products
+CREATE TABLE Products
 (
 ProductID int,
 ProductName string,
@@ -92,41 +90,40 @@ Discontinued boolean
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products/products.json' overwrite into table Products;
+LOAD DATA LOCAL INPATH '/examples/northwind/JSON/products/products.json' OVERWRITE INTO TABLE Products;
 
-select regionid, collect_set(territoryname) as territorylist
-from territories
-group by regionid;
+CREATE TABLE Territories_List
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe' STORED AS TEXTFILE
+AS
+SELECT RegionID, collect_set(TerritoryName) AS TerritoryList
+FROM Territories
+GROUP BY RegionID;
 
-create table territories_list
-as
-select regionid, collect_set(territoryname) as territorylist
-from territories
-group by regionid;
+SELECT * FROM Territories_List;
 
-select * from territories_list;
+SELECT t.RegionID, l AS TerritoryName
+FROM Territories_List AS t
+LATERAL VIEW EXPLODE(TerritoryList) EXPLODED_TABLE AS l;
 
-select t.regionid, l as territoryname
-from territories_list as t
-LATERAL VIEW explode(territorylist) exploded_table as l;
+CREATE TABLE Territories_Complex 
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe' STORED AS TEXTFILE
+AS
+SELECT RegionID
+, COLLECT_SET(NAMED_STRUCT("TerritoryID", TerritoryID, "TerritoryName", TerritoryName)) AS TerritoryList
+FROM Territories
+GROUP BY RegionID;
 
-create table territories_complex as
-select regionid
-, collect_set(named_struct("territoryid",territoryid, "territoryname", territoryname)) as territorylist
-from territories
-group by regionid;
+SELECT * FROM Territories_Complex;
 
-select * from territories_complex;
+SELECT t.RegionID, l
+FROM Territories_Complex AS t
+LATERAL VIEW EXPLODE(TerritoryList) EXPLODED_TABLE AS l;
 
-select t.regionid, l
-from territories_complex as t
-LATERAL VIEW explode(territorylist) exploded_table as l;
+SELECT t.RegionID, l.TerritoryName, l.TerritoryID
+FROM Territories_Complex AS t
+LATERAL VIEW EXPLODE(territorylist) EXPLODED_TABLE AS l;
 
-select t.regionid, l.territoryname, l.territoryid
-from territories_complex as t
-LATERAL VIEW explode(territorylist) exploded_table as l;
-
-create table Person(
+CREATE TABLE Person(
 PersonID int,
 Name string,
 Skills ARRAY<string>
@@ -134,41 +131,41 @@ Skills ARRAY<string>
 STORED AS AVRO;
 
 INSERT INTO Person 
-SELECT 1, 'joey', array('Java', 'Python', 'Hadoop') 
-UNION ALL SELECT 2, 'mary', array('C++', 'Java', 'Hive');
+SELECT 1, 'joey', ARRAY('Java', 'Python', 'Hadoop') 
+UNION ALL SELECT 2, 'mary', ARRAY('C++', 'Java', 'Hive');
 
-select PersonID, Name, Skills from Person;
-select PersonID, Name, Skills[0], Skills[1] from Person;
+SELECT PersonID, Name, Skills FROM Person;
+SELECT PersonID, Name, Skills[0], Skills[1] FROM Person;
 
-select PersonID, Name, skillname 
-from Person LATERAL VIEW explode(Skills) exploded_table as skillname;
+CREATE TABLE Skills_Denormalized AS
+SELECT PersonID, Name, SkillName 
+FROM Person LATERAL VIEW EXPLODE(Skills) EXPLODED_TABLE AS SkillName;
 
-create table skills_denormalized as
-select PersonID, Name, skillname 
-from Person LATERAL VIEW explode(Skills) exploded_table as skillname;
+SELECT PersonID, Name, COLLECT_SET(SkillName) AS Skills
+FROM Skills_Denormalized
+GROUP BY PersonID, Name;
 
-select PersonID, Name, collect_set(skillname) as skills
-from skills_denormalized
-group by PersonID, Name;
-
-create table Transactions
+CREATE TABLE Transactions
 (ID int,
-amount double
+Amount double
 )
 PARTITIONED BY (Year int);
 
-insert into transactions partition (year=2015) select 1, 10 union all select 2, 20;
+INSERT INTO Transactions PARTITION (Year=2015) SELECT 1, 10 UNION ALL SELECT 2, 20;
 dfs -ls /user/hive/warehouse/transactions;
 
-insert into transactions partition (year=2016) select 3,30 union all select 4,40 union all select 5,50;
+INSERT INTO Transactions PARTITION (Year=2016) SELECT 3,30 UNION ALL SELECT 4,40 UNION ALL SELECT 5,50;
 dfs -ls /user/hive/warehouse/transactions;
- 
- 
+  
 CREATE TABLE RegionTerritories
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE
 AS
-SELECT r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName
+SELECT r.RegionID, r.RegionName
+, COLLECT_SET(NAMED_STRUCT("TerritoryID", TerritoryID, "TerritoryName", TerritoryName)) AS TerritoryList
 FROM Regions AS r
-JOIN Territories AS t ON r.RegionID = t.RegionID;
+JOIN Territories AS t ON r.RegionID = t.RegionID
+GROUP BY r.RegionID, r.RegionName
+ORDER BY r.RegionID;
 
+dfs -cat /user/hive/warehouse/regionterritories/*;
