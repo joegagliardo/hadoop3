@@ -27,11 +27,11 @@ ARG PIG_VERSION=0.17.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
 
-ARG HIVE_VERSION=2.3.0
+ARG HIVE_VERSION=2.3.2
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
     
-ARG SPARK_VERSION=2.2.0
+ARG SPARK_VERSION=2.2.1
 ARG SPARK_BASE_URL=http://apache.claz.org/spark
 #ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
