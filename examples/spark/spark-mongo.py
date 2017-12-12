@@ -2,15 +2,11 @@
 # spark-submit --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar /examples/spark/spark-mongo.py
 # pyspark --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar
 
-import platform
-import findspark
-findspark.init()
-from pyspark import SparkConf, SparkContext
-from pyspark.sql import SQLContext
+from initSpark import initspark, hdfsPath
+sc, spark, conf = initspark("spark-mongo")
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark-mongo").setMaster("local")
-sc = SparkContext(conf=conf)
-spark = SQLContext(sc)
+log4j = sc._jvm.org.apache.log4j
+log4j.LogManager.getRootLogger().setLevel(log4j.Level.ERROR)
 
 import sys
 sys.path.append('/usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python')

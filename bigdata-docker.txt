@@ -241,6 +241,7 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
+    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
     mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
     ln -s /conf/spark /usr/local/spark/conf && \
     cd /home && \
@@ -261,8 +262,8 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
     ln -s /conf/hbase /usr/local/hbase/conf && \
-    ln -s /usr/local/hbase/start-hbase.sh /scripts/start-hbase.sh &&\
-    ln -s /usr/local/hbase/stop-hbase.sh /scripts/stop-hbase.sh && \
+    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/start-hbase.sh &&\
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stop-hbase.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo ${ZOOKEEPER_URL} && \

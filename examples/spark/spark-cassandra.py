@@ -1,15 +1,9 @@
 #! /usr/bin/python
 # spark-submit spark-cassandra.py
 
-import platform
-import findspark
-findspark.init()
-from pyspark import SparkConf, SparkContext
-from pyspark.sql import SQLContext
+from initSpark import initspark, hdfsPath
+sc, spark, conf = initspark("spark-cassandra")
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark-cassandra").setMaster("local")
-sc = SparkContext(conf=conf)
-spark = SQLContext(sc)
 log4j = sc._jvm.org.apache.log4j
 log4j.LogManager.getRootLogger().setLevel(log4j.Level.ERROR)
 

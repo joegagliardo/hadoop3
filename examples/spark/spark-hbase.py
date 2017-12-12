@@ -1,17 +1,13 @@
 #! /usr/bin/python
-# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark-hbase.py
+# spark-submit --jars "/usr/local/spark/jars/spark-xml.jar" /examples/spark/spark-hbasespark-submit --jars /usr/local/mongo-hadoop/mongo-hadoop-core.jar,/usr/local/mongo-hadoop/mongo-hadoop-spark.jar /examples/spark/spark-mongo.py.py
+# pyspark --jars /usr/local/spark/jars/spark-xml.jar
 # not been able to make this one work just yet
 
-import platform
-import findspark
-findspark.init()
-from pyspark import SparkConf, SparkContext
-from pyspark.sql import SQLContext
+from initSpark import initspark, hdfsPath
+sc, spark, conf = initspark("spark-hbase")
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark-hbase").setMaster("local")
-sc = SparkContext(conf=conf)
-spark = SQLContext(sc)
-sc.setLogLevel("ERROR")
+log4j = sc._jvm.org.apache.log4j
+log4j.LogManager.getRootLogger().setLevel(log4j.Level.ERROR)
 
 #data_source_format = 'org.apache.spark.sql.execution.datasources.hbase'
 data_source_format = 'org.apache.hadoop.hbase.spark'

@@ -1,0 +1,10 @@
+alpha	one	10
+alpha	one	20
+alpha	two	30
+alpha	two	40
+alpha	three	50
+beta	one	100
+beta	one	110
+beta	one	120
+beta	three	130
+beta	three	140

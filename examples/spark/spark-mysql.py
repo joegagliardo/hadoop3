@@ -1,21 +1,14 @@
 #! /usr/bin/python
 # spark-submit /examples/spark/spark-mysql.py
-import platform
-import findspark
-findspark.init()
-from pyspark import SparkConf, SparkContext
-from pyspark.sql import SQLContext
+
+from initSpark import initspark, hdfsPath
+sc, spark, conf = initspark("spark-mysql")
 from pyspark.sql.types import *
-conf = SparkConf().setAppName("spark-mysql").setMaster("local")
-sc = SparkContext(conf=conf)
-spark = SQLContext(sc)
-sc.setLogLevel("ERROR")
 log4j = sc._jvm.org.apache.log4j
 log4j.LogManager.getRootLogger().setLevel(log4j.Level.ERROR)
 
 import mysql.connector
 import sys
-
 
 # create a northwind database and regions table in mysql first
 # create database northwind;
@@ -35,10 +28,10 @@ try:
 except:
 	pass
 
-# set up a properties dictionary for use with spark jdbc
-# properties = {'user' : 'root', 'password' : 'rootpassword'}
+print ('read directly from a Hive table that is already there')
+spark.sql('select * from regions').show()
 
-# read a CSV file into a data frame
+print ('read a CSV file into a data frame')
 regions = spark.read.csv('file:///examples/northwind/CSVHeaders/regions', header=True) 
 regions.show()
 
@@ -47,30 +40,27 @@ regions.show()
 regions.write.format("jdbc").options(url="jdbc:mysql://localhost/northwind", driver='com.mysql.jdbc.Driver', dbtable='regions', user='root', password = "rootpassword", mode = "append", useSSL = "false").save()
 # select * from regions;
 
-# read a mysql table into a data frame
-x = spark.read.format("jdbc").options(url="jdbc:mysql://localhost/northwind", driver="com.mysql.jdbc.Driver", dbtable= "regions", user="root", password="rootpassword").load()
-x.show()
+print ('read a mysql table into a data frame')
+regions2 = spark.read.format("jdbc").options(url="jdbc:mysql://localhost/northwind", driver="com.mysql.jdbc.Driver", dbtable= "regions", user="root", password="rootpassword").load()
+regions2.show()
 
-# use the mysql dataframe as a temporary spark table
-x.createOrReplaceTempView("regions")
+print ('use the mysql dataframe as a temporary spark table (hiding the one that is in Hive)')
+regions2.createOrReplaceTempView("regions")
 
-# read territories from a text file
-territories = spark.read.json('/examples/northwind/JSON/territories')
+print ('read territories from a text file')
+territories = spark.read.json('file:///examples/northwind/JSON/territories')
 territories.createOrReplaceTempView("territories")
 
-# run an HQL query in spark on the data populated from the mysql table
+print ('run an HQL query in spark on the data populated from the mysql table')
 spark.sql("select r.RegionID, r.RegionName, t.TerritoryID, t.TerritoryName from regions as r join territories as t on r.RegionID = t.RegionID ORDER BY r.RegionID, t.TerritoryID").show()
 t = spark.sql("select r.RegionID, r.RegionName, collect_set(t.TerritoryName) as TerritoryList from regions as r join territories as t on r.RegionID = t.RegionID GROUP BY r.RegionID, r.RegionName ORDER BY r.RegionID")
 t.show()
 
-# write the results as a JSON file
-hostname = platform.node()
-port = 9000
-folder = '/territories'
-
-region_territory_path = 'hdfs://{0}:{1}/{2}'.format(hostname, port, 'region_territory')
+print ('write the results as a JSON file')
+region_territory_path = hdfsPath('region_territory')
 t.write.json(region_territory_path)
 
+print ('show regions and territories flattened out')
 rt = spark.read.json(region_territory_path)
 rt.createOrReplaceTempView("region_territory")
 spark.sql("select r.RegionID, r.RegionName, tl as TerritoryName from region_territory as r LATERAL VIEW explode(TerritoryList) exploded_table as tl").show()

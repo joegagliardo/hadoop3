@@ -36,7 +36,7 @@ import sys
 
 from pyspark import SparkConf, SparkContext
 from pyspark.streaming import StreamingContext
-conf = SparkConf().setAppName("myFirstApp").setMaster("local")
+conf = SparkConf().setAppName("hdfs-stream-count").setMaster("local")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
