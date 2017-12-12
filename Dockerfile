@@ -19,7 +19,7 @@ ADD conf /conf
 ADD scripts /scripts
 
 # Versions
-ARG HADOOP_VERSION=2.8.1
+ARG HADOOP_VERSION=2.8.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
@@ -27,7 +27,7 @@ ARG PIG_VERSION=0.17.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
 
-ARG HIVE_VERSION=2.3.2
+ARG HIVE_VERSION=2.3.0
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
     
@@ -72,7 +72,7 @@ ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
-ARG COCKROACH_VERSION=1.1.2
+ARG COCKROACH_VERSION=1.0.4
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 
@@ -93,8 +93,7 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
     url_exists $MONGO_HADOOP_STREAMING_URL && \
     url_exists $MONGO_JAVA_DRIVER_URL && \
     url_exists $SPARK_CASSANDRA_URL && \
-#    url_exists $COCKROACH_URL 
-	echo "All Good"
+    url_exists $COCKROACH_URL 
 
 USER root
 
@@ -242,6 +241,7 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
+    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
     mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
     ln -s /conf/spark /usr/local/spark/conf && \
     cd /home && \
@@ -262,8 +262,8 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
     ln -s /conf/hbase /usr/local/hbase/conf && \
-    ln -s /usr/local/hbase/start-hbase.sh /scripts/start-hbase.sh &&\
-    ln -s /usr/local/hbase/stop-hbase.sh /scripts/stop-hbase.sh && \
+    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/start-hbase.sh &&\
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stop-hbase.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo ${ZOOKEEPER_URL} && \
