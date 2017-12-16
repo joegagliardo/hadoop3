@@ -199,17 +199,6 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/loglevel-warn.sh && \
     chmod +x /scripts/loglevel-error.sh && \
     echo "# ---------------------------------------------" && \
-    echo "# Pig " && \
-    echo ${PIG_URL} && \
-    echo "# ---------------------------------------------" && \
-    curl ${PIG_URL} | tar -zx -C /usr/local && \
-    ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
-    mv /usr/local/pig/conf /usr/local/pig/conf_backup && \
-    ln -s /conf/pig /usr/local/pig/conf && \
-    mkdir /usr/local/hive/hcatalog/lib && \
-    ln -s /conf/hive-hcatalog-hbase-storage-handler-0.13.1.jar /usr/local/hive/hcatalog/lib && \
-    ln -s /conf/slf4j-api-1.6.0.jar /usr/local/hive/lib && \
-    echo "# ---------------------------------------------" && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
     echo "# ---------------------------------------------" && \
@@ -228,6 +217,17 @@ RUN echo "# ---------------------------------------------" && \
     apt-get -y install libsasl2-dev && \
     pip2 install pyhs2 && \
     pip3 install pyhs2 && \
+    echo "# ---------------------------------------------" && \
+    echo "# Pig " && \
+    echo ${PIG_URL} && \
+    echo "# ---------------------------------------------" && \
+    curl ${PIG_URL} | tar -zx -C /usr/local && \
+    ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
+    mv /usr/local/pig/conf /usr/local/pig/conf_backup && \
+    ln -s /conf/pig /usr/local/pig/conf && \
+    mkdir /usr/local/hive/hcatalog/lib && \
+    ln -s /conf/hive-hcatalog-hbase-storage-handler-0.13.1.jar /usr/local/hive/hcatalog/lib && \
+    ln -s /conf/slf4j-api-1.6.0.jar /usr/local/hive/lib && \
     echo "# ---------------------------------------------" && \
     echo "# Make scripts executable" && \
     echo "# ---------------------------------------------" && \
