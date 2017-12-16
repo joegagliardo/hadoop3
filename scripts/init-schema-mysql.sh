@@ -7,4 +7,4 @@ cp /usr/local/hive/conf/hive-site-mysql.xml /usr/local/hive/conf/hive-site.xml
 /scripts/start-mysql.sh
 sleep 5
 mysql < /scripts/hiveuser-mysql.sql
-schematool -dbType mysql -initSchema
+schematool -dbType mysql -initSchemaTo 2.3.0

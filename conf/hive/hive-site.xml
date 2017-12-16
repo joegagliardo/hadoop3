@@ -55,4 +55,8 @@
        <name>spark.yarn.jars</name>
        <value>hdfs://bigdata:8020/spark-jars/*</value>
    </property>
+   <property>
+       <name>hive.server2.authentication</name>
+       <value>NONE</value>
+   </property>
 </configuration>
