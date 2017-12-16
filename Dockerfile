@@ -103,12 +103,15 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
 ENV HIVE_HOME /usr/local/hive
+ENV HCAT_HOME /usr/local/hive/hcatalog
 ENV ZOOKEEPER_HOME /usr/local/zookeeper/
 ENV SPARK_HOME /usr/local/spark
-ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar'
+#ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar'
+ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar:$HCAT_HOME/share/hcatalog/hcatalog-core*.jar:$HCAT_HOME/share/hcatalog/hcatalog-pig-adapter*.jar:$HIVE_HOME/lib/hive-metastore-*.jar:$HIVE_HOME/lib/libthrift-*.jar:$HIVE_HOME/lib/hive-exec-*.jar:$HIVE_HOME/lib/libfb303-*.jar:$HIVE_HOME/lib/jdo2-api-*-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-*.jar
 ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.zip):${PYTHONPATH}
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
+
 ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 
 RUN echo "# ---------------------------------------------" && \
@@ -203,6 +206,9 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
     mv /usr/local/pig/conf /usr/local/pig/conf_backup && \
     ln -s /conf/pig /usr/local/pig/conf && \
+    mkdir /usr/local/hive/hcatalog/lib && \
+    ln -s /conf/hive-hcatalog-hbase-storage-handler-0.13.1.jar /usr/local/hive/hcatalog/lib && \
+    ln -s /conf/slf4j-api-1.6.0.jar /usr/local/hive/lib && \
     echo "# ---------------------------------------------" && \
     echo "# Hive" && \
     echo ${HIVE_URL} && \
@@ -262,8 +268,8 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
     ln -s /conf/hbase /usr/local/hbase/conf && \
-    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/start-hbase.sh &&\
-    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stop-hbase.sh && \
+    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo ${ZOOKEEPER_URL} && \
@@ -375,6 +381,10 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
+    echo "alias pyspark0='python -i -c\"exec(\\\"from initSpark import initspark, hdfsPath\nsc, spark, conf = initspark()\nfrom pyspark.sql.types import *\\\")\"'" >> ~/.bashrc && \
+    echo "export PIG_OPTS=-Dhive.metastore.uris=thrift://bigdata:9083" >> ~/.bashrc && \
+    echo "export PIG_CLASSPATH=$HCAT_HOME/share/hcatalog/hcatalog-core*.jar:$HCAT_HOME/share/hcatalog/hcatalog-pig-adapter*.jar:$HIVE_HOME/lib/hive-metastore-*.jar:$HIVE_HOME/lib/libthrift-*.jar:$HIVE_HOME/lib/hive-exec-*.jar:$HIVE_HOME/lib/libfb303-*.jar:$HIVE_HOME/lib/jdo2-api-*-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-*.jar" >> ~/.bashrc && \
+    echo "export HCAT_HOME=/usr/local/hive/hcatalog" >> ~/.bashrc && \
 	echo "# Final Cleanup" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
@@ -456,4 +466,8 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #set hive.execution.engine=spark;
 #use northwind;
 #select c.categoryid, c.categoryname, p.productid, p.productname from categories as c join products as p on c.categoryid = p.categoryid;
+
+# export HCAT_HOME=/usr/local/hive/hcatalog
+# alias and export pig
+# start-hbase.sh
 
