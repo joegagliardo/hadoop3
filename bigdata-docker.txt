@@ -107,7 +107,7 @@ ENV HCAT_HOME /usr/local/hive/hcatalog
 ENV ZOOKEEPER_HOME /usr/local/zookeeper/
 ENV SPARK_HOME /usr/local/spark
 #ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar'
-ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar:$HCAT_HOME/share/hcatalog/hcatalog-core*.jar:$HCAT_HOME/share/hcatalog/hcatalog-pig-adapter*.jar:$HIVE_HOME/lib/hive-metastore-*.jar:$HIVE_HOME/lib/libthrift-*.jar:$HIVE_HOME/lib/hive-exec-*.jar:$HIVE_HOME/lib/libfb303-*.jar:$HIVE_HOME/lib/jdo2-api-*-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-*.jar
+ENV SPARK_CLASSPATH '/usr/local/spark/conf/mysql-connector-java.jar:$HCAT_HOME/share/hcatalog/hcatalog-core*.jar:$HCAT_HOME/share/hcatalog/hcatalog-pig-adapter*.jar:$HIVE_HOME/lib/hive-metastore-*.jar:$HIVE_HOME/lib/libthrift-*.jar:$HIVE_HOME/lib/hive-exec-*.jar:$HIVE_HOME/lib/libfb303-*.jar:$HIVE_HOME/lib/jdo2-api-*-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-*.jar'
 ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.zip):${PYTHONPATH}
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
