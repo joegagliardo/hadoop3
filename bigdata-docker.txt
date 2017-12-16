@@ -379,6 +379,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
+    echo "alias pyspark0='python -i -c\"exec(\\\"from initSpark import initspark, hdfsPath\nsc, spark, conf = initspark()\nfrom pyspark.sql.types import *\\\")\"'" >> ~/.bashrc && \
     echo "export PIG_OPTS=-Dhive.metastore.uris=thrift://bigdata:9083" >> ~/.bashrc && \
     echo "export PIG_CLASSPATH=$HCAT_HOME/share/hcatalog/hcatalog-core*.jar:$HCAT_HOME/share/hcatalog/hcatalog-pig-adapter*.jar:$HIVE_HOME/lib/hive-metastore-*.jar:$HIVE_HOME/lib/libthrift-*.jar:$HIVE_HOME/lib/hive-exec-*.jar:$HIVE_HOME/lib/libfb303-*.jar:$HIVE_HOME/lib/jdo2-api-*-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-*.jar" >> ~/.bashrc && \
 	echo "# Final Cleanup" && \
