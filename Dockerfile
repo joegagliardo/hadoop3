@@ -238,7 +238,6 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/init-schema-postgres.sh && \
     chmod +x /scripts/start-everything.sh && \
     chmod +x /scripts/stop-everything.sh && \
-    chmod +x /scripts/start-hiveserver.sh && \
     echo "# ---------------------------------------------" && \
     echo "# Spark" && \
     echo ${SPARK_URL} && \
@@ -470,4 +469,6 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # export HCAT_HOME=/usr/local/hive/hcatalog
 # alias and export pig
 # start-hbase.sh
+# make scripts executable removed
+#    chmod +x /scripts/start-hiveserver.sh && \
 
