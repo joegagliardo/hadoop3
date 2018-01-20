@@ -37,8 +37,9 @@ ARG SPARK_BASE_URL=http://apache.claz.org/spark
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
     
 ARG ZOOKEEPER_VERSION=3.4.11
-ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
-ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
+#ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
+ARG ZOOKEEPER_BASE_URL=http://apache.claz.org/zookeeper/
+ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
 
 ARG HBASE_VERSION=1.4.0
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
