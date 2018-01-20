@@ -99,7 +99,8 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
 USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+#ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JAVA_HOME /usr/lib/jvm/open-jdk
 #ENV JAVA_HOME /usr
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
