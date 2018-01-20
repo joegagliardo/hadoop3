@@ -19,7 +19,7 @@ ADD conf /conf
 ADD scripts /scripts
 
 # Versions
-ARG HADOOP_VERSION=2.9.0
+ARG HADOOP_VERSION=3.0.0
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
@@ -36,15 +36,15 @@ ARG SPARK_BASE_URL=http://apache.claz.org/spark
 #ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
     
-ARG ZOOKEEPER_VERSION=3.4.10
+ARG ZOOKEEPER_VERSION=3.4.11
 ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
 ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
 
-ARG HBASE_VERSION=1.3.1
+ARG HBASE_VERSION=1.4.0
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
     
-ARG MONGO_VERSION=3.4.4
+ARG MONGO_VERSION=3.6.2
 ARG MONGO_BASE_URL=https://fastdl.mongodb.org/linux
 ARG MONGO_URL=${MONGO_BASE_URL}/mongodb-linux-x86_64-${MONGO_VERSION}.tgz
     
@@ -72,7 +72,7 @@ ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
-ARG COCKROACH_VERSION=1.0.4
+ARG COCKROACH_VERSION=1.1.4
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 
