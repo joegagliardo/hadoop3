@@ -103,7 +103,8 @@ ENV BOOTSTRAP /etc/bootstrap.sh
 #ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 ENV JAVA_HOME /usr/lib/jvm/java-1.9.0-openjdk-amd64
 #ENV JAVA_HOME /usr
-ENV HADOOP_PREFIX /usr/local/hadoop
+#ENV HADOOP_PREFIX /usr/local/hadoop
+ENV HADOOP_HOME /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
 ENV HIVE_HOME /usr/local/hive
 ENV HCAT_HOME /usr/local/hive/hcatalog
@@ -115,7 +116,8 @@ ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
 
-ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
+#ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
+ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 
 RUN echo "# ---------------------------------------------" && \
     echo "# passwordless ssh" && \
@@ -142,8 +144,8 @@ RUN echo "# ---------------------------------------------" && \
     cd /usr/local && \
     ln -s /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop && \
     ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
-    sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
-    sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && \
+    sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr\nexport HADOOP_HOME=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
 	mv /usr/local/hadoop/etc/hadoop /usr/local/hadoop/etc/hadoop_backup && \
 	mv /etc/my.cnf /etc/my.cnf.bak && \
 	ln -s /conf/my.cnf /etc/my.cnf && \
@@ -167,8 +169,8 @@ RUN echo "# ---------------------------------------------" && \
     sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config && \
     echo "UsePAM no" >> /etc/ssh/sshd_config && \
     echo "Port 2122" >> /etc/ssh/sshd_config && \
-    service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root && \
-    service ssh start $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh $HADOOP_PREFIX/sbin/start-dfs.sh $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input && \
+    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root && \
+    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input && \
     chmod +x /scripts/loglevel-debug.sh && \
     chmod +x /scripts/loglevel-info.sh && \
     chmod +x /scripts/loglevel-warn.sh && \
@@ -189,7 +191,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     echo "# Hiveserver2 Python Package" && \
     echo "# ---------------------------------------------" && \
-    apt-get -y install libsasl2-dev && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install libsasl2-dev && \
     pip2 install pyhs2 && \
     pip3 install pyhs2 && \
     echo "# ---------------------------------------------" && \
@@ -257,7 +259,7 @@ RUN cd /home && \
     echo "# ---------------------------------------------" && \
     echo "# Mongo" && \
     echo "# ---------------------------------------------" && \
-    apt-get -y install mongodb-org && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
     pip2 install pymongo && \
     pip3 install pymongo && \
     mkdir /data/mongo && \
@@ -268,7 +270,7 @@ RUN cd /home && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
     echo "# ---------------------------------------------" && \
-    apt-get -y install cassandra && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
     chmod +x /scripts/start-cassandra.sh && \
     chmod +x /scripts/stop-cassandra.sh && \
     echo "# change the data and log folder" && \
@@ -288,25 +290,6 @@ RUN cd /home && \
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/create-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh && \
-    echo "# ---------------------------------------------" && \
-    echo "# Spark XML library" && \
-    echo "# ---------------------------------------------" && \
-    cd /home && \
-    git clone ${SPARK_XML_GIT} && \
-    cd /home/spark-xml && \
-    sbt/sbt package && \
-    cp /home/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
-    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
-    cd /home && \
-    rm -r /home/spark-xml && \
-	cd /home && \
-	git clone https://github.com/minrk/findspark.git && \
-	cd /home/findspark && \
-    python2 setup.py install && \
-	python3 setup.py install && \
-	cd /home && \
-	rm -r /home/findspark && \
-    cd /home && \
     echo "# ---------------------------------------------" && \
     echo "# Spark Cassandra Connector" && \
     echo ${SPARK_CASSANDRA_URL} && \
@@ -390,6 +373,7 @@ RUN echo "*************" && \
 CMD ["/etc/bootstrap.sh", "-d"]
 # end of actual build
 
+# fix after upgrade to hadoop 3
 #cd /home && \
 #    echo "# ---------------------------------------------" && \
 #    echo "# Spark HBase" && \
@@ -400,6 +384,25 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    mvn package -DskipTests && \
 #    mvn clean package test && \
 #    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Spark XML library" && \
+#    echo "# ---------------------------------------------" && \
+#    cd /home && \
+#    git clone ${SPARK_XML_GIT} && \
+#    cd /home/spark-xml && \
+#    sbt/sbt package && \
+#    cp /home/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+#    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
+#    cd /home && \
+#    rm -r /home/spark-xml && \
+#	cd /home && \
+#	git clone https://github.com/minrk/findspark.git && \
+#	cd /home/findspark && \
+#   python2 setup.py install && \
+#	python3 setup.py install && \
+#	cd /home && \
+#	rm -r /home/findspark && \
+#    cd /home && \
     
 
 
