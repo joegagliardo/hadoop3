@@ -20,7 +20,8 @@ ADD scripts /scripts
 
 # Versions
 ARG HADOOP_VERSION=3.0.0
-ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+#ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+ARG HADOOP_BASE_URL=http://apache.claz.org/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
 ARG PIG_VERSION=0.17.0
@@ -100,7 +101,7 @@ USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 #ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-ENV JAVA_HOME /usr/lib/jvm/open-jdk
+ENV JAVA_HOME /usr/lib/jvm/java-1.9.0-openjdk-amd64
 #ENV JAVA_HOME /usr
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
@@ -127,34 +128,6 @@ RUN echo "# ---------------------------------------------" && \
     ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && \
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
     cd /scripts && \
-    echo "# ---------------------------------------------" && \
-    echo "# Cockroach DB" && \
-    echo "# ---------------------------------------------" && \
-    mkdir /cr && \
-    cd /cr && \
-    wget ${COCKROACH_URL} && \
-    tar xfz cockroach-* && \
-    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
-    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
-    echo "cd /data" >> /scripts/start-cockroach.sh && \
-    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
-    chmod +x /scripts/start-cockroach.sh && \
-    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
-    echo "cd /data" >> /scripts/cockroach-shell.sh && \
-    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
-    chmod +x /scripts/cockroach-shell.sh && \
-    cd / && \
-    rm -r /cr && \
-    echo "# ---------------------------------------------" && \
-    echo "# Postgresql" && \
-    echo "# ---------------------------------------------" && \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
-    chmod +x /scripts/start-postgres.sh && \
-    chmod +x /scripts/stop-postgres.sh && \
-    chmod +x /scripts/postgres-client.sh && \
-    /etc/init.d/postgresql start && \
-    sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
-    sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
     echo "# Make folders for HDFS data" && \
     echo "# ---------------------------------------------" && \
@@ -250,17 +223,8 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
     mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
-    ln -s /conf/spark /usr/local/spark/conf && \
-    cd /home && \
-    echo "# ---------------------------------------------" && \
-    echo "# Spark HBase" && \
-    echo ${SPARK_HBASE_GIT} && \
-    echo "# ---------------------------------------------" && \
-    git clone ${SPARK_HBASE_GIT} && \
-    cd shc && \
-    mvn package -DskipTests && \
-    mvn clean package test && \
-    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
+    ln -s /conf/spark /usr/local/spark/conf 
+RUN cd /home && \
     echo "# ---------------------------------------------" && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
@@ -379,6 +343,34 @@ RUN echo "# ---------------------------------------------" && \
 	python setup.py install && \
 	python3 setup.py install && \
     echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    mkdir /cr && \
+    cd /cr && \
+    wget ${COCKROACH_URL} && \
+    tar xfz cockroach-* && \
+    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
+    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
+    echo "cd /data" >> /scripts/start-cockroach.sh && \
+    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
+    chmod +x /scripts/start-cockroach.sh && \
+    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
+    echo "cd /data" >> /scripts/cockroach-shell.sh && \
+    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
+    chmod +x /scripts/cockroach-shell.sh && \
+    cd / && \
+    rm -r /cr && \
+    echo "# ---------------------------------------------" && \
+    echo "# Postgresql" && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
+    chmod +x /scripts/start-postgres.sh && \
+    chmod +x /scripts/stop-postgres.sh && \
+    chmod +x /scripts/postgres-client.sh && \
+    /etc/init.d/postgresql start && \
+    sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
+    sudo -u postgres psql -c "create database root;" && \
+    echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
@@ -397,6 +389,20 @@ RUN echo "*************" && \
 
 CMD ["/etc/bootstrap.sh", "-d"]
 # end of actual build
+
+#cd /home && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Spark HBase" && \
+#    echo ${SPARK_HBASE_GIT} && \
+#    echo "# ---------------------------------------------" && \
+#    git clone ${SPARK_HBASE_GIT} && \
+#    cd shc && \
+#    mvn package -DskipTests && \
+#    mvn clean package test && \
+#    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
+    
+
+
 
 
 #    echo "# ---------------------------------------------" && \
