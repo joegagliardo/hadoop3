@@ -67,6 +67,7 @@ fi
 # These options will be appended to the options specified as YARN_OPTS
 # and therefore may override any similar flags set in YARN_OPTS
 #export YARN_RESOURCEMANAGER_OPTS=
+export YARN_RESOURCEMANAGER_OPTS="--add-modules=ALL-SYSTEM"
 
 # Node Manager specific parameters
 
@@ -83,6 +84,7 @@ fi
 # These options will be appended to the options specified as YARN_OPTS
 # and therefore may override any similar flags set in YARN_OPTS
 #export YARN_NODEMANAGER_OPTS=
+export YARN_NODEMANAGER_OPTS="--add-modules=ALL-SYSTEM"
 
 # so that filenames w/ spaces are handled correctly in loops below
 IFS=
