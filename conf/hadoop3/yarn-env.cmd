@@ -19,8 +19,8 @@ if not defined HADOOP_YARN_USER (
   set HADOOP_YARN_USER=%yarn%
 )
 
-if not defined HADOOP_CONF_DIR (
-  set HADOOP_CONF_DIR=%HADOOP_YARN_HOME%\conf
+if not defined YARN_CONF_DIR (
+  set YARN_CONF_DIR=%HADOOP_YARN_HOME%\conf
 )
 
 if defined YARN_HEAPSIZE (

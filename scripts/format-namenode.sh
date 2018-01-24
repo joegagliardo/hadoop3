@@ -1,9 +1,9 @@
 #! /bin/sh
-stop-all.sh
+stop-hadoop.sh
 rm -r /data/hdfs/name
 rm -r /data/hdfs/data
 hdfs namenode -format
-start-all.sh
+start-hadoop.sh
 hadoop fs -mkdir /user
 hadoop fs -mkdir /user/root
 hadoop fs -mkdir /user/hive

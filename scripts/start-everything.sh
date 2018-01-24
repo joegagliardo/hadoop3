@@ -1,8 +1,7 @@
 #! /bin/sh
 /scripts/start-mysql.sh
 /scripts/start-postgres.sh
-start-dfs.sh
-start-yarn.sh
+start-hadoop.sh
 /scripts/start-mongo.sh
 /scripts/start-cassandra.sh
 start-hbase.sh

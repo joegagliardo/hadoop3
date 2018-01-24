@@ -7,7 +7,7 @@ MAINTAINER joegagliardo
 
 # This section is an easy place to change the desired password and versions to install
 
-EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002
+EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002 9870
 
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
@@ -116,6 +116,12 @@ ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
 
+ENV HDFS_NAMENODE_USER root
+ENV HDFS_DATANODE_USER root
+ENV HDFS_SECONDARYNAMENODE_USER root
+ENV YARN_RESOURCEMANAGER_USER root
+ENV YARN_NODEMANAGER_USER root
+
 #ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 
@@ -150,6 +156,7 @@ RUN echo "# ---------------------------------------------" && \
 	mv /etc/my.cnf /etc/my.cnf.bak && \
 	ln -s /conf/my.cnf /etc/my.cnf && \
 	ln -s /conf/hadoop /usr/local/hadoop/etc/hadoop && \
+	ln -s /conf/hadoop /usr/local/hadoop/conf && \
 	mv /conf/ssh_config /root/.ssh/config && \
     chmod 600 /root/.ssh/config && \
     chown root:root /root/.ssh/config && \
