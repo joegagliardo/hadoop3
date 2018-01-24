@@ -7,7 +7,7 @@ MAINTAINER joegagliardo
 
 # This section is an easy place to change the desired password and versions to install
 
-EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002
+EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002 9870
 
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
@@ -100,10 +100,9 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
 USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-#ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-ENV JAVA_HOME /usr/lib/jvm/java-1.9.0-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+#ENV JAVA_HOME /usr/lib/jvm/java-1.9.0-openjdk-amd64
 #ENV JAVA_HOME /usr
-#ENV HADOOP_PREFIX /usr/local/hadoop
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PIG_HOME /usr/local/pig
 ENV HIVE_HOME /usr/local/hive
@@ -116,14 +115,50 @@ ENV PYTHONPATH ${SPARK_HOME}/python/:$(echo ${SPARK_HOME}/python/lib/py4j-*-src.
 ENV HBASE_HOME /usr/local/hbase
 ENV HBASE_CONF_DIR=$HBASE_HOME/conf
 
-#ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
+ENV HDFS_NAMENODE_USER root
+ENV HDFS_DATANODE_USER root
+ENV HDFS_SECONDARYNAMENODE_USER root
+ENV YARN_RESOURCEMANAGER_USER root
+ENV YARN_NODEMANAGER_USER root
+
 ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$ZOOKEEPER_HOME:bin:$SPARK_HOME/bin:$HBASE_HOME/bin
 
 RUN echo "# ---------------------------------------------" && \
+    echo "# Mongo & Cassandra Keys" && \
+    echo "# ---------------------------------------------" && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+    apt-get update && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo" && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
+    pip2 install pymongo && \
+    pip3 install pymongo && \
+    mkdir /data/mongo && \
+    mkdir /data/mongo/data && \
+    chmod +x /scripts/start-mongo.sh && \
+    chmod +x /scripts/stop-mongo.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cassandra" && \
+    echo ${CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
+    chmod +x /scripts/start-cassandra.sh && \
+    chmod +x /scripts/stop-cassandra.sh && \
+    echo "# change the data and log folder" && \
+    mkdir /data/cassandra && \
+    mkdir /data/cassandra/data && \
+    mkdir /data/cassandra/log && \
+    mv /etc/cassandra /etc/cassandra_backup && \
+    ln -s /conf/cassandra /etc/cassandra && \
+    chmod +x /examples/cassandra/test-cassandra-table.py && \
+	echo "# ---------------------------------------------" && \
     echo "# passwordless ssh" && \
     echo "# ---------------------------------------------" && \
     chmod 0777 /examples && \
-    apt-get update && \
     rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa && \
     ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && \
     ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
@@ -150,6 +185,7 @@ RUN echo "# ---------------------------------------------" && \
 	mv /etc/my.cnf /etc/my.cnf.bak && \
 	ln -s /conf/my.cnf /etc/my.cnf && \
 	ln -s /conf/hadoop /usr/local/hadoop/etc/hadoop && \
+	ln -s /conf/hadoop /usr/local/hadoop/conf && \
 	mv /conf/ssh_config /root/.ssh/config && \
     chmod 600 /root/.ssh/config && \
     chown root:root /root/.ssh/config && \
@@ -226,11 +262,11 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
     mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
     ln -s /conf/spark /usr/local/spark/conf 
-RUN cd /home && \
-    echo "# ---------------------------------------------" && \
+RUN echo "# ---------------------------------------------" && \
     echo "# HBase" && \
     echo ${HBASE_URL} && \
     echo "# ---------------------------------------------" && \
+    cd /home && \
     curl ${HBASE_URL} | tar -zx -C /usr/local && \
     ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
@@ -248,38 +284,6 @@ RUN cd /home && \
     ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
     pip2 install happybase psycopg2 && \
     pip3 install happybase psycopg2 && \
-    echo "# ---------------------------------------------" && \
-    echo "# Mongo & Cassandra Keys" && \
-    echo "# ---------------------------------------------" && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
-    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
-    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
-    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
-    apt-get update && \
-    echo "# ---------------------------------------------" && \
-    echo "# Mongo" && \
-    echo "# ---------------------------------------------" && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
-    pip2 install pymongo && \
-    pip3 install pymongo && \
-    mkdir /data/mongo && \
-    mkdir /data/mongo/data && \
-    chmod +x /scripts/start-mongo.sh && \
-    chmod +x /scripts/stop-mongo.sh && \
-    echo "# ---------------------------------------------" && \
-    echo "# Cassandra" && \
-    echo ${CASSANDRA_URL} && \
-    echo "# ---------------------------------------------" && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
-    chmod +x /scripts/start-cassandra.sh && \
-    chmod +x /scripts/stop-cassandra.sh && \
-    echo "# change the data and log folder" && \
-    mkdir /data/cassandra && \
-    mkdir /data/cassandra/data && \
-    mkdir /data/cassandra/log && \
-    mv /etc/cassandra /etc/cassandra_backup && \
-    ln -s /conf/cassandra /etc/cassandra && \
-    chmod +x /examples/cassandra/test-cassandra-table.py && \
     echo "# ---------------------------------------------" && \
     echo "# Cassandra libraries" && \
     echo "# ---------------------------------------------" && \
@@ -379,8 +383,9 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    echo "# Spark HBase" && \
 #    echo ${SPARK_HBASE_GIT} && \
 #    echo "# ---------------------------------------------" && \
+#    cd /home && \
 #    git clone ${SPARK_HBASE_GIT} && \
-#    cd shc && \
+#    cd /home/shc && \
 #    mvn package -DskipTests && \
 #    mvn clean package test && \
 #    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
