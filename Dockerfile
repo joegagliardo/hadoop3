@@ -358,6 +358,37 @@ RUN echo "# ---------------------------------------------" && \
     sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
     sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
+    echo "# Spark HBase" && \
+    echo ${SPARK_HBASE_GIT} && \
+    echo "# ---------------------------------------------" && \
+    cd /tmp && \
+    git clone ${SPARK_HBASE_GIT} && \
+    cd /tmp/shc && \
+    mvn package -DskipTests && \
+    ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
+    cd /tmp && \
+    rm -r /rmp/shc
+    echo "# ---------------------------------------------" && \
+    echo "# Spark XML library" && \
+    echo "# ---------------------------------------------" && \
+    cd /tmp && \
+    git clone ${SPARK_XML_GIT} && \
+    cd /tmp/spark-xml && \
+    sbt/sbt package && \
+    cp /tmp/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
+    cd /tmp && \
+    rm -r /tmp/spark-xml && \
+    echo "# ---------------------------------------------" && \
+    echo "# FindSpark" && \
+    echo "# ---------------------------------------------" && \
+	git clone https://github.com/minrk/findspark.git && \
+	cd /tmp/findspark && \
+    python2 setup.py install && \
+	python3 setup.py install && \
+	cd /home && \
+	rm -r /tmp/findspark && \
+    echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
