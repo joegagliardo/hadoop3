@@ -367,7 +367,7 @@ RUN echo "# ---------------------------------------------" && \
     mvn package -DskipTests && \
     ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
     cd /tmp && \
-    rm -r /rmp/shc
+    rm -r /tmp/shc && \
     echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
