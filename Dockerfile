@@ -100,7 +100,8 @@ RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01]
 USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+#ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JAVA_HOME /usr/lib/jvm/java-9-oracle
 #ENV JAVA_HOME /usr/lib/jvm/java-1.9.0-openjdk-amd64
 #ENV JAVA_HOME /usr
 ENV HADOOP_HOME /usr/local/hadoop
@@ -409,64 +410,11 @@ CMD ["/etc/bootstrap.sh", "-d"]
 # end of actual build
 
 # fix after upgrade to hadoop 3
-#cd /home && \
-#    echo "# ---------------------------------------------" && \
-#    echo "# Spark HBase" && \
-#    echo ${SPARK_HBASE_GIT} && \
-#    echo "# ---------------------------------------------" && \
-#    cd /home && \
-#    git clone ${SPARK_HBASE_GIT} && \
-#    cd /home/shc && \
-#    mvn package -DskipTests && \
-#    mvn clean package test && \
-#    mvn -DwildcardSuites=org.apache.spark.sql.DefaultSourceSuite test && \
-#    echo "# ---------------------------------------------" && \
-#    echo "# Spark XML library" && \
-#    echo "# ---------------------------------------------" && \
-#    cd /home && \
-#    git clone ${SPARK_XML_GIT} && \
-#    cd /home/spark-xml && \
-#    sbt/sbt package && \
-#    cp /home/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
-#    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
-#    cd /home && \
-#    rm -r /home/spark-xml && \
-#	cd /home && \
-#	git clone https://github.com/minrk/findspark.git && \
-#	cd /home/findspark && \
-#   python2 setup.py install && \
-#	python3 setup.py install && \
-#	cd /home && \
-#	rm -r /home/findspark && \
-#    cd /home && \
-    
-
-
-
-
-#    echo "# ---------------------------------------------" && \
-#    echo "# Cockroach DB" && \
-#    echo "# ---------------------------------------------" && \
-#    wget ${COCKROACH_URL} && \
-#    tar xfz cockroach-* && \
-#    mv cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin && \
-#    rm -r /scripts/cockroach* && \
-#    echo "#! /bin/sh" > /scripts/start-cockroach.sh && \
-#    echo "cd /data" >> /scripts/start-cockroach.sh && \
-#    echo "cockroach start --insecure --host=localhost &" >> /scripts/start-cockroach.sh && \
-#    chmod +x /scripts/start-cockroach.sh && \
-#    echo "#! /bin/sh" > /scripts/cockroach-shell.sh && \
-#    echo "cd /data" >> /scripts/cockroach-shell.sh && \
-#    echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
-#    chmod +x /scripts/cockroach-shell.sh && \
-
 
 # hive --service hiveserver2 start 
 # hive --service hiveserver2 stop
 # sudo service hive-server2 start
 # !connect jdbc:hive2://localhost:10000
-
-
 
 #<name>hadoop.proxyuser.hive.groups</name>
 #<value>*</value>
