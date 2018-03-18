@@ -361,6 +361,7 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     echo "# FindSpark" && \
     echo "# ---------------------------------------------" && \
+    cd /tmp && \
 	git clone https://github.com/minrk/findspark.git && \
 	cd /tmp/findspark && \
     python2 setup.py install && \
