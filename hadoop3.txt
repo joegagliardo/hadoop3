@@ -158,8 +158,8 @@ RUN echo "# ---------------------------------------------" && \
     mkdir /data/mongo && \
     mkdir /data/mongo/data && \
     chmod +x /scripts/start-mongo.sh && \
-    chmod +x /scripts/stop-mongo.sh && \
-    echo "# ---------------------------------------------" && \
+    chmod +x /scripts/stop-mongo.sh 
+RUN echo "# ---------------------------------------------" && \
     echo "# Cassandra" && \
     echo ${CASSANDRA_URL} && \
     echo "# ---------------------------------------------" && \
@@ -172,8 +172,8 @@ RUN echo "# ---------------------------------------------" && \
     mkdir /data/cassandra/log && \
     mv /etc/cassandra /etc/cassandra_backup && \
     ln -s /conf/cassandra /etc/cassandra && \
-    chmod +x /examples/cassandra/test-cassandra-table.py && \
-	echo "# ---------------------------------------------" && \
+    chmod +x /examples/cassandra/test-cassandra-table.py 
+RUN echo "# ---------------------------------------------" && \
     echo "# passwordless ssh" && \
     echo "# ---------------------------------------------" && \
     chmod 0777 /examples && \
