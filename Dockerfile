@@ -288,8 +288,8 @@ RUN echo "# ---------------------------------------------" && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
     ln -s /conf/hbase /usr/local/hbase/conf && \
     ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
-    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh && \
-    echo "# ---------------------------------------------" && \
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh
+RUN echo "# ---------------------------------------------" && \
     echo "# Zookeeper" && \
     echo ${ZOOKEEPER_URL} && \
     echo "# ---------------------------------------------" && \
@@ -299,8 +299,8 @@ RUN echo "# ---------------------------------------------" && \
     mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
     ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
     pip2 install happybase psycopg2 && \
-    pip3 install happybase psycopg2 && \
-    echo "# ---------------------------------------------" && \
+    pip3 install happybase psycopg2
+RUN echo "# ---------------------------------------------" && \
     echo "# Cassandra libraries" && \
     echo "# ---------------------------------------------" && \
     pip2 install cassandra-driver && \
@@ -309,15 +309,15 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Helper scripts" && \
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/create-datadirs.sh && \
-    chmod +x /scripts/delete-datadirs.sh && \
-    echo "# ---------------------------------------------" && \
+    chmod +x /scripts/delete-datadirs.sh
+RUN echo "# ---------------------------------------------" && \
     echo "# Spark Cassandra Connector" && \
     echo ${SPARK_CASSANDRA_URL} && \
     echo "# ---------------------------------------------" && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv /home/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
-	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar && \
-    echo "# ---------------------------------------------" && \
+	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar 
+RUN echo "# ---------------------------------------------" && \
 	echo "MONGO-HADOOP" && \
     echo "# ---------------------------------------------" && \
 	cd /home && \
@@ -344,8 +344,8 @@ RUN echo "# ---------------------------------------------" && \
 	git clone https://github.com/mongodb/mongo-hadoop.git && \
 	cd /usr/local/mongo-hadoop/mongo-hadoop/spark/src/main/python && \
 	python setup.py install && \
-	python3 setup.py install && \
-    echo "# ---------------------------------------------" && \
+	python3 setup.py install 
+RUN echo "# ---------------------------------------------" && \
     echo "# Cockroach DB" && \
     echo "# ---------------------------------------------" && \
     mkdir /cr && \
@@ -362,8 +362,8 @@ RUN echo "# ---------------------------------------------" && \
     echo "cockroach sql --insecure" >> /scripts/cockroach-shell.sh && \
     chmod +x /scripts/cockroach-shell.sh && \
     cd / && \
-    rm -r /cr && \
-    echo "# ---------------------------------------------" && \
+    rm -r /cr 
+RUN echo "# ---------------------------------------------" && \
     echo "# Postgresql" && \
     echo "# ---------------------------------------------" && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
@@ -382,8 +382,8 @@ RUN echo "# ---------------------------------------------" && \
     python2 setup.py install && \
 	python3 setup.py install && \
 	cd /home && \
-	rm -r /tmp/findspark && \
-    echo "# ---------------------------------------------" && \
+	rm -r /tmp/findspark 
+RUN echo "# ---------------------------------------------" && \
     echo "# Spark HBase" && \
     echo ${SPARK_HBASE_GIT} && \
     echo "# ---------------------------------------------" && \
@@ -393,8 +393,8 @@ RUN echo "# ---------------------------------------------" && \
     mvn package -DskipTests && \
     ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
     cd /tmp && \
-    rm -r /tmp/shc && \
-    echo "# ---------------------------------------------" && \
+    rm -r /tmp/shc 
+RUN echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
     cd /tmp && \
@@ -404,9 +404,8 @@ RUN echo "# ---------------------------------------------" && \
     cp /tmp/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
     cd /tmp && \
-    rm -r /tmp/spark-xml && \
-	
-    echo "# ---------------------------------------------" && \
+    rm -r /tmp/spark-xml
+RUN echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
