@@ -244,8 +244,8 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Hiveserver2 Python Package" && \
     echo "# ---------------------------------------------" && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install libsasl2-dev && \
-    pip2 install pyhs2 && \
-    pip3 install pyhs2 && \
+    pip2 install PyHive && \
+    pip3 install PyHive && \
     echo "# ---------------------------------------------" && \
     echo "# Pig " && \
     echo ${PIG_URL} && \
