@@ -279,41 +279,10 @@ RUN echo "# ---------------------------------------------" && \
     mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
     ln -s /conf/spark /usr/local/spark/conf 
 RUN echo "# ---------------------------------------------" && \
-    echo "# HBase" && \
-    echo ${HBASE_URL} && \
-    echo "# ---------------------------------------------" && \
-    cd /home && \
-    curl ${HBASE_URL} | tar -zx -C /usr/local && \
-    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
-    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
-    ln -s /conf/hbase /usr/local/hbase/conf && \
-    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
-    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh
-RUN echo "# ---------------------------------------------" && \
-    echo "# Zookeeper" && \
-    echo ${ZOOKEEPER_URL} && \
-    echo "# ---------------------------------------------" && \
-    curl ${ZOOKEEPER_URL} | tar -zx -C /usr/local && \
-    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
-    mkdir /usr/local/zookeeper/data && \
-    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
-    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
-    pip2 install happybase psycopg2 && \
-    pip3 install happybase psycopg2
-RUN echo "# ---------------------------------------------" && \
-    echo "# Cassandra libraries" && \
-    echo "# ---------------------------------------------" && \
-    pip2 install cassandra-driver && \
-    pip3 install cassandra-driver && \
-    echo "# ---------------------------------------------" && \
-    echo "# Helper scripts" && \
-    echo "# ---------------------------------------------" && \
-    chmod +x /scripts/create-datadirs.sh && \
-    chmod +x /scripts/delete-datadirs.sh
-RUN echo "# ---------------------------------------------" && \
     echo "# Spark Cassandra Connector" && \
     echo ${SPARK_CASSANDRA_URL} && \
     echo "# ---------------------------------------------" && \
+    cd /home && \
 	wget ${SPARK_CASSANDRA_URL} && \
     mv /home/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars && \
 	ln -s /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/spark-cassandra-connector.jar 
@@ -405,6 +374,38 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
     cd /tmp && \
     rm -r /tmp/spark-xml
+RUN echo "# ---------------------------------------------" && \
+    echo "# HBase" && \
+    echo ${HBASE_URL} && \
+    echo "# ---------------------------------------------" && \
+    cd /home && \
+    curl ${HBASE_URL} | tar -zx -C /usr/local && \
+    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
+    ln -s /conf/hbase /usr/local/hbase/conf && \
+    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh
+RUN echo "# ---------------------------------------------" && \
+    echo "# Zookeeper" && \
+    echo ${ZOOKEEPER_URL} && \
+    echo "# ---------------------------------------------" && \
+    curl ${ZOOKEEPER_URL} | tar -zx -C /usr/local && \
+    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
+    mkdir /usr/local/zookeeper/data && \
+    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
+    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
+    pip2 install happybase psycopg2 && \
+    pip3 install happybase psycopg2
+RUN echo "# ---------------------------------------------" && \
+    echo "# Cassandra libraries" && \
+    echo "# ---------------------------------------------" && \
+    pip2 install cassandra-driver && \
+    pip3 install cassandra-driver && \
+    echo "# ---------------------------------------------" && \
+    echo "# Helper scripts" && \
+    echo "# ---------------------------------------------" && \
+    chmod +x /scripts/create-datadirs.sh && \
+    chmod +x /scripts/delete-datadirs.sh
 RUN echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
