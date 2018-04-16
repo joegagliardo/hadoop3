@@ -12,8 +12,9 @@ cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; 
 sed s/HOSTNAME/$HOSTNAME/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml
 
 service ssh start
-#/scripts/start-mysql.sh
 /scripts/start-postgres.sh
+/scripts/check-format-namenode.sh
+
 #uncomment if you want Hadoop to start up automatically
 #$HADOOP_PREFIX/sbin/start-dfs.sh
 #$HADOOP_PREFIX/sbin/start-yarn.sh

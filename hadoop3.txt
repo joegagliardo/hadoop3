@@ -5,10 +5,26 @@ MAINTAINER joegagliardo
 # the ultimate build size. I also prefer to echo a file and build it in a RUN so there is
 # no reliance on outside files needed if you use an ADD
 
+# Ports that are used
+# 9042 Cassandra
+# 9160 Thrift Cassandra clients
+# 50010 Datanode
+# 50020 Datanode
+# 50070 Namenode
+# 50090 Secondary Namenode
+# 8030 8031 8032 8033 8088 ResourceManager
+# 8040 8041 8042 NodeManager
+# 10000 HiveServer2
+# 9083 Hive MetaStore
+# 60000 60010 HBase Master
+# 7077 7078 Spark
+# 3306 MySQL
+
+# These are all the ports I need to open to make the docker work with the host computer
+
+EXPOSE 22 50010 50020 50070 50075 50090 8030 8031 8032 8033 8040 8041 8042 8088 9083 10000 10001 10002 9160 9042 3306 49707 60000 60010 7077 7078 9870
+
 # This section is an easy place to change the desired password and versions to install
-
-EXPOSE 50020 50090 50070 50010 50075 8031 8032 8033 8040 8042 49707 22 8088 8030 3306 10000 10001 10002 9870
-
 # MYSQL Passwords
 ARG HIVEUSER_PASSWORD=hivepassword
 ARG HIVE_METASTORE=hivemetastore
@@ -20,41 +36,45 @@ ADD scripts /scripts
 
 # Versions
 ARG HADOOP_VERSION=3.0.0
+ARG PIG_VERSION=0.17.0
+ARG HIVE_VERSION=2.3.3
+ARG SPARK_VERSION=2.3.0
+ARG ZOOKEEPER_VERSION=3.4.11
+ARG HBASE_VERSION=1.4.3
+ARG MONGO_VERSION=3.6.3
+ARG MONGO_JAVA_DRIVER_VERSION=3.6.3
+ARG MONGO_HADOOP_VERSION=2.0.2
+ARG CASSANDRA_VERSION=311
+ARG SPARK_CASSANDRA_VERSION=2.0.7-s_2.11
+ARG COCKROACH_VERSION=2.0.0
+
 #ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_BASE_URL=http://apache.claz.org/hadoop/common
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 
-ARG PIG_VERSION=0.17.0
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/pig-${PIG_VERSION}.tar.gz
 
-ARG HIVE_VERSION=2.3.2
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz
     
-ARG SPARK_VERSION=2.2.1
 ARG SPARK_BASE_URL=http://apache.claz.org/spark
 #ARG SPARK_BASE_URL=https://d3kbcqa49mib13.cloudfront.net
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
     
-ARG ZOOKEEPER_VERSION=3.4.11
 #ARG ZOOKEEPER_BASE_URL=http://apache.mirrors.lucidnetworks.net/zookeeper/stable
 ARG ZOOKEEPER_BASE_URL=http://apache.claz.org/zookeeper/
 ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
 
-ARG HBASE_VERSION=1.4.2
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz 
     
-ARG MONGO_VERSION=3.6.2
 ARG MONGO_BASE_URL=https://fastdl.mongodb.org/linux
 ARG MONGO_URL=${MONGO_BASE_URL}/mongodb-linux-x86_64-${MONGO_VERSION}.tgz
     
-ARG MONGO_JAVA_DRIVER_VERSION=3.5.0
 ARG MONGO_JAVA_DRIVER_BASE_URL=https://repo1.maven.org/maven2/org/mongodb
 ARG MONGO_JAVA_DRIVER_URL=${MONGO_JAVA_DRIVER_BASE_URL}/mongo-java-driver/${MONGO_JAVA_DRIVER_VERSION}/mongo-java-driver-${MONGO_JAVA_DRIVER_VERSION}.jar
 
-ARG MONGO_HADOOP_VERSION=2.0.2
 ARG MONGO_HADOOP_BASE_URL=https://repo1.maven.org/maven2/org/mongodb/mongo-hadoop
 ARG MONGO_HADOOP_CORE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-core/${MONGO_HADOOP_VERSION}/mongo-hadoop-core-${MONGO_HADOOP_VERSION}.jar
 ARG MONGO_HADOOP_HIVE_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-hive/${MONGO_HADOOP_VERSION}/mongo-hadoop-hive-${MONGO_HADOOP_VERSION}.jar
@@ -62,10 +82,8 @@ ARG MONGO_HADOOP_PIG_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-pig/${MONGO_HADOO
 ARG MONGO_HADOOP_SPARK_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-spark/${MONGO_HADOOP_VERSION}/mongo-hadoop-spark-${MONGO_HADOOP_VERSION}.jar
 ARG MONGO_HADOOP_STREAMING_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-streaming/${MONGO_HADOOP_VERSION}/mongo-hadoop-streaming-${MONGO_HADOOP_VERSION}.jar
 
-ARG CASSANDRA_VERSION=311
 ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
 
-ARG SPARK_CASSANDRA_VERSION=2.0.1-s_2.11
 ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector
 ARG SPARK_CASSANDRA_URL=${SPARK_CASSANDRA_BASE_URL}/${SPARK_CASSANDRA_VERSION}/spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
 ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
@@ -74,28 +92,27 @@ ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
 ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
-ARG COCKROACH_VERSION=1.1.4
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 
-RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
-    url_exists $HADOOP_URL && \
-    url_exists $PIG_URL && \
-    url_exists $HIVE_URL && \
-    url_exists $SPARK_URL && \
-    url_exists $ZOOKEEPER_URL && \
-    url_exists $HBASE_URL && \
-    url_exists $MONGO_URL && \
-    url_exists $SPARK_CASSANDRA_URL && \
-    url_exists $MONGO_JAVA_DRIVER_URL && \
-    url_exists $MONGO_HADOOP_CORE_URL && \
-    url_exists $MONGO_HADOOP_PIG_URL && \
-    url_exists $MONGO_HADOOP_HIVE_URL && \
-    url_exists $MONGO_HADOOP_SPARK_URL && \
-    url_exists $MONGO_HADOOP_STREAMING_URL && \
-    url_exists $MONGO_JAVA_DRIVER_URL && \
-    url_exists $SPARK_CASSANDRA_URL && \
-    url_exists $COCKROACH_URL 
+#RUN url_exists() { echo $1; if curl -s --head $1 | head -n 1 | grep "HTTP/1.[01] [2].." ; then urlexists='YES'; else exit 1; fi } && \
+#    url_exists $HADOOP_URL && \
+#    url_exists $PIG_URL && \
+#    url_exists $HIVE_URL && \
+#    url_exists $SPARK_URL && \
+#    url_exists $ZOOKEEPER_URL && \
+#    url_exists $HBASE_URL && \
+#    url_exists $MONGO_URL && \
+#    url_exists $SPARK_CASSANDRA_URL && \
+#    url_exists $MONGO_JAVA_DRIVER_URL && \
+#    url_exists $MONGO_HADOOP_CORE_URL && \
+#    url_exists $MONGO_HADOOP_PIG_URL && \
+#    url_exists $MONGO_HADOOP_HIVE_URL && \
+#    url_exists $MONGO_HADOOP_SPARK_URL && \
+#    url_exists $MONGO_HADOOP_STREAMING_URL && \
+#    url_exists $MONGO_JAVA_DRIVER_URL && \
+#    url_exists $SPARK_CASSANDRA_URL && \
+#    url_exists $COCKROACH_URL 
 
 USER root
 
@@ -170,8 +187,6 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Make folders for HDFS data" && \
     echo "# ---------------------------------------------" && \
     mkdir /data/hdfs && \
-    mkdir /data/hdfs/name && \
-    mkdir /data/hdfs/data && \
     echo "# ---------------------------------------------" && \
     echo "# Hadoop" && \
     echo "# ---------------------------------------------" && \
