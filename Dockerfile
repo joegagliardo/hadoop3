@@ -353,17 +353,6 @@ RUN echo "# ---------------------------------------------" && \
 	cd /home && \
 	rm -r /tmp/findspark 
 RUN echo "# ---------------------------------------------" && \
-    echo "# Spark HBase" && \
-    echo ${SPARK_HBASE_GIT} && \
-    echo "# ---------------------------------------------" && \
-    cd /tmp && \
-    git clone ${SPARK_HBASE_GIT} && \
-    cd /tmp/shc && \
-    mvn package -DskipTests && \
-    ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
-    cd /tmp && \
-    rm -r /tmp/shc 
-RUN echo "# ---------------------------------------------" && \
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
     cd /tmp && \
@@ -406,6 +395,17 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/create-datadirs.sh && \
     chmod +x /scripts/delete-datadirs.sh
+RUN echo "# ---------------------------------------------" && \
+    echo "# Spark HBase" && \
+    echo ${SPARK_HBASE_GIT} && \
+    echo "# ---------------------------------------------" && \
+    cd /tmp && \
+    git clone ${SPARK_HBASE_GIT} && \
+    cd /tmp/shc && \
+    mvn package -DskipTests && \
+    ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
+    cd /tmp && \
+    rm -r /tmp/shc 
 RUN echo "# ---------------------------------------------" && \
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
