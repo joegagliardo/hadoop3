@@ -122,6 +122,7 @@ ARG MONGO_HADOOP_STREAMING_URL=${MONGO_HADOOP_BASE_URL}/mongo-hadoop-streaming/$
 ARG COCKROACH_BASE_URL=https://binaries.cockroachdb.com
 ARG COCKROACH_FILE=cockroach-v${COCKROACH_VERSION}.linux-amd64.tgz
 ARG COCKROACH_URL=${COCKROACH_BASE_URL}/${COCKROACH_FILE}
+ARG COCKROACH_FOLDER=cockroach-${COCKROACH_VERSION}
 
 ARG POSTGRES_JDBC_BASE_URL=https://jdbc.postgresql.org/download
 ARG POSTGRES_JDBC_FILE=postgresql-${POSTGRES_JDBC_VERSION}.jar
@@ -147,10 +148,12 @@ ADD built /built
 ADD VERSION /conf
 
 # this section will build with local downloaded versions, but it is too big to do on docker.com
+# I have to add foo so it doesn't error out when I try to ADD the non-existant folders
 #ADD download-versions.sh /
 ADD downloads/foo downloads/jars /jars/
 ADD downloads/foo downloads/git /git/
 ADD downloads/foo downloads/pip /pip/
+# it will automatically untar the files when adding them individually like this
 ADD downloads/foo downloads/tars/${HADOOP_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${HIVE_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${PIG_FILE}* /usr/local/
@@ -161,11 +164,6 @@ ADD downloads/foo downloads/tars/${FLUME_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${FLINK_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${HBASE_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${COCKROACH_FILE}* /usr/local/
-
-#    rm /usr/local/foo && \
-#    rm /jars/foo && \
-#hadoop
-# mv: cannot stat '/usr/local/hadoop/etc/hadoop': No such file or directory
     
 ARG DEBIAN_FRONTEND=noninteractive
 USER root
@@ -197,6 +195,7 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/*.sh && \
     echo "# ---------------------------------------------" && \
     echo "# download jars" && \
+    echo "# this function will download the jar files if they are not there from the ADD command above" && \
     echo "# ---------------------------------------------" && \
 	cd /jars && \
 	download() { echo $1; test -e $1 && echo "exists" || curl --progress-bar $2 > $1; } && \
@@ -210,6 +209,7 @@ RUN echo "# ---------------------------------------------" && \
 	download ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE} ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL} && \
     echo "# ---------------------------------------------" && \
     echo "# download pip" && \
+    echo "# this function will download the pip files for python 2 & 3 if they are not there from the ADD command above" && \
     echo "# ---------------------------------------------" && \
 	cd /pip && \
 	download() { echo $1; test -e $1 && echo "$1 exists" || { mkdir -p $1; cd $1; mkdir -p 2; cd 2; pip2 download $1; cd ..; mkdir -p 3; cd 3; pip3 download $1; cd ../..; } } && \
@@ -237,14 +237,15 @@ RUN echo "# ---------------------------------------------" && \
     cd /usr/local && \
     echo "# ---------------------------------------------" && \
     echo "# make install tar function" && \
+    echo "# this function will download the jar files if they are not there from the ADD command above and untar them to /usr/local" && \
+    echo "# it will also make the friendly symlink name to /usr/local/XXX and /XXX whether it was downloaded already or not" && \
     echo "# install hadoop $HADOOP_FILE $HADOOP_URL $HADOOP_FOLDER" && \
     echo "# ---------------------------------------------" && \ 
-    install() { echo $1 $2 $3 $4; test -e /usr/local/${4} && echo "already downloaded"  || curl --progress-bar ${3} | tar -xz -C /usr/local ; test -e /usr/local/$1 && echo "symlink exists" || ln -s /usr/local/$4 /usr/local/$1; }  && \
+    install() { echo $1 $2 $3 $4; test -e /usr/local/${4} && echo "already downloaded"  || curl --progress-bar ${3} | tar -xz -C /usr/local ; test -e /usr/local/$1 && echo "symlink exists" || ln -s /usr/local/$4 /usr/local/$1; test -e /$1 && echo "symlink exists" || ln -s /usr/local/$4 /$1; }  && \
     echo "# ---------------------------------------------" && \
     echo "# Hadoop" && \
     echo "# ---------------------------------------------" && \
     install "hadoop" $HADOOP_FILE $HADOOP_URL $HADOOP_FOLDER && \
-    ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
     echo "# ---------------------------------------------" && \
     echo "# make backup of default config file and make symlink to my uploaded premade config files" && \
     echo "# ---------------------------------------------" && \
@@ -265,9 +266,7 @@ RUN echo "# ---------------------------------------------" && \
     chmod 700 /conf/bootstrap-postgres.sh && \
     chmod 700 /scripts/start-hadoop.sh && \
     chmod 700 /scripts/stop-hadoop.sh && \
-    ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
     chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh && \
-    ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
     chmod +x /scripts/loglevel-debug.sh && \
     chmod +x /scripts/loglevel-info.sh && \
     chmod +x /scripts/loglevel-warn.sh && \
@@ -277,30 +276,54 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Hive" && \
     echo "# ---------------------------------------------" && \
     install "hive" $HIVE_FILE $HIVE_URL $HIVE_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# need the mysql connector in the hive folder in order to make the metastore work right" && \
+    echo "# ---------------------------------------------" && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-connector-java.jar && \
+    echo "# ---------------------------------------------" && \
+    echo "# need the postgres connector in the hive folder in order to make the metastore work right" && \
+    echo "# ---------------------------------------------" && \
+    ln -s /jars/postgresql* /usr/local/hive/jdbc &&\
+    ln -s /jars/postgresql* /usr/local/hive/lib && \
+    echo "# ---------------------------------------------" && \
+    echo "# make a friends symlink name for the hive-hcatalog-core.jar" && \
+    echo "# ---------------------------------------------" && \
+    ln -s /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.jar /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar && \
+    echo "# ---------------------------------------------" && \
+    echo "# backup default config and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
     mv /usr/local/hive/conf /usr/local/hive/conf_backup && \
     ln -s /conf/hive /usr/local/hive/conf && \
-    cp /jars/postgresql* /usr/local/hive/jdbc &&\
-    cp /jars/postgresql* /usr/local/hive/lib && \
-    ln -s /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.jar /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar && \
     echo "# ---------------------------------------------" && \
     echo "# Pig " && \
     echo "# ---------------------------------------------" && \
     install "pig" $PIG_FILE $PIG_URL $PIG_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# backup default config and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
     mv /usr/local/pig/conf /usr/local/pig/conf_backup && \
     ln -s /conf/pig /usr/local/pig/conf && \
     mkdir /usr/local/hive/hcatalog/lib && \
+    echo "# ---------------------------------------------" && \
+    echo "# copy lib files needed for pig to use hcatalog" && \
+    echo "# ---------------------------------------------" && \
     ln -s /conf/hive-hcatalog-hbase-storage-handler-0.13.1.jar /usr/local/hive/hcatalog/lib && \
     ln -s /conf/slf4j-api-1.6.0.jar /usr/local/hive/lib && \
     echo "# ---------------------------------------------" && \
     echo "# Spark" && \
     echo "# ---------------------------------------------" && \
     install "spark" $SPARK_FILE $SPARK_URL $SPARK_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# backup default config and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
+    mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
+    ln -s /conf/spark /usr/local/spark/conf && \
+    echo "# ---------------------------------------------" && \
+    echo "# make symlink so spark can use hcatalog" && \
+    echo "# ---------------------------------------------" && \
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
-    mv /usr/local/spark/conf /usr/local/spark/conf_backup && \
-    ln -s /conf/spark /usr/local/spark/conf && \
     echo "# ---------------------------------------------" && \
     echo "# Sqoop " && \
     echo "# ---------------------------------------------" && \
@@ -317,6 +340,9 @@ RUN echo "# ---------------------------------------------" && \
     echo "# HBase" && \
     echo "# ---------------------------------------------" && \
     install "hbase" $HBASE_FILE $HBASE_URL $HBASE_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# backup default config and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
     mv /usr/local/hbase/conf /usr/local/hbase/conf_backup && \
     ln -s /conf/hbase /usr/local/hbase/conf && \
     ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh && \
@@ -328,12 +354,15 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     install "zookeeper" $ZOOKEEPER_FILE $ZOOKEEPER_URL $ZOOKEEPER_FOLDER && \
     mkdir /usr/local/zookeeper/data && \
+    echo "# ---------------------------------------------" && \
+    echo "# backup default config and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
     mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
     ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
     echo "# ---------------------------------------------" && \
     echo "# Cockroach DB" && \
     echo "# ---------------------------------------------" && \
-    install "COCKROACH" && \
+    install "cockroach" $COCKROACH_FILE $COCKROACH_URL $COCKROACH_FOLDER && \
     echo "# ---------------------------------------------" && \
     echo "# Mongo & Cassandra Keys" && \
     echo "# ---------------------------------------------" && \
@@ -664,3 +693,15 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    echo "# make install tar function" && \
 #    echo "# ---------------------------------------------" && \ 
 #    install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; export SYMLINK1="/usr/local/${!foldername}"; export SYMLINK2="/usr/local/${1,,}"; echo ${!filename} ${!urlname} ${!foldername} ${SYMLINK1} ${SYMLINK2} ; test -e /usr/local/${!foldername} && echo "already downloaded"  || curl --progress-bar ${!urlname} | tar -xz -C /usr/local ; test -e ${SYMLINK2} && echo "symlink exists" || ln -s ${SYMLINK1} ${SYMLINK2}; } ; && \
+#    ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
+
+
+#    ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
+#    chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh && \
+#    ls -la /usr/local/hadoop/etc/hadoop/*-env.sh && \
+
+#    echo "# ---------------------------------------------" && \
+#    echo "# need the postgres connector in the hive folder in order to make the metastore work right" && \
+#    echo "# ---------------------------------------------" && \
+#    cp /jars/postgresql* /usr/local/hive/jdbc &&\
+#    cp /jars/postgresql* /usr/local/hive/lib && \
