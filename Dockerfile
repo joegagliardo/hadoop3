@@ -1,5 +1,5 @@
 #! /bin/bash
-# Hadoop 3.1.10
+# Hadoop 3.1.14
 FROM joegagliardo/ubuntu
 MAINTAINER joegagliardo
 
