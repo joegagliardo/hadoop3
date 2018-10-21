@@ -6,3 +6,6 @@ examples/.DS_Store
 *.tgz
 *.whl
 datasets/northwind_accents.zip
+downloads/git/findspark/
+downloads/git/shc/
+downloads/git/spark-xml/
