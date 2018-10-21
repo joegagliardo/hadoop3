@@ -1,19 +1,7 @@
 
 .DS_Store
-bigdata-docker-notes.txt
 examples/.DS_Store
-.DS_Store
-examples/.DS_Store
-.DS_Store
-bigdata.works.tar
 *.tar
-bd.txt
+*.tar.gz
+*.whl
 datasets/northwind_accents.zip
-ignore
-test.txt
-datasets/northwind/JSON2XML.py
-downloads/jars
-downloads/tars
-downloads/git
-downloads/pip
-downloads/Ignore
