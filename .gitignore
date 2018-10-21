@@ -3,5 +3,6 @@
 examples/.DS_Store
 *.tar
 *.tar.gz
+*.tgz
 *.whl
 datasets/northwind_accents.zip
