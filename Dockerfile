@@ -321,8 +321,6 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     echo "# make symlink so spark can use hcatalog" && \
     echo "# ---------------------------------------------" && \
-    ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
-    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
     echo "# ---------------------------------------------" && \
     echo "# Sqoop " && \
@@ -705,3 +703,6 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    echo "# ---------------------------------------------" && \
 #    cp /jars/postgresql* /usr/local/hive/jdbc &&\
 #    cp /jars/postgresql* /usr/local/hive/lib && \
+
+#    ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
+#    ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
