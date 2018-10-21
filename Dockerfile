@@ -5,7 +5,7 @@ MAINTAINER joegagliardo
 
 # As much as possible I am trying to put as many steps in a single RUN command to minimize
 # the ultimate build size. I also prefer to echo a file and build it in a RUN so there is
-# no reliance on outside files needed if you use an ADD
+# no reliance on outside files needed if you use an ADD 6
 
 # Ports that are used
 # 9042 Cassandra
@@ -39,6 +39,16 @@ ARG SPARK_VERSION=2.3.2
 ARG ZOOKEEPER_VERSION=3.4.13
 ARG SQOOP_VERSION=1.4.7
 ARG FLUME_VERSION=1.8.0
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG FLINK_VERSION=1.6.1
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 ARG HBASE_VERSION=2.1.0
 ARG SPARK_CASSANDRA_VERSION=2.3.1-s_2.11
 ARG MONGO_JAVA_DRIVER_VERSION=3.8.2
@@ -54,34 +64,121 @@ ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION=0.13.1
 ARG HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
 ARG HADOOP_FILE=hadoop-${HADOOP_VERSION}.tar.gz
 ARG HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/${HADOOP_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG HADOOP_FOLDER=hadoop-${HADOOP_VERSION}
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
 ARG HIVE_BASE_URL=http://apache.claz.org/hive
 ARG HIVE_FILE=apache-hive-${HIVE_VERSION}-bin.tar.gz
 ARG HIVE_URL=${HIVE_BASE_URL}/hive-${HIVE_VERSION}/${HIVE_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG HIVE_FOLDER=apache-hive-${HIVE_VERSION}-bin
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     
 ARG PIG_BASE_URL=http://apache.claz.org/pig
 ARG PIG_FILE=pig-${PIG_VERSION}.tar.gz
 ARG PIG_URL=${PIG_BASE_URL}/pig-${PIG_VERSION}/${PIG_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG PIG_FOLDER=pig-${PIG_VERSION}
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
 ARG SPARK_BASE_URL=http://apache.claz.org/spark
 ARG SPARK_FILE=spark-${SPARK_VERSION}-bin-hadoop2.7.tgz 
 ARG SPARK_URL=${SPARK_BASE_URL}/spark-${SPARK_VERSION}/${SPARK_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG SPARK_FOLDER=spark-${SPARK_VERSION}-bin-hadoop2.7
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     
 ARG ZOOKEEPER_BASE_URL=http://apache.claz.org/zookeeper
 ARG ZOOKEEPER_FILE=zookeeper-${ZOOKEEPER_VERSION}.tar.gz
 ARG ZOOKEEPER_URL=${ZOOKEEPER_BASE_URL}/zookeeper-${ZOOKEEPER_VERSION}/${ZOOKEEPER_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG ZOOKEEPER_FOLDER=zookeeper-${ZOOKEEPER_VERSION}
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
 ARG SQOOP_BASE_URL=http://apache.claz.org/sqoop/1.4.7
 ARG SQOOP_FILE=sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz
 ARG SQOOP_URL=${SQOOP_BASE_URL}/${SQOOP_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG SQOOP_FOLDER=sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
 ARG FLUME_BASE_URL=http://apache.claz.org/flume
 ARG FLUME_FILE=apache-flume-${FLUME_VERSION}-bin.tar.gz 
 ARG FLUME_URL=${FLUME_BASE_URL}/${FLUME_VERSION}/${FLUME_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG FLUME_FOLDER=apache-flume-${FLUME_VERSION}-bin
+
+ARG FLINK_BASE_URL=http://apache.claz.org/flink/flink-${FLINK_VERSION}/
+ARG FLINK_FILE=flink-${FLINK_VERSION}-bin-scala_2.11.tgz
+ARG FLINK_URL=${FLINK_BASE_URL}/${FLINK_FILE}
+
+ARG OOZIE_VERSION=5.0.0
+ARG OOZIE_BASE_URL=http://apache.claz.org/oozie/${OOZIE_VERSION}
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
 ARG HBASE_BASE_URL=http://apache.mirrors.pair.com/hbase
 ARG HBASE_FILE=hbase-${HBASE_VERSION}-bin.tar.gz
 ARG HBASE_URL=${HBASE_BASE_URL}/${HBASE_VERSION}/${HBASE_FILE} 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG HBASE_FOLDER=hbase-${HBASE_VERSION}
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     
 ARG SPARK_CASSANDRA_BASE_URL=http://dl.bintray.com/spark-packages/maven/datastax/spark-cassandra-connector
 ARG SPARK_CASSANDRA_FILE=spark-cassandra-connector-${SPARK_CASSANDRA_VERSION}.jar
@@ -110,10 +207,24 @@ ARG COCKROACH_URL=${COCKROACH_BASE_URL}/${COCKROACH_FILE}
 ARG POSTGRES_JDBC_BASE_URL=https://jdbc.postgresql.org/download
 ARG POSTGRES_JDBC_FILE=postgresql-${POSTGRES_JDBC_VERSION}.jar
 ARG POSTGRES_JDBC_URL=${POSTGRES_JDBC_BASE_URL}/${POSTGRES_JDBC_FILE}
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE=hive-hcatalog-hbase-storage-handler-${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}.jar
 ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL=http://central.maven.org/maven2/org/apache/hive/hcatalog/hive-hcatalog-hbase-storage-handler/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE}
 
+=======
+
+ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE=hive-hcatalog-hbase-storage-handler-${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}.jar
+ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL=http://central.maven.org/maven2/org/apache/hive/hcatalog/hive-hcatalog-hbase-storage-handler/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE}
+
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+
+ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE=hive-hcatalog-hbase-storage-handler-${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}.jar
+ARG HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL=http://central.maven.org/maven2/org/apache/hive/hcatalog/hive-hcatalog-hbase-storage-handler/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_VERSION}/${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE}
+
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 # GIT projects
 ARG FINDSPARK_GIT=https://github.com/minrk/findspark.git
 ARG SPARK_HBASE_GIT=https://github.com/hortonworks-spark/shc.git
@@ -121,6 +232,39 @@ ARG SPARK_XML_GIT=https://github.com/databricks/spark-xml.git
 ARG MONGO_REPO_URL=http://repo.mongodb.org/apt/ubuntu 
 
 ARG CASSANDRA_URL=http://www.apache.org/dist/cassandra
+<<<<<<< HEAD
+
+# Add examples, datasets, scripts and configurations
+ADD examples /examples 
+ADD datasets /examples
+ADD conf /conf
+ADD scripts /scripts
+ADD built /built
+ADD VERSION /conf
+
+# this section will build with local downloaded versions, but it is too big to do on docker.com
+ADD download-versions.sh /
+ADD downloads/foo downloads/jars /jars/
+ADD downloads/foo downloads/git /git/
+ADD downloads/foo downloads/pip /pip/
+ADD downloads/foo downloads/tars/${HADOOP_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${HIVE_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${PIG_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${SPARK_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${ZOOKEEPER_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${SQOOP_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${FLUME_FILE}* /usr/local/
+<<<<<<< HEAD
+<<<<<<< HEAD
+ADD downloads/foo downloads/tars/${FLINK_FILE}* /usr/local/
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+ADD downloads/foo downloads/tars/${HBASE_FILE}* /usr/local/
+ADD downloads/foo downloads/tars/${COCKROACH_FILE}* /usr/local/
+
+=======
 
 # Add examples, datasets, scripts and configurations
 ADD examples /examples 
@@ -145,11 +289,22 @@ ADD downloads/foo downloads/tars/${FLUME_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${HBASE_FILE}* /usr/local/
 ADD downloads/foo downloads/tars/${COCKROACH_FILE}* /usr/local/
 
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 #    rm /usr/local/foo && \
 #    rm /jars/foo && \
 #hadoop
 # mv: cannot stat '/usr/local/hadoop/etc/hadoop': No such file or directory
     
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+ARG DEBIAN_FRONTEND=noninteractive
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 USER root
 
 ENV BOOTSTRAP /etc/bootstrap.sh
@@ -175,11 +330,19 @@ ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PIG_HOME/bin:$HIVE_HOME/bin:$
 ######################################################################################
 RUN echo "# ---------------------------------------------" && \
     echo "# Make scripts executable" && \
+<<<<<<< HEAD
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/*.sh && \
     echo "# ---------------------------------------------" && \
     echo "# download jars" && \
     echo "# ---------------------------------------------" && \
+=======
+    echo "# ---------------------------------------------" && \
+    chmod +x /scripts/*.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# download jars" && \
+    echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 	cd /jars && \
 	download() { echo $1; test -e $1 && echo "exists" || curl --progress-bar $2 > $1; } && \
 	download ${POSTGRES_JDBC_FILE} ${POSTGRES_JDBC_URL} && \
@@ -189,6 +352,43 @@ RUN echo "# ---------------------------------------------" && \
 	download ${MONGO_HADOOP_HIVE_FILE} ${MONGO_HADOOP_HIVE_URL} && \
 	download ${MONGO_HADOOP_SPARK_FILE} ${MONGO_HADOOP_SPARK_URL} && \
 	download ${MONGO_HADOOP_STREAMING_FILE} ${MONGO_HADOOP_STREAMING_URL} && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+	download ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE} ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL} && \
+    echo "# ---------------------------------------------" && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+	download ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE} ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL} 
+#echo "" 
+#RUN && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# download FindSpark" && \
+#    echo "# ---------------------------------------------" && \
+#	cd /git && \
+#	download() { echo $1; test -e $1 && echo "exists" || git clone $2; } && \
+#	download findspark ${FINDSPARK_GIT} && \
+#    cd /git/findspark && \
+#    python2 setup.py install && \
+#	python3 setup.py install && \
+RUN echo "# ---------------------------------------------" && \
+<<<<<<< HEAD
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+    echo "# download pip" && \
+    echo "# ---------------------------------------------" && \
+	cd /pip && \
+	download() { echo $1; test -e $1 && echo "$1 exists" || { mkdir -p $1; cd $1; mkdir -p 2; cd 2; pip2 download $1; cd ..; mkdir -p 3; cd 3; pip3 download $1; cd ../..; } } && \
+	download pymongo && \
+	download pyhive && \
+	download happybase && \ 
+	download psycopg2 && \
+	download cassandra-driver && \
+	cd /home && \
+    echo "# ---------------------------------------------" && \
+=======
 	download ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_FILE} ${HIVE_HCATALOG_HBASE_STORAGE_HANDLER_URL} 
 #echo "" 
 #RUN && \
@@ -213,6 +413,7 @@ RUN echo "# ---------------------------------------------" && \
 	download cassandra-driver && \
 	cd /home && \
     echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# passwordless ssh" && \
     echo "# ---------------------------------------------" && \
     chmod 0777 /examples && \
@@ -227,6 +428,29 @@ RUN echo "# ---------------------------------------------" && \
     echo "# ---------------------------------------------" && \
     mkdir /data/hdfs && \
     ls -l /usr/local && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    echo " " 
+RUN     cd /usr/local && \
+    echo "# ---------------------------------------------" && \
+    echo "# make install tar function" && \
+    echo "# install hadoop $HADOOP_FILE $HADOOP_URL $HADOOP_FOLDER" && \
+    echo "# ---------------------------------------------" && \ 
+    install() { echo $1 $2 $3 $4; test -e /usr/local/${4} && echo "already downloaded"  || curl --progress-bar ${3} | tar -xz -C /usr/local ; test -e /usr/local/$1 && echo "symlink exists" || ln -s /usr/local/$4 /usr/local/$1; }  && \
+    echo "# ---------------------------------------------" && \
+    echo "# Hadoop" && \
+    echo "# ---------------------------------------------" && \
+    install "hadoop" $HADOOP_FILE $HADOOP_URL $HADOOP_FOLDER && \
+    ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
+    echo "# ---------------------------------------------" && \
+    echo "# make backup of default config file and make symlink to my uploaded premade config files" && \
+    echo "# ---------------------------------------------" && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     install() { echo $1; test -e /usr/local/$1 && echo "$1 downloaded" || curl --progress-bar $2 | tar -xz -C /usr/local/ ;} && \
     echo "# ---------------------------------------------" && \
     echo "# Hadoop" && \
@@ -236,6 +460,13 @@ RUN echo "# ---------------------------------------------" && \
     install hadoop-${HADOOP_VERSION} ${HADOOP_URL} && \
     ln -s /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop && \
     ln -s /usr/local/hadoop-${HADOOP_VERSION} /hadoop && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 	mv /usr/local/hadoop/etc/hadoop /usr/local/hadoop/etc/hadoop_backup && \
 	mv /etc/my.cnf /etc/my.cnf.bak && \
 	ln -s /conf/my.cnf /etc/my.cnf && \
@@ -260,25 +491,43 @@ RUN echo "# ---------------------------------------------" && \
     chmod +x /scripts/loglevel-info.sh && \
     chmod +x /scripts/loglevel-warn.sh && \
     chmod +x /scripts/loglevel-error.sh && \
+    echo "" && \
     echo "# ---------------------------------------------" && \
     echo "# Hive" && \
-    echo ${HIVE_URL} && \
     echo "# ---------------------------------------------" && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    install "hive" $HIVE_FILE $HIVE_URL $HIVE_FOLDER && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     install apache-hive-${HIVE_VERSION}-bin ${HIVE_URL}  && \
     ln -s /usr/local/apache-hive-${HIVE_VERSION}-bin /usr/local/hive && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/hive/lib/mysql-connector-java.jar && \
     mv /usr/local/hive/conf /usr/local/hive/conf_backup && \
     ln -s /conf/hive /usr/local/hive/conf && \
-    wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
-    mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
-    cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+    cp /jars/postgresql* /usr/local/hive/jdbc &&\
+    cp /jars/postgresql* /usr/local/hive/lib && \
     ln -s /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.jar /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar && \
     echo "# ---------------------------------------------" && \
     echo "# Pig " && \
-    echo ${PIG_URL} && \
     echo "# ---------------------------------------------" && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    install "pig" $PIG_FILE $PIG_URL $PIG_FOLDER && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     install pig-${PIG_VERSION} ${PIG_URL} && \
     ln -s /usr/local/pig-${PIG_VERSION} /usr/local/pig && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     mv /usr/local/pig/conf /usr/local/pig/conf_backup && \
     ln -s /conf/pig /usr/local/pig/conf && \
     mkdir /usr/local/hive/hcatalog/lib && \
@@ -286,10 +535,19 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /conf/slf4j-api-1.6.0.jar /usr/local/hive/lib && \
     echo "# ---------------------------------------------" && \
     echo "# Spark" && \
-    echo ${SPARK_URL} && \
     echo "# ---------------------------------------------" && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    install "spark" $SPARK_FILE $SPARK_URL $SPARK_FOLDER && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     install spark-${SPARK_VERSION}-bin-hadoop2.7 ${SPARK_URL} && \
     ln -s /usr/local/spark-${SPARK_VERSION}-bin-hadoop2.7 /usr/local/spark && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     ln -s /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf/hive-site.xml && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/conf/mysql-connector-java.jar && \
     ln -s /usr/share/java/mysql-connector-java.jar /usr/local/spark/jars/mysql-connector-java.jar && \
@@ -297,6 +555,74 @@ RUN echo "# ---------------------------------------------" && \
     ln -s /conf/spark /usr/local/spark/conf && \
     echo "# ---------------------------------------------" && \
     echo "# Sqoop " && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    echo "# ---------------------------------------------" && \
+    install "sqoop" $SQOOP_FILE $SQOOP_URL $SQOOP_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# Flume " && \
+    echo "# ---------------------------------------------" && \
+    install "flume" $FLUME_FILE $FLUME_URL $FLUME_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# Flink " && \
+    echo "# ---------------------------------------------" && \
+    install "flink" $FLINK_FILE $FLINK_URL $FLINK_FOLDER && \
+    echo "# ---------------------------------------------" && \
+    echo "# HBase" && \
+    echo "# ---------------------------------------------" && \
+    install "hbase" $HBASE_FILE $HBASE_URL $HBASE_FOLDER && \
+    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup && \
+    ln -s /conf/hbase /usr/local/hbase/conf && \
+    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh && \
+    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh && \
+    pip2 install happybase psycopg2 && \
+    pip3 install happybase psycopg2 && \
+    echo "# ---------------------------------------------" && \
+    echo "# Zookeeper" && \
+    echo "# ---------------------------------------------" && \
+    install "zookeeper" $ZOOKEEPER_FILE $ZOOKEEPER_URL $ZOOKEEPER_FOLDER && \
+    mkdir /usr/local/zookeeper/data && \
+    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
+    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    install "COCKROACH" && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo & Cassandra Keys" && \
+    echo "# ---------------------------------------------" && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+    apt-get update && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo" && \
+    echo "# ---------------------------------------------" && \
+    apt-get -y install mongodb-org && \
+    cd /pip && \
+    pip2 install pymongo && \
+    pip3 install pymongo && \
+    mkdir /data/mongo && \
+    mkdir /data/mongo/data && \
+    chmod +x /scripts/start-mongo.sh && \
+    chmod +x /scripts/stop-mongo.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cassandra" && \
+    echo ${CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
+    apt-get -y install cassandra && \
+    chmod +x /scripts/start-cassandra.sh && \
+    chmod +x /scripts/stop-cassandra.sh && \
+    echo "# change the data and log folder" && \
+    mkdir /data/cassandra && \
+    mkdir /data/cassandra/data && \
+    mkdir /data/cassandra/log && \
+    mv /etc/cassandra /etc/cassandra_backup && \
+    ln -s /conf/cassandra /etc/cassandra && \
+    chmod +x /examples/cassandra/test-cassandra-table.py && \
+=======
     echo ${SQOOP_URL} && \
     echo "# ---------------------------------------------" && \
     install sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0 ${SQOOP_URL} && \
@@ -344,10 +670,109 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Cockroach DB" && \
     echo "# ---------------------------------------------" && \
     ln -s /usr/local/cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+    echo ${SQOOP_URL} && \
+    echo "# ---------------------------------------------" && \
+    install sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0 ${SQOOP_URL} && \
+    ln -s /usr/local/sqoop-* /usr/local/sqoop && \
+    echo "# ---------------------------------------------" && \
+    echo "# Flume " && \
+    echo ${FLUME_URL} && \
+    echo "# ---------------------------------------------" && \
+    install apache-flume-${FLUME_VERSION}-bin ${FLUME_URL} && \
+    ln -s /usr/local/flume-* /usr/local/flume && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo & Cassandra Keys" && \
+    echo "# ---------------------------------------------" && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+    apt-get update && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo" && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
+    cd /pip && \
+    pip2 install pymongo && \
+    pip3 install pymongo && \
+    mkdir /data/mongo && \
+    mkdir /data/mongo/data && \
+    chmod +x /scripts/start-mongo.sh && \
+    chmod +x /scripts/stop-mongo.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cassandra" && \
+    echo ${CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
+    chmod +x /scripts/start-cassandra.sh && \
+    chmod +x /scripts/stop-cassandra.sh && \
+    echo "# change the data and log folder" && \
+    mkdir /data/cassandra && \
+    mkdir /data/cassandra/data && \
+    mkdir /data/cassandra/log && \
+    mv /etc/cassandra /etc/cassandra_backup && \
+    ln -s /conf/cassandra /etc/cassandra && \
+    chmod +x /examples/cassandra/test-cassandra-table.py && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    ln -s /usr/local/cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+    echo ${SQOOP_URL} && \
+    echo "# ---------------------------------------------" && \
+    install sqoop-${SQOOP_VERSION}.bin__hadoop-2.6.0 ${SQOOP_URL} && \
+    ln -s /usr/local/sqoop-* /usr/local/sqoop && \
+    echo "# ---------------------------------------------" && \
+    echo "# Flume " && \
+    echo ${FLUME_URL} && \
+    echo "# ---------------------------------------------" && \
+    install apache-flume-${FLUME_VERSION}-bin ${FLUME_URL} && \
+    ln -s /usr/local/flume-* /usr/local/flume && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo & Cassandra Keys" && \
+    echo "# ---------------------------------------------" && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+    apt-get update && \
+    echo "# ---------------------------------------------" && \
+    echo "# Mongo" && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
+    cd /pip && \
+    pip2 install pymongo && \
+    pip3 install pymongo && \
+    mkdir /data/mongo && \
+    mkdir /data/mongo/data && \
+    chmod +x /scripts/start-mongo.sh && \
+    chmod +x /scripts/stop-mongo.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cassandra" && \
+    echo ${CASSANDRA_URL} && \
+    echo "# ---------------------------------------------" && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
+    chmod +x /scripts/start-cassandra.sh && \
+    chmod +x /scripts/stop-cassandra.sh && \
+    echo "# change the data and log folder" && \
+    mkdir /data/cassandra && \
+    mkdir /data/cassandra/data && \
+    mkdir /data/cassandra/log && \
+    mv /etc/cassandra /etc/cassandra_backup && \
+    ln -s /conf/cassandra /etc/cassandra && \
+    chmod +x /examples/cassandra/test-cassandra-table.py && \
+    echo "# ---------------------------------------------" && \
+    echo "# Cockroach DB" && \
+    echo "# ---------------------------------------------" && \
+    ln -s /usr/local/cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# ---------------------------------------------" && \
     echo "# Postgresql" && \
     echo "# ---------------------------------------------" && \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq install postgresql postgresql-contrib postgresql-client && \
+    apt-get -yq install postgresql postgresql-contrib postgresql-client && \
     chmod +x /scripts/start-postgres.sh && \
     chmod +x /scripts/stop-postgres.sh && \
     chmod +x /scripts/postgres-client.sh && \
@@ -355,6 +780,8 @@ RUN echo "# ---------------------------------------------" && \
     sudo -u postgres psql -c "create user root with password ''; alter user root with SUPERUSER;" && \
     sudo -u postgres psql -c "create database root;" && \
     echo "# ---------------------------------------------" && \
+<<<<<<< HEAD
+=======
     echo "# FindSpark" && \
     echo "# ---------------------------------------------" && \
     cd /tmp && \
@@ -366,10 +793,26 @@ RUN echo "# ---------------------------------------------" && \
 	rm -r /tmp/findspark 
 
 RUN echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# Spark XML library" && \
     echo "# ---------------------------------------------" && \
 	mv /built/spark-xml* /usr/local/spark/jars && \
     ln -s /usr/local/spark/jars/spark-xml* /usr/local/spark/jars/spark-xml.jar && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    echo "# ---------------------------------------------" && \
+    echo "# Spark HBase" && \
+    echo ${SPARK_HBASE_GIT} && \
+    echo "# ---------------------------------------------" && \
+    mv /built/shc-core*  /usr/local/spark/jars && \
+    ln -s /usr/local/spark/jars/shc* /usr/local/spark/jars/shc.jar && \
+    echo "# ---------------------------------------------" && \
+=======
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# ---------------------------------------------" && \
     echo "# Spark HBase" && \
     echo ${SPARK_HBASE_GIT} && \
@@ -399,6 +842,7 @@ RUN echo "# ---------------------------------------------" && \
     pip2 install happybase psycopg2 && \
     pip3 install happybase psycopg2
 RUN echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# Cassandra libraries" && \
     echo "# ---------------------------------------------" && \
     pip2 install cassandra-driver && \
@@ -407,8 +851,31 @@ RUN echo "# ---------------------------------------------" && \
     echo "# Helper scripts" && \
     echo "# ---------------------------------------------" && \
     chmod +x /scripts/create-datadirs.sh && \
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    chmod +x /scripts/delete-datadirs.sh && \
+    echo "# ---------------------------------------------" && \
+    echo "# FindSpark" && \
+    echo "# ---------------------------------------------" && \
+    cd /tmp && \
+	git clone https://github.com/minrk/findspark.git && \
+	cd /tmp/findspark && \
+    python2 setup.py install && \
+	python3 setup.py install && \
+    echo "# ---------------------------------------------" && \
+=======
     chmod +x /scripts/delete-datadirs.sh
 RUN echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+    chmod +x /scripts/delete-datadirs.sh
+RUN echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+=======
+    chmod +x /scripts/delete-datadirs.sh
+RUN echo "# ---------------------------------------------" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "# Miscellaneous" && \
     echo "# ---------------------------------------------" && \
     echo "alias hist='f(){ history | grep \"\$1\";  unset -f f; }; f'" >> ~/.bashrc && \
@@ -420,12 +887,23 @@ RUN echo "# ---------------------------------------------" && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
+<<<<<<< HEAD
+	cd /home && \
+	rm -r /tmp/findspark && \
+    echo "*************" && \
+=======
     echo "*************" 
 RUN echo "*************" && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
     echo "" >> /scripts/notes.txt
 
 CMD ["/etc/bootstrap.sh", "-d"]
     
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
 
     
 ######################################################################################
@@ -573,4 +1051,396 @@ CMD ["/etc/bootstrap.sh", "-d"]
 #    echo "# ---------------------------------------------" && \
 #    pip2 install --upgrade pip && \
 #    pip3 install --upgrade pip && \
+<<<<<<< HEAD
 
+#echo "" 
+#RUN && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# download FindSpark" && \
+#    echo "# ---------------------------------------------" && \
+#	cd /git && \
+#	download() { echo $1; test -e $1 && echo "exists" || git clone $2; } && \
+#	download findspark ${FINDSPARK_GIT} && \
+#    cd /git/findspark && \
+#    python2 setup.py install && \
+#	python3 setup.py install && \
+
+    
+#    cp /jars/postgresql* /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.
+#    wget https://jdbc.postgresql.org/download/postgresql-42.1.3.jar && \
+#    mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
+#    cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+#    ln -s /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core-${HIVE_VERSION}.jar /usr/local/hive/hcatalog/share/hcatalog/hive-hcatalog-core.jar && \
+
+#     install() { echo $1; test -e /usr/local/$1 && echo "already downloaded" || echo "downloading"; curl --progress-bar $2 | tar -xz -C /usr/local/ ; } && \
+
+
+#    echo "# ---------------------------------------------" && \
+#    echo "# HBase" && \
+#    echo ${HBASE_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /home && \
+#    test -e /downloads/hbase.tar.gz && tar -xz -C /downloads/hbase.tar.gz /usr/local/ || curl -s ${HBASE_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+#    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
+#    ln -s /conf/hbase /usr/local/hbase/conf && \
+#    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
+#    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh && \
+#   echo "# ---------------------------------------------" && \
+#    echo "# Zookeeper" && \
+#    echo ${ZOOKEEPER_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    test -e /downloads/zookeeper.tar.gz && tar -xz -C /downloads/zookeeper.tar.gz /usr/local/ || curl -s ${ZOOKEEPER_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
+#    mkdir /usr/local/zookeeper/data && \
+#    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
+#    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
+#    pip2 install happybase psycopg2 && \
+#    pip3 install happybase psycopg2 && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Cockroach DB" && \
+#    echo "# ---------------------------------------------" && \
+#    install "COCKROACH"
+#    ln -s /usr/local/cockroach-v${COCKROACH_VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach && \
+    
+=======
+
+    
+######################################################################################
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark Cassandra Connector" && \
+#    echo ${SPARK_CASSANDRA_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /jars && \
+#    test -e /usr/local/jars/${SPARK_CASSANDRA_FILE} && echo "Spark Cassandra Connector exists" || wget ${SPARK_CASSANDRA_URL} && \
+#    ln -s /jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} 
+
+#    echo "# ---------------------------------------------" && \
+#    echo "# Hiveserver2 Python Package" && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install libsasl2-dev && \
+#    pip2 install PyHive && \
+#    pip3 install PyHive && \
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Mongo & Cassandra Keys" && \
+#    echo "# ---------------------------------------------" && \
+#    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+#    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+#    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+#    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+#    apt-get update && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Mongo" && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
+#    cd /pip && \
+#    pip2 install pymongo && \
+#    pip3 install pymongo && \
+#    mkdir /data/mongo && \
+#    mkdir /data/mongo/data && \
+#    chmod +x /scripts/start-mongo.sh && \
+#    chmod +x /scripts/stop-mongo.sh 
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Cassandra" && \
+#    echo ${CASSANDRA_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
+#    chmod +x /scripts/start-cassandra.sh && \
+#    chmod +x /scripts/stop-cassandra.sh && \
+#    echo "# change the data and log folder" && \
+#    mkdir /data/cassandra && \
+#    mkdir /data/cassandra/data && \
+#   mkdir /data/cassandra/log && \
+#    mv /etc/cassandra /etc/cassandra_backup && \
+#    ln -s /conf/cassandra /etc/cassandra && \
+#    chmod +x /examples/cassandra/test-cassandra-table.py 
+=======
+
+    
+######################################################################################
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark Cassandra Connector" && \
+#    echo ${SPARK_CASSANDRA_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /jars && \
+#    test -e /usr/local/jars/${SPARK_CASSANDRA_FILE} && echo "Spark Cassandra Connector exists" || wget ${SPARK_CASSANDRA_URL} && \
+#    ln -s /jars/${SPARK_CASSANDRA_FILE} /usr/local/spark/jars/${SPARK_CASSANDRA_FILE} 
+
+#    echo "# ---------------------------------------------" && \
+#    echo "# Hiveserver2 Python Package" && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install libsasl2-dev && \
+#    pip2 install PyHive && \
+#    pip3 install PyHive && \
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Mongo & Cassandra Keys" && \
+#    echo "# ---------------------------------------------" && \
+#    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
+#    echo "deb [ arch=amd64,arm64 ] ${MONGO_REPO_URL} xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
+#    echo "deb ${CASSANDRA_URL}/debian ${CASSANDRA_VERSION}x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
+#    curl ${CASSANDRA_URL}/KEYS | sudo apt-key add - && \
+#    apt-get update && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Mongo" && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install mongodb-org && \
+#    cd /pip && \
+#    pip2 install pymongo && \
+#    pip3 install pymongo && \
+#    mkdir /data/mongo && \
+#    mkdir /data/mongo/data && \
+#    chmod +x /scripts/start-mongo.sh && \
+#    chmod +x /scripts/stop-mongo.sh 
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Cassandra" && \
+#    echo ${CASSANDRA_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    DEBIAN_FRONTEND=noninteractive apt-get -y install cassandra && \
+#    chmod +x /scripts/start-cassandra.sh && \
+#    chmod +x /scripts/stop-cassandra.sh && \
+#    echo "# change the data and log folder" && \
+#    mkdir /data/cassandra && \
+#    mkdir /data/cassandra/data && \
+#   mkdir /data/cassandra/log && \
+#    mv /etc/cassandra /etc/cassandra_backup && \
+#    ln -s /conf/cassandra /etc/cassandra && \
+#    chmod +x /examples/cassandra/test-cassandra-table.py 
+
+    
+#ADD downloads/postgresql-42.1.3.jar 
+#    mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
+#    cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark XML library" && \
+#    echo "# ---------------------------------------------" && \
+#    if [test -e /jars/spark-xml_2.11-0.4.1.jar]; then && \
+#       mv /jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars && \
+#    else && \
+#       cd /tmp && \
+#       git clone ${SPARK_XML_GIT} && \
+#       cd /tmp/spark-xml && \
+#       sbt/sbt package && \
+#       mv /tmp/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+#       cd /tmp && \
+#       rm -r /tmp/spark-xml
+#    fi && \
+#    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# HBase" && \
+#    echo ${HBASE_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /home && \
+#    test -e /downloads/hbase.tar.gz && tar -xz -C /downloads/hbase.tar.gz /usr/local/ || curl -s ${HBASE_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+#    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
+#    ln -s /conf/hbase /usr/local/hbase/conf && \
+#    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
+#    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Zookeeper" && \
+#    echo ${ZOOKEEPER_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    test -e /downloads/zookeeper.tar.gz && tar -xz -C /downloads/zookeeper.tar.gz /usr/local/ || curl -s ${ZOOKEEPER_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
+#    mkdir /usr/local/zookeeper/data && \
+#    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
+#    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
+#    pip2 install happybase psycopg2 && \
+#    pip3 install happybase psycopg2
+
+
+
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input && \
+#    sed -i '/^ARG JAVA_HOME/ s:.*:ARG JAVA_HOME=/usr\nARG HADOOP_HOME=/usr/local/hadoop\nARG HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+#    sed -i '/^ARG HADOOP_CONF_DIR/ s:.*:ARG HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+#    echo "# fix the 254 error code" && \
+#    sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config && \
+#    echo "UsePAM no" >> /etc/ssh/sshd_config && \
+#    echo "Port 2122" >> /etc/ssh/sshd_config && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Make scripts executable" && \
+#    echo "# ---------------------------------------------" && \
+#    chmod +x /scripts/format-namenode.sh && \
+#    chmod +x /scripts/exit-safemode.sh && \
+#    chmod +x /scripts/start-thrift.sh && \
+#    chmod +x /scripts/init-schema-mysql.sh && \
+#    chmod +x /scripts/init-schema-postgres.sh && \
+#    chmod +x /scripts/start-everything.sh && \
+#    chmod +x /scripts/stop-everything.sh && \
+
+
+#    test -e /usr/local/hadoop-${HADOOP_VERSION}* && echo "Hadoop Exists" || curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
+#     test -e /usr/local/apache-hive-${HIVE_VERSION}-bin && echo "Hive exists" || curl -s ${HIVE_URL} | tar -xz -C /usr/local/ && \
+#    test -e /usr/local/pig-${PIG_VERSION}* && echo "Pig exists" || curl -s ${PIG_URL} | tar -xz -C /usr/local/ && \
+#    test -e /usr/local/spark-${SPARK_VERSION}* && echo "Spark exists" || curl -s ${SPARK_URL} | tar -xz -C /usr/local/ && \
+#
+
+# git clone https://github.com/apache/hbase.git
+
+#	download shc ${SPARK_HBASE_GIT} && \
+#	download spark-xml ${SPARK_XML_GIT} && \
+
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark HBase" && \
+#    echo ${SPARK_HBASE_GIT} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /tmp && \
+#    git clone ${SPARK_HBASE_GIT} && \
+#    cd /tmp/shc && \
+#    test -e /jars/shc.jar && cp /jars/sjc.jar /usr/local/spark/jars/shc || mvn package -DskipTests && \
+#    ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
+#    cd /tmp && \
+#    rm -r /tmp/shc 
+
+
+#echo "# ---------------------------------------------" && \
+#    echo "# Upgrade pip" && \
+#    echo "# ---------------------------------------------" && \
+#    pip2 install --upgrade pip && \
+#    pip3 install --upgrade pip && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+
+    
+#ADD downloads/postgresql-42.1.3.jar 
+#    mv postgresql-42.1.3.jar /usr/local/hive/jdbc && \
+#    cp /usr/local/hive/jdbc/postgresql-42.1.3.jar /usr/local/hive/lib && \
+
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark XML library" && \
+#    echo "# ---------------------------------------------" && \
+#    if [test -e /jars/spark-xml_2.11-0.4.1.jar]; then && \
+#       mv /jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars && \
+#    else && \
+#       cd /tmp && \
+#       git clone ${SPARK_XML_GIT} && \
+#       cd /tmp/spark-xml && \
+#       sbt/sbt package && \
+#       mv /tmp/spark-xml/target/scala-2.11/*.jar /usr/local/spark/jars && \
+#       cd /tmp && \
+#       rm -r /tmp/spark-xml
+#    fi && \
+#    ln -s /usr/local/spark/jars/spark-xml_2.11-0.4.1.jar /usr/local/spark/jars/spark-xml.jar && \
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# HBase" && \
+#    echo ${HBASE_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /home && \
+#    test -e /downloads/hbase.tar.gz && tar -xz -C /downloads/hbase.tar.gz /usr/local/ || curl -s ${HBASE_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+#    mv /usr/local/hbase/conf /usr/local/hbase/conf_backup &&\
+#    ln -s /conf/hbase /usr/local/hbase/conf && \
+#    ln -s /usr/local/hbase/bin/start-hbase.sh /scripts/starthbase.sh &&\
+#    ln -s /usr/local/hbase/bin/stop-hbase.sh /scripts/stophbase.sh
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Zookeeper" && \
+#    echo ${ZOOKEEPER_URL} && \
+#    echo "# ---------------------------------------------" && \
+#    test -e /downloads/zookeeper.tar.gz && tar -xz -C /downloads/zookeeper.tar.gz /usr/local/ || curl -s ${ZOOKEEPER_URL} | tar -xz -C /usr/local/ && \
+#    ln -s /usr/local/zookeeper-${ZOOKEEPER_VERSION} /usr/local/zookeeper && \
+#    mkdir /usr/local/zookeeper/data && \
+#    mv /usr/local/zookeeper/conf /usr/local/zookeeper/conf_backup && \
+#    ln -s /conf/zookeeper /usr/local/zookeeper/conf && \
+#    pip2 install happybase psycopg2 && \
+#    pip3 install happybase psycopg2
+
+
+
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input && \
+#    sed -i '/^ARG JAVA_HOME/ s:.*:ARG JAVA_HOME=/usr\nARG HADOOP_HOME=/usr/local/hadoop\nARG HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+#    sed -i '/^ARG HADOOP_CONF_DIR/ s:.*:ARG HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+#    echo "# fix the 254 error code" && \
+#    sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config && \
+#    echo "UsePAM no" >> /etc/ssh/sshd_config && \
+#    echo "Port 2122" >> /etc/ssh/sshd_config && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -mkdir -p /user/root && \
+#    service ssh start $HADOOP_HOME/etc/hadoop/hadoop-env.sh $HADOOP_HOME/sbin/start-dfs.sh $HADOOP_HOME/bin/hdfs dfs -put $HADOOP_HOME/etc/hadoop/ input && \
+#    echo "# ---------------------------------------------" && \
+#    echo "# Make scripts executable" && \
+#    echo "# ---------------------------------------------" && \
+#    chmod +x /scripts/format-namenode.sh && \
+#    chmod +x /scripts/exit-safemode.sh && \
+#    chmod +x /scripts/start-thrift.sh && \
+#    chmod +x /scripts/init-schema-mysql.sh && \
+#    chmod +x /scripts/init-schema-postgres.sh && \
+#    chmod +x /scripts/start-everything.sh && \
+#    chmod +x /scripts/stop-everything.sh && \
+
+
+#    test -e /usr/local/hadoop-${HADOOP_VERSION}* && echo "Hadoop Exists" || curl -s ${HADOOP_URL} | tar -xz -C /usr/local/ && \
+#     test -e /usr/local/apache-hive-${HIVE_VERSION}-bin && echo "Hive exists" || curl -s ${HIVE_URL} | tar -xz -C /usr/local/ && \
+#    test -e /usr/local/pig-${PIG_VERSION}* && echo "Pig exists" || curl -s ${PIG_URL} | tar -xz -C /usr/local/ && \
+#    test -e /usr/local/spark-${SPARK_VERSION}* && echo "Spark exists" || curl -s ${SPARK_URL} | tar -xz -C /usr/local/ && \
+#
+
+# git clone https://github.com/apache/hbase.git
+
+#	download shc ${SPARK_HBASE_GIT} && \
+#	download spark-xml ${SPARK_XML_GIT} && \
+
+#RUN echo "# ---------------------------------------------" && \
+#    echo "# Spark HBase" && \
+#    echo ${SPARK_HBASE_GIT} && \
+#    echo "# ---------------------------------------------" && \
+#    cd /tmp && \
+#    git clone ${SPARK_HBASE_GIT} && \
+#    cd /tmp/shc && \
+#    test -e /jars/shc.jar && cp /jars/sjc.jar /usr/local/spark/jars/shc || mvn package -DskipTests && \
+#    ln -s /usr/local/spark/jars/shc /usr/local/spark/jars/shc.jar && \
+#    cd /tmp && \
+#    rm -r /tmp/shc 
+
+
+#echo "# ---------------------------------------------" && \
+#    echo "# Upgrade pip" && \
+#    echo "# ---------------------------------------------" && \
+#    pip2 install --upgrade pip && \
+#    pip3 install --upgrade pip && \
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+
+#export HADOOP_VERSION=3.1.1
+#export HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+#export HADOOP_FILE=hadoop-${HADOOP_VERSION}.tar.gz
+#export HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/${HADOOP_FILE}
+#export HADOOP_FOLDER=hadoop-${HADOOP_VERSION}
+#install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; echo ${!filename} ${!urlname} ${!foldername}; test -e /usr/local/${!foldername} && echo "already downloaded"  || curl --progress-bar ${!urlname} | tar -xz -C /usr/local ; ln -s /usr/local/${!foldername} /usr/local/${1,,}; } ; install "HADOOP"
+
+
+
+#export HADOOP_VERSION=3.1.1
+#export HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+#export HADOOP_FILE=hadoop-${HADOOP_VERSION}.tar.gz
+#export HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/${HADOOP_FILE}
+#export HADOOP_FOLDER=hadoop-${HADOOP_VERSION}
+#install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; export SYMLINK1="/usr/local/${!foldername}"; export SYMLINK2="/usr/local/${1,,}"; echo ${!filename} ${!urlname} ${!foldername} ${SYMLINK1} ${SYMLINK2} ; test -e /usr/local/${!foldername} && echo "already downloaded"  || curl --progress-bar ${!urlname} | tar -xz -C /usr/local ; test -e ${SYMLINK2} && echo "symlink exists" || ln -s ${SYMLINK1} ${SYMLINK2}; } ; && \
+#echo "_______" && \
+#install "HADOOP"
+
+#    echo "# ---------------------------------------------" && \ export symlink2='/usr/local/'${1,,}; eval "symlink1=$1_FOLDER" ;   ln -s ${!symlink1} ${!symlink2};
+
+
+#    untar() { echo "Downloading $1"; curl --progress-bar $1 | tar -xz -C /usr/local ;};  
+    
+    
+#     test -e /usr/local/${!foldername} && echo "already downloaded" || untar ${!urlname}; ln -s /usr/local/${!foldername} /usr/local/${1,,} } ; install "HADOOP" 
+#    untar() { echo "Downloading $1"; curl --progress-bar $1 | tar -xz -C /usr/local ;};  install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; echo ${!filename} ${!urlname} ${!foldername}; test -e /usr/local/${!foldername} && echo "already downloaded" || untar ${!urlname}; ln -s /usr/local/${!foldername} /usr/local/${1,,} } ; install "HADOOP" 
+
+
+#export HADOOP_VERSION=3.1.1
+#export HADOOP_BASE_URL=http://mirrors.sonic.net/apache/hadoop/common
+#export HADOOP_FILE=hadoop-${HADOOP_VERSION}.tar.gz
+#export HADOOP_URL=${HADOOP_BASE_URL}/hadoop-${HADOOP_VERSION}/${HADOOP_FILE}
+#export HADOOP_FOLDER=hadoop-${HADOOP_VERSION}
+#install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; export SYMLINK1="/usr/local/${!foldername}"; export SYMLINK2="/usr/local/${1,,}"; echo ${!filename} ${!urlname} ${!foldername} ${SYMLINK1} ${SYMLINK2} ; test -e /usr/local/${!foldername} && echo "already downloaded"  || curl --progress-bar ${!urlname} | tar -xz -C /usr/local ; test -e ${SYMLINK2} && echo "symlink exists" || ln -s ${SYMLINK1} ${SYMLINK2}; } ; install "HADOOP" 
+=======
+>>>>>>> 79d3393a45d86ac5b73cdeea6bfa32db8e94703a
+
+# just won't work during docker build
+#    echo "# ---------------------------------------------" && \
+#    echo "# make install tar function" && \
+#    echo "# ---------------------------------------------" && \ 
+#    install() { echo $1; eval "filename=$1_FILE"; eval "urlname=$1_URL"; eval "foldername=$1_FOLDER"; export SYMLINK1="/usr/local/${!foldername}"; export SYMLINK2="/usr/local/${1,,}"; echo ${!filename} ${!urlname} ${!foldername} ${SYMLINK1} ${SYMLINK2} ; test -e /usr/local/${!foldername} && echo "already downloaded"  || curl --progress-bar ${!urlname} | tar -xz -C /usr/local ; test -e ${SYMLINK2} && echo "symlink exists" || ln -s ${SYMLINK1} ${SYMLINK2}; } ; && \
