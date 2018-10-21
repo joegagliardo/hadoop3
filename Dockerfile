@@ -147,7 +147,7 @@ ADD built /built
 ADD VERSION /conf
 
 # this section will build with local downloaded versions, but it is too big to do on docker.com
-ADD download-versions.sh /
+#ADD download-versions.sh /
 ADD downloads/foo downloads/jars /jars/
 ADD downloads/foo downloads/git /git/
 ADD downloads/foo downloads/pip /pip/
