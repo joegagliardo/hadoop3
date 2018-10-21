@@ -13,3 +13,9 @@ ignore
 
 test.txt
 datasets/northwind/JSON2XML.py
+downloads/jars
+downloads/tars
+downloads/git
+downloads/pip
+downloads/Ignore
+
