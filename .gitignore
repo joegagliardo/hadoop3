@@ -14,9 +14,6 @@ downloads/git/spark-xml/
 ignore
 test.txt
 datasets/northwind/JSON2XML.py
-downloads/jars
 downloads/tars
-downloads/git
-downloads/pip
 downloads/Ignore
 >>>>>>> df591a932f52d7937ef0f49ba2d3763473fe4ef6
